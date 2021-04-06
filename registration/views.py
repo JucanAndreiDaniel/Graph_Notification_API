@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 # Rest-framework
 from rest_framework.views import APIView
@@ -55,8 +56,8 @@ def register(request):
                 user = User.objects.create_user(
                     username=user_name, password=password1, email=email, first_name=first_name, last_name=last_name)
                 user.save()
-                print('user created')
-                return redirect('register')
+                messages.success(request, 'Account was created for ' + user.name())
+                return redirect('login')
 
         else:
             messages.info(request, 'password not matching..')
@@ -68,4 +69,8 @@ def register(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('/')
+    return redirect('login')
+
+@login_required(login_url='login')
+def redirect_home(request):
+    return render(request, 'home.html')
