@@ -10,13 +10,13 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
-#http http://127.0.0.1:8000/registration/hello/ "Authorization: Token 550df1a082c1a5ff6e6634a5a1cab42e5ebd3098"
-
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
         content = {'message': 'Hello, World!'}
         return Response(content)
+        
+#TODO Inca un endpoint
 
 def login(request):
     if request.method == "POST":
