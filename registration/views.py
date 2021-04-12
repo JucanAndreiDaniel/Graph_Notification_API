@@ -10,13 +10,16 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
+
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         content = {'message': 'Hello, World!'}
         return Response(content)
-        
-#TODO Inca un endpoint
+
+# TODO Inca un endpoint
+
 
 def login(request):
     if request.method == "POST":
@@ -56,21 +59,35 @@ def register(request):
                 user = User.objects.create_user(
                     username=user_name, password=password1, email=email, first_name=first_name, last_name=last_name)
                 user.save()
-                messages.success(request, 'Account was created for ' + user.name())
+                messages.success(
+                    request, 'Account was created for ' + user.username())
                 return redirect('login')
 
         else:
             messages.info(request, 'password not matching..')
             return redirect('register')
-        return redirect('/')
 
     else:
         return render(request, 'register.html')
+
 
 def logout(request):
     auth.logout(request)
     return redirect('login')
 
-@login_required(login_url='login')
-def redirect_home(request):
-    return render(request, 'home.html')
+@login_required(login_url="login")
+def home(request):
+    import requests
+    import json
+
+    # Grab Crypto Price Data
+    price_request = requests.get(
+        "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,XRP,BCH,EOS,LTC,XLM,ADA,USDT,MIOTA,TRX&tsyms=USD")
+    price = json.loads(price_request.content)
+
+    # Grab Crypto News
+    api_request = requests.get(
+        "https://min-api.cryptocompare.com/data/v2/news/?lang=EN")
+    api = json.loads(api_request.content)
+    return render(request, 'home.html', {'api': api, 'price': price})
+
