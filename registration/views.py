@@ -60,7 +60,7 @@ def register(request):
                     username=user_name, password=password1, email=email, first_name=first_name, last_name=last_name)
                 user.save()
                 messages.success(
-                    request, 'Account was created for ' + user.username())
+                    request, f'Account was created for {user.username}')
                 return redirect('login')
 
         else:
