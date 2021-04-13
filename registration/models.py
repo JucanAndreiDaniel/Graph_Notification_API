@@ -8,22 +8,36 @@ class crypto_id(models.Model):
     symbol = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
-    high_24 = models.IntegerField()
-    low_24 = models.IntegerField()
-    curr_usd = models.IntegerField()
-    curr_euro = models.IntegerField()
-    curr_gbp = models.IntegerField()
-    curr_rub = models.IntegerField()
-    ath_usd = models.IntegerField()
-    ath_euro = models.IntegerField()
-    ath_gbp = models.IntegerField()
-    ath_rub = models.IntegerField()
-    atl_usd = models.IntegerField()
-    atl_euro = models.IntegerField()
-    atl_gbp = models.IntegerField()
-    atl_rub = models.IntegerField()
-    ath_time = models.TimeField(7)
-    atl_time = models.TimeField(7)
+
+    high_1d_usd = models.IntegerField(blank=True, null=True)
+    high_1d_euro = models.IntegerField(blank=True, null=True)
+    high_1d_gbp = models.IntegerField(blank=True, null=True)
+    high_1d_rub = models.IntegerField(blank=True, null=True)
+
+    low_1d_usd = models.IntegerField(blank=True, null=True)
+    low_1d_euro = models.IntegerField(blank=True, null=True)
+    low_1d_gbp = models.IntegerField(blank=True, null=True)
+    low_1d_rub = models.IntegerField(blank=True, null=True)
+
+    curr_usd = models.IntegerField(blank=True, null=True)
+    curr_euro = models.IntegerField(blank=True, null=True)
+    curr_gbp = models.IntegerField(blank=True, null=True)
+    curr_rub = models.IntegerField(blank=True, null=True)
+
+    ath_usd = models.IntegerField(blank=True, null=True)
+    ath_euro = models.IntegerField(blank=True, null=True)
+    ath_gbp = models.IntegerField(blank=True, null=True)
+    ath_rub = models.IntegerField(blank=True, null=True)
+
+    atl_usd = models.IntegerField(blank=True, null=True)
+    atl_euro = models.IntegerField(blank=True, null=True)
+    atl_gbp = models.IntegerField(blank=True, null=True)
+    atl_rub = models.IntegerField(blank=True, null=True)
+
+    ath_time = models.DateTimeField(7)
+    atl_time = models.DateTimeField(7)
+
+    last_updated = models.DateTimeField(7)
 
 
 class Profile(models.Model):
