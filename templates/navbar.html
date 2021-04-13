@@ -7,42 +7,44 @@
         color: #fff;
         margin-right: 20px;
     }
+    
     .btn-group .button {
-      background-color: #19721c; /* Green */
-      border: none;
-      color: white;
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      cursor: pointer;
-      float: left;
+        background-color: #2e6bc7;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        position: relative;
+        left: 20px;
     }
     
     .btn-group .button:hover {
-      background-color: #3e8e41;
+        background-color: #1b549e;
     }
 </style>
 
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #74cfbf;">
     <img src="{% static 'images/logo.png' %}" style="width: 5vw; height: auto;">
-     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-    </button> 
-    <div  class="btn-group">
-     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <button class="button"> <a class="nav-link" href="{% url 'home' %}">Dashboard</a></button>
-          </li>
-          <li class="nav-item">
-            <button class="button"><a class="nav-link" href="{% url 'home' %}">Crypto (home)</a></button>
-          </li>
-        </ul>
-      </div>
+    </button>
+    <div class="btn-group">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <button class="button"> <a class="nav-link" href="{% url 'home' %}">Cryptocurrency</a></button>
+                </li>
+                <li class="nav-item">
+                    <button class="button"><a class="nav-link" href="{% url 'home' %}">Stock Market</a></button>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -50,7 +52,7 @@
 
         </ul>
     </div>
-    
+
     {% block content %} {% if user.is_authenticated %}
     <span class="hello-msg">Hello, {{request.user}}</span>
     <span><a  class="hello-msg" href="{% url 'logout' %}">Logout</a></span> {% else %}
