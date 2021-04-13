@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect
 # Rest-framework
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
+from .models import crypto_id
 
 
 class HelloView(APIView):
@@ -75,19 +76,18 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
 
+
 @login_required(login_url="login")
 def home(request):
-    import requests
-    import json
 
-    # Grab Crypto Price Data
-    price_request = requests.get(
-        "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,XRP,BCH,EOS,LTC,XLM,ADA,USDT,MIOTA,TRX&tsyms=USD")
-    price = json.loads(price_request.content)
+    coins = crypto_id.objects.all()
+    page = request.GET.get('page', 1)
 
-    # Grab Crypto News
-    api_request = requests.get(
-        "https://min-api.cryptocompare.com/data/v2/news/?lang=EN")
-    api = json.loads(api_request.content)
-    return render(request, 'home.html', {'api': api, 'price': price})
-
+    paginator = Paginator(coins, 50)
+    try:
+        coin = paginator.page(page)
+    except PageNotAnInteger:
+        coin = paginator.page(1)
+    except EmptyPage:
+        coin = paginator.page(paginator.num_pages)
+    return render(request, 'home.html', {"coins": coin})
