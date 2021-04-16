@@ -5,7 +5,7 @@
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <br>
-            <h2>Cryptocoins</h2>
+            <h2 style="color: white;">Cryptocoins</h2>
             <br>
             {% if coins.has_other_pages %}
             <ul class="pagination justify-content-center">
@@ -15,7 +15,6 @@
                         <span aria-hidden="true">&laquo; First</span>
                     </a>
                 </li> {% endif %}
-
                 {% for n in coins.paginator.page_range %}
                 {% if coins.number == n %}
                 <li class="page-item active">
@@ -25,7 +24,7 @@
                         class="page-link" href="?page={{ n }}">{{ n }}</a></li>
                     {% endif %}
                     {% endfor %}
-
+                    
                     {% if coins.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="?page={{ coins.paginator.num_pages }}" aria-label="Next">
@@ -39,7 +38,7 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm">
                     <thead>
-                        <tr>
+                        <tr style="color:white">
                             <th scope="col">Name </th>
                             <th scope="col">Price</th>
                             <th scope="col">24h High</th>
@@ -48,7 +47,7 @@
                     </thead>
                     <tbody>
                         {% for coin in coins %}
-                        <tr scope="row">
+                        <tr scope="row" style="color:white">
                             <td>{{ coin.name }}</td>
                             <td>{{ coin.curr_usd }}</td>
                             <td>{{ coin.high_1d_usd }}</td>
