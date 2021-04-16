@@ -18,7 +18,7 @@ class value(models.Model):
                      ("gbp", "Pound"), ("rub", "Ruble"))
 
     coin_id = models.ForeignKey(
-        crypto_id, on_delete=models.CASCADE)
+        crypto_id, on_delete=models.CASCADE, related_name="prices")
     currency = models.CharField(
         max_length=255, choices=currency_list)
 
