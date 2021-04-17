@@ -24,7 +24,7 @@
                         class="page-link" href="?page={{ n }}">{{ n }}</a></li>
                     {% endif %}
                     {% endfor %}
-                    
+
                     {% if coins.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="?page={{ coins.paginator.num_pages }}" aria-label="Next">
@@ -46,12 +46,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for coin in coins %}
+                        {% for coin,price in coins %}
                         <tr scope="row" style="color:white">
                             <td>{{ coin.name }}</td>
-                            <td>{{ coin.curr_usd }}</td>
-                            <td>{{ coin.high_1d_usd }}</td>
-                            <td>{{ coin.low_1d_usd }}</td>
+                            <td>{{ price.current }}</td>
+                            <td>{{ price.high_1d }}</td>
+                            <td>{{ price.low_1d }}</td>
                         </tr>
                         {% endfor %}
 
