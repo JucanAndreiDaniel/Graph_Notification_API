@@ -22,12 +22,12 @@
     }
     
     .btn-group .button:hover {
-        background-color: #f0a52d;
+        background-color: #f3bb61;
     }
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5b5e5e;">
-    <img src="{% static 'images/logo.png' %}" style="width: 5vw; height: auto; margin-left:10px">
+    <img src="{% static 'images/logo_home.png' %}" style="width: 5vw; height: auto; margin-left:10px">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -46,13 +46,14 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-
+            
         </ul>
     </div>
 
-    {% block content %} {% if user.is_authenticated %}
+    {% block content %} 
+    {% if user.is_authenticated %}
     <span class="hello-msg">Hello, {{request.user}}</span>
-    <span><a  class="hello-msg" href="{% url 'logout' %}">Logout</a></span> {% else %}
+    <span style="right: 1em;position: relative;"><a class="btn login_btn" href="{% url 'logout' %}">Logout</a></span> {% else %}
     <span class="hello-msg">You are not logged in</span>
     <span><a  class="hello-msg" href="{% url 'login' %}">Click here to log in</a></span> {% endif %} {% endblock %}
 
