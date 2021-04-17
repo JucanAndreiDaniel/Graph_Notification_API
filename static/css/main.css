@@ -1,11 +1,9 @@
-{% load static %}
 body,
 html {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #2e2c2c;
-    background-image: url("images/clopot_site_start.png");
+    background: #2e2c2c !important;
 }
 
 .user_card {
