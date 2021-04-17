@@ -1,9 +1,11 @@
+{% load static %}
 body,
 html {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #2e2c2c !important;
+    background: #2e2c2c;
+    background-image: url("images/clopot_site_start.png");
 }
 
 .user_card {
@@ -16,9 +18,9 @@ html {
     justify-content: center;
     flex-direction: column;
     padding: 10px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 6px 20px 0, 0 6px 20px 0;
+    -webkit-box-shadow:-10px 15px black, 0 6px 20px 0;
+    -moz-box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
 }
 
