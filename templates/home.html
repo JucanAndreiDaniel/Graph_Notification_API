@@ -46,13 +46,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for coin,price in coins %}
+                        {% for coin in coins %}
+                        {% for price in prices%}
+                        {% if price.coin_id_id == coin.id%}
                         <tr scope="row" style="color:white">
                             <td>{{ coin.name }}</td>
                             <td>{{ price.current }}</td>
                             <td>{{ price.high_1d }}</td>
                             <td>{{ price.low_1d }}</td>
                         </tr>
+                        {% endif %}
+                        {% endfor %}
                         {% endfor %}
 
                     </tbody>
