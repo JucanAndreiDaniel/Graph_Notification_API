@@ -1,3 +1,4 @@
+from typing import Tuple
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
@@ -82,17 +83,18 @@ def home(request):
 
     coins = crypto_id.objects.all()
 
-    prices = value.objects.filter(currency="eur")
-
-    everything = zip(coins, prices)
-
+    prices = value.objects.filter(currency="usd")
     page = request.GET.get('page', 1)
 
-    paginator = Paginator(coins, 50)
+    paginator = Paginator(coins, 30)
+    paginator_price = Paginator(prices, 30)
     try:
         coin = paginator.page(page)
+        price = paginator_price.page(page)
     except PageNotAnInteger:
         coin = paginator.page(1)
+        price = paginator_price.page(1)
     except EmptyPage:
         coin = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"coins": everything})
+        price = paginator_price.page(paginator.num_pages)
+    return render(request, 'home.html', {"coins": coin, "prices": price})

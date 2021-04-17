@@ -17,6 +17,8 @@ class value(models.Model):
     currency_list = (("usd", "Dollar"), ("eur", "Euro"),
                      ("gbp", "Pound"), ("rub", "Ruble"))
 
+    coin_currency = models.CharField(
+        max_length=255, primary_key=True, blank=True)
     coin_id = models.ForeignKey(
         crypto_id, on_delete=models.CASCADE, related_name="prices")
     currency = models.CharField(
