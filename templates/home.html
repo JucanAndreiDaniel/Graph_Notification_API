@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% block content %}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col"></div>
@@ -7,8 +8,45 @@
             <br>
             <h2 style="color: white;">Cryptocoins</h2>
             <br>
+            
+            <div class="table-responsive">
+                <table 
+                    id="table" 
+                    data-toggle="table" 
+                    data-search="true"
+                    data-search-highlight="true"
+                    data-search-align="left"
+                    data-sortable="true"
+                    class="table table-bordered table-hover table-sm">
+                    <thead>
+                        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
+                            <th data-field="id" data-sortable="true" scope="col">Name </th>
+                            <th data-field="price" data-sortable="true" scope="col">Price</th>
+                            <th data-field="24high" data-sortable="true" scope="col">24h High</th>
+                            <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
+                            <th scope="col"> Add to favourites </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for coin in coins %}
+                        {% for price in prices%}
+                        {% if price.coin_id_id == coin.id%}
+                        <tr scope="row" style="color:white">
+                            <td>{{ coin.name }}</td>
+                            <td>{{ price.current }}</td>
+                            <td>{{ price.high_1d }}</td>
+                            <td>{{ price.low_1d }}</td>
+                            <td> <button> {{ function }} </button> </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr/>
             {% if coins.has_other_pages %}
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-end">
                 {% if coins.has_previous %}
                 <li class="page-item">
                     <a class="page-link" href="?page=1" aria-label="Previous">
@@ -35,34 +73,7 @@
 
             </ul>
             {% endif %}
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover table-sm">
-                    <thead>
-                        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
-                            <th scope="col">Name </th>
-                            <th scope="col">Price</th>
-                            <th scope="col">24h High</th>
-                            <th scope="col">24h Low</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for coin in coins %}
-                        {% for price in prices%}
-                        {% if price.coin_id_id == coin.id%}
-                        <tr scope="row" style="color:white">
-                            <td>{{ coin.name }}</td>
-                            <td>{{ price.current }}</td>
-                            <td>{{ price.high_1d }}</td>
-                            <td>{{ price.low_1d }}</td>
-                        </tr>
-                        {% endif %}
-                        {% endfor %}
-                        {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
-        </main>
+        </main>  
         <div class="col"></div>
     </div>
 </div>
