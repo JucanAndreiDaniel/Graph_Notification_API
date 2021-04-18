@@ -67,7 +67,16 @@
                     </div>
     
                     {{form.errors}}
-                    
+                    {% if messages %}
+                    <ul class="messages" style="color:whitesmoke">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                            {{ message }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
                     <div class="mt-4">
                         <div class="d-flex justify-content-center links">
                             <p style="color: #fff;">Already have an account?</p><a href="{% url 'login' %}" class="ml-2" style="color: #f7ba5b;">Login</a>
@@ -76,15 +85,6 @@
                 </div>
             </div>
         </div>
-        {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-        {{ message }}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
+
     </body>
 </html>
