@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import crypto_id, value
+from .models import cryptoObject
 
 
 class HelloView(APIView):
@@ -81,20 +81,17 @@ def logout(request):
 @login_required(login_url="login")
 def home(request):
 
-    coins = crypto_id.objects.all()
-
-    prices = value.objects.filter(currency="usd")
+    prices = cryptoObject.objects.filter(currency="usd")
     page = request.GET.get('page', 1)
 
-    paginator = Paginator(coins, 30)
-    paginator_price = Paginator(prices, 30)
+    paginator = Paginator(prices, 30)
     try:
-        coin = paginator.page(page)
-        price = paginator_price.page(page)
+
+        price = paginator.page(page)
     except PageNotAnInteger:
-        coin = paginator.page(1)
-        price = paginator_price.page(1)
+
+        price = paginator.page(1)
     except EmptyPage:
-        coin = paginator.page(paginator.num_pages)
-        price = paginator_price.page(paginator.num_pages)
-    return render(request, 'home.html', {"coins": coin, "prices": price})
+
+        price = paginator.page(paginator.num_pages)
+    return render(request, 'home.html', {"crypto": price})

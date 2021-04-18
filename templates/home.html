@@ -8,15 +8,10 @@
             <br>
             <h2 style="color: white;">Cryptocoins</h2>
             <br>
-            
+
             <div class="table-responsive">
-                <table 
-                    id="table" 
-                    data-toggle="table" 
-                    data-search="true"
-                    data-search-highlight="true"
-                    data-search-align="left"
-                    data-sortable="true"
+                <table id="table" data-toggle="table" data-search="true" data-search-highlight="true"
+                    data-search-align="left" data-sortable="true" data-height="650"
                     class="table table-bordered table-hover table-sm">
                     <thead>
                         <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
@@ -28,44 +23,40 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for coin in coins %}
-                        {% for price in prices%}
-                        {% if price.coin_id_id == coin.id%}
+                        {% for coin in crypto %}
                         <tr scope="row" style="color:white">
                             <td>{{ coin.name }}</td>
-                            <td>{{ price.current }}</td>
-                            <td>{{ price.high_1d }}</td>
-                            <td>{{ price.low_1d }}</td>
+                            <td>{{ coin.current }}</td>
+                            <td>{{ coin.high_1d }}</td>
+                            <td>{{ coin.low_1d }}</td>
                             <td> <button> {{ function }} </button> </td>
                         </tr>
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <hr/>
-            {% if coins.has_other_pages %}
+            <hr />
+            {% if crypto.has_other_pages %}
             <ul class="pagination justify-content-end">
-                {% if coins.has_previous %}
+                {% if crypto.has_previous %}
                 <li class="page-item">
                     <a class="page-link" href="?page=1" aria-label="Previous">
                         <span aria-hidden="true">&laquo; First</span>
                     </a>
                 </li> {% endif %}
-                {% for n in coins.paginator.page_range %}
-                {% if coins.number == n %}
+                {% for n in crypto.paginator.page_range %}
+                {% if crypto.number == n %}
                 <li class="page-item active">
                     <span class="page-link">{{ n }}</span>
                 </li>
-                {% elif n > coins.number|add:'-5' and n < coins.number|add:'5' %} <li class="page-item"><a
+                {% elif n > crypto.number|add:'-5' and n < crypto.number|add:'5' %} <li class="page-item"><a
                         class="page-link" href="?page={{ n }}">{{ n }}</a></li>
                     {% endif %}
                     {% endfor %}
 
-                    {% if coins.has_next %}
+                    {% if crypto.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ coins.paginator.num_pages }}" aria-label="Next">
+                        <a class="page-link" href="?page={{ crypto.paginator.num_pages }}" aria-label="Next">
                             <span aria-hidden="true">&raquo; Last</span>
                         </a>
                     </li>
@@ -73,7 +64,7 @@
 
             </ul>
             {% endif %}
-        </main>  
+        </main>
         <div class="col"></div>
     </div>
 </div>
