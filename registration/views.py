@@ -1,16 +1,17 @@
-from typing import Tuple
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 # Rest-framework
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import cryptoObject, Profile
+
+from django.core import serializers
 
 
 class HelloView(APIView):
@@ -20,7 +21,12 @@ class HelloView(APIView):
         content = {'message': 'Hello, World!'}
         return Response(content)
 
-# TODO Inca un endpoint
+
+# Serializare Obiect Crypto in json
+def JSONObjectView(request):
+    if request.method=='GET':
+        prices = list(cryptoObject.objects.values_list("name","current","high_1d","low_1d").filter(currency="usd"))
+        return JsonResponse(prices,safe=False)
 
 
 def login(request):
@@ -80,21 +86,7 @@ def logout(request):
 
 @login_required(login_url="login")
 def home(request):
-
-    prices = cryptoObject.objects.filter(currency="usd")
-    page = request.GET.get('page', 1)
-
-    paginator = Paginator(prices, 30)
-    try:
-
-        price = paginator.page(page)
-    except PageNotAnInteger:
-
-        price = paginator.page(1)
-    except EmptyPage:
-
-        price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price})
+    return render(request, 'home.html')
 
 @login_required(login_url="login")
 def addToFavorite(request):
