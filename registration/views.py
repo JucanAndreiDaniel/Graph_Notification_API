@@ -83,7 +83,7 @@ def home(request):
 
     prices = cryptoObject.objects.filter(currency="usd")
     page = request.GET.get('page', 1)
-
+    favorites = cryptoObject.objects.filter(profile__user__id=request.user.id,currency="eur")
     paginator = Paginator(prices, 30)
     try:
 
@@ -94,13 +94,12 @@ def home(request):
     except EmptyPage:
 
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites})
 
 @login_required(login_url="login")
 def addToFavorite(request):
     if request.method == 'POST':
         add_favorite = request.POST["crypto.id"] # request form html the name of crypto to be added to favorites
-        print(add_favorite)
         user = User.objects.filter(username=request.user.username).first() # the name of user who requested a favorite crypto 
         crypto_add = cryptoObject.objects.filter(coin_id=add_favorite).first() # user defines what type of currency does he want to be added later :) 
         profile = Profile(user=user)
@@ -108,6 +107,14 @@ def addToFavorite(request):
         profile.save()
         return HttpResponseRedirect('/')
         
-
-
+@login_required(login_url="login")
+def deleteFromFavorite(request):
+    if request.method == 'POST':
+        delete_favorite = request.POST["crypto.id"] # request form html the name of crypto to be added to favorites
+        user = User.objects.filter(username=request.user.username).first() # the name of user who requested a favorite crypto 
+        crypto_delete = cryptoObject.objects.filter(coin_id=add_favorite).first() # user defines what type of currency does he want to be added later :) 
+        profile = Profile(user=user)
+        profile.favorite.remove(crypto_delete)
+        profile.save()
+        return HttpResponseRedirect('/')
 
