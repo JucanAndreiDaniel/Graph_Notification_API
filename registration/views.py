@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import cryptoObject
+from .models import cryptoObject, Profile
 
 
 class HelloView(APIView):
@@ -95,3 +95,19 @@ def home(request):
 
         price = paginator.page(paginator.num_pages)
     return render(request, 'home.html', {"crypto": price})
+
+@login_required(login_url="login")
+def addToFavorite(request):
+    if request.method == 'POST':
+        add_favorite = request.POST["crypto.id"] # request form html the name of crypto to be added to favorites
+        print(add_favorite)
+        user = User.objects.filter(username=request.user.username).first() # the name of user who requested a favorite crypto 
+        crypto_add = cryptoObject.objects.filter(coin_id=add_favorite).first() # user defines what type of currency does he want to be added later :) 
+        profile = Profile(user=user)
+        profile.favorite.add(crypto_add)
+        profile.save()
+        return HttpResponseRedirect('/')
+        
+
+
+

@@ -26,6 +26,7 @@ class cryptoObject(models.Model):
     atl_time = models.DateTimeField(7)
 
 
+
 class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)

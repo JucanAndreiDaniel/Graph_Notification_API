@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('register',views.register, name="register"),
+    path('addFavorite',views.addToFavorite, name="home"),
     path('login',views.login, name="login"),
     path('logout',views.logout, name="logout"),
     path('hello/', views.HelloView.as_view(), name='hello'),
