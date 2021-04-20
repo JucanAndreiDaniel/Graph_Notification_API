@@ -54,7 +54,17 @@
                             <td>{{ coin.current }}</td>
                             <td>{{ coin.high_1d }}</td>
                             <td>{{ coin.low_1d }}</td>
-                            <td> <button> {{ function }} </button> </td>
+                            <td>
+                                <form action="addFavorite" method="POST">
+                                    {% csrf_token %}
+                                    <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
+
+                                    <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
+                                    <input class="btn login_btn" style="width: 50%;" type="Submit"
+                                        value="Add to Favorite">
+
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
