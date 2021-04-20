@@ -3,15 +3,40 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col"></div>
-
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <br>
             <h2 style="color: white;">Cryptocoins</h2>
             <br>
+            <!-- Button trigger modal table -->
+            <button type="button" class="btn login_btn" data-toggle="modal" data-target="#favourites" style="width:13vw">
+                Show Favourites
+            </button>
 
+            <!-- Modal Table Load Favourites here -->
+            <!-- TODO window in center -->
+            <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tablefavourites">Your Favourites</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table Crypto -->
             <div class="table-responsive">
                 <table id="table" data-toggle="table" data-search="true" data-search-highlight="true"
-                    data-search-align="left" data-sortable="true" data-height="650"
+                    data-search-align="left" data-sortable="true" data-height="650" data-target="json"
                     class="table table-bordered table-hover table-sm">
                     <thead>
                         <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
@@ -61,12 +86,16 @@
                         </a>
                     </li>
                     {% endif %}
-
             </ul>
             {% endif %}
+
         </main>
         <div class="col"></div>
     </div>
 </div>
-
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    })
+</script>
 {% endblock%}
