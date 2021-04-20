@@ -83,7 +83,8 @@ def home(request):
 
     prices = cryptoObject.objects.filter(currency="usd")
     page = request.GET.get('page', 1)
-    favorites = cryptoObject.objects.filter(profile__user__id=request.user.id,currency="eur")
+    favorites = cryptoObject.objects.filter(currency="usd").filter(
+        profile__user__id=request.user.id)
     paginator = Paginator(prices, 30)
     try:
 
@@ -96,25 +97,35 @@ def home(request):
         price = paginator.page(paginator.num_pages)
     return render(request, 'home.html', {"crypto": price, "fav": favorites})
 
+
 @login_required(login_url="login")
 def addToFavorite(request):
     if request.method == 'POST':
-        add_favorite = request.POST["crypto.id"] # request form html the name of crypto to be added to favorites
-        user = User.objects.filter(username=request.user.username).first() # the name of user who requested a favorite crypto 
-        crypto_add = cryptoObject.objects.filter(coin_id=add_favorite).first() # user defines what type of currency does he want to be added later :) 
+        # request form html the name of crypto to be added to favorites
+        add_favorite = request.POST["crypto.id"]
+        print(add_favorite)
+        # the name of user who requested a favorite crypto
+        user = User.objects.filter(username=request.user.username).first()
+        # user defines what type of currency does he want to be added later :)
+        crypto_add = cryptoObject.objects.filter(
+            coin_currency=add_favorite).first()
         profile = Profile(user=user)
         profile.favorite.add(crypto_add)
         profile.save()
         return HttpResponseRedirect('/')
-        
+
+
 @login_required(login_url="login")
 def deleteFromFavorite(request):
     if request.method == 'POST':
-        delete_favorite = request.POST["crypto.id"] # request form html the name of crypto to be added to favorites
-        user = User.objects.filter(username=request.user.username).first() # the name of user who requested a favorite crypto 
-        crypto_delete = cryptoObject.objects.filter(coin_id=add_favorite).first() # user defines what type of currency does he want to be added later :) 
+        # request form html the name of crypto to be added to favorites
+        delete_favorite = request.POST["crypto.id"]
+        # the name of user who requested a favorite crypto
+        user = User.objects.filter(username=request.user.username).first()
+        # user defines what type of currency does he want to be added later :)
+        crypto_delete = cryptoObject.objects.filter(
+            coin_currency=delete_favorite).first()
         profile = Profile(user=user)
         profile.favorite.remove(crypto_delete)
         profile.save()
         return HttpResponseRedirect('/')
-
