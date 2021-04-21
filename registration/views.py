@@ -109,7 +109,9 @@ def addToFavorite(request):
         # user defines what type of currency does he want to be added later :)
         crypto_add = cryptoObject.objects.filter(
             coin_currency=add_favorite).first()
+        print(crypto_add)
         profile = Profile(user=user)
+        profile.save()
         profile.favorite.add(crypto_add)
         profile.save()
         return HttpResponseRedirect('/')
