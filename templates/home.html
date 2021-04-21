@@ -9,7 +9,7 @@
             <br>
             <!-- Button trigger modal table -->
             <button type="button" class="btn login_btn" data-toggle="modal" data-target="#favourites"
-                style="width:13vw">
+                style="width:auto">
                 Show Favourites
             </button>
 
@@ -21,9 +21,6 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="tablefavourites">Your Favourites</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
                         </div>
                         <div class="modal-body" style="background-color: #2e2c2c;">
                             <div class="table-responsive">
@@ -58,7 +55,7 @@
             <!-- Table Crypto -->
             <div class="table-responsive">
                 <table id="table" data-toggle="table" data-search="true" data-search-highlight="true"
-                    data-search-align="left" data-sortable="true" data-height="650" data-target="json"
+                    data-search-align="left" data-sortable="true" data-height="550" data-target="json"
                     class="table table-bordered table-hover table-sm">
                     <thead>
                         <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
@@ -66,16 +63,11 @@
                             <th data-field="price" data-sortable="true" scope="col">Price</th>
                             <th data-field="24high" data-sortable="true" scope="col">24h High</th>
                             <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
-                            <th scope="col"> Add to favourites </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for coin in crypto %}
                         <tr scope="row" style="color:white">
-                            <td>{{ coin.name }}</td>
-                            <td>{{ coin.current }}</td>
-                            <td>{{ coin.high_1d }}</td>
-                            <td>{{ coin.low_1d }}</td>
                             <td>
                                 {% if coin in fav %}
                                 <form action="deleteFavorite" method="POST">
@@ -83,8 +75,7 @@
                                     <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
 
                                     <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                    <input class="btn login_btn" style="width: 50%;" type="Submit"
-                                        value="Delete from Favorites">
+                                    <input type="Submit" value="★"><span>{{ coin.name }}</span>
                                 </form>
                                 {% else %}
                                 <form action="addFavorite" method="POST">
@@ -92,11 +83,15 @@
                                     <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
 
                                     <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                    <input class="btn login_btn" style="width: 50%;" type="Submit"
-                                        value="Add to Favorite">
+                                    <input type="Submit" value="☆"><span>{{ coin.name }}</span>
                                 </form>
                                 {% endif %}
+
                             </td>
+                            <td>{{ coin.current }}</td>
+                            <td>{{ coin.high_1d }}</td>
+                            <td>{{ coin.low_1d }}</td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -140,4 +135,9 @@
         $('#myInput').trigger('focus')
     })
 </script>
+<style>
+    .input[type="Submit"] {
+        display: none;
+    }
+</style>
 {% endblock%}
