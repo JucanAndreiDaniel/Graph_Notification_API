@@ -77,7 +77,7 @@
                             <td>{{ coin.high_1d }}</td>
                             <td>{{ coin.low_1d }}</td>
                             <td>
-                                {% if ceva in fav %}
+                                {% if coin in fav %}
                                 <form action="deleteFavorite" method="POST">
                                     {% csrf_token %}
                                     <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
