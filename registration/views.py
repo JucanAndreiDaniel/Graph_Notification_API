@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 # Rest-framework
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import cryptoObject, Profile
 
+from django.core import serializers
 
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -20,7 +21,24 @@ class HelloView(APIView):
         content = {'message': 'Hello, World!'}
         return Response(content)
 
-# TODO Inca un endpoint
+
+# Serializare Obiect Crypto in json
+class JsonObjectView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        if request.method=='GET':
+            coins = list(cryptoObject.objects.values_list("name","current","high_1d","low_1d").filter(currency="usd"))
+            return JsonResponse(coins,safe=False)
+
+#Serializare Favorite in functie de user
+class JsonFavoriteView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        if request.method=='GET':
+            user = User.objects.filter(username=request.user.username).first()
+            profile = Profile(user=user)
+            favorites = list(profile.favorite.values_list("name","current","high_1d","low_1d").filter(currency="usd"))
+            return JsonResponse(favorites,safe=False)
 
 
 def login(request):
@@ -130,4 +148,5 @@ def deleteFromFavorite(request):
         profile = Profile(user=user)
         profile.favorite.remove(crypto_delete)
         profile.save()
+
         return HttpResponseRedirect('/')

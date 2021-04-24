@@ -10,5 +10,7 @@ urlpatterns = [
     path('logout',views.logout, name="logout"),
     path('hello/', views.HelloView.as_view(), name='hello'),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('jCoin',views.JsonObjectView.as_view(), name="jCoin"),
+    path('jFav', views.JsonFavoriteView.as_view(), name='jFav'),
     path('',views.home,name="home")
 ]
