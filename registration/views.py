@@ -121,32 +121,45 @@ def addToFavorite(request):
     if request.method == 'POST':
         # request form html the name of crypto to be added to favorites
         add_favorite = request.POST["crypto.id"]
-        print(add_favorite)
         # the name of user who requested a favorite crypto
         user = User.objects.filter(username=request.user.username).first()
         # user defines what type of currency does he want to be added later :)
         crypto_add = cryptoObject.objects.filter(
             coin_currency=add_favorite).first()
-        print(crypto_add)
         profile = Profile(user=user)
         profile.save()
         profile.favorite.add(crypto_add)
         profile.save()
         return HttpResponseRedirect('/')
 
+def deleteFav(user,crypto_id):
+    # user defines what type of currency does he want to be added later :)
+    crypto_delete = cryptoObject.objects.filter(
+        coin_currency=crypto_id).first()
+    profile = Profile(user=user)
+    profile.favorite.remove(crypto_delete)
+    profile.save()
+    return
 
-@login_required(login_url="login")
-def deleteFromFavorite(request):
-    if request.method == 'POST':
-        # request form html the name of crypto to be added to favorites
-        delete_favorite = request.POST["crypto.id"]
-        # the name of user who requested a favorite crypto
-        user = User.objects.filter(username=request.user.username).first()
-        # user defines what type of currency does he want to be added later :)
-        crypto_delete = cryptoObject.objects.filter(
-            coin_currency=delete_favorite).first()
-        profile = Profile(user=user)
-        profile.favorite.remove(crypto_delete)
-        profile.save()
+def delFavView(request):
+    # request form html the name of crypto to be added to favorites
+    delete_favorite = request.POST["crypto.id"]
+    # the name of user who requested a favorite crypto
+    user = User.objects.filter(username=request.user.username).first()
+    deleteFav(user,delete_favorite)
+    return HttpResponseRedirect('/')
 
-        return HttpResponseRedirect('/')
+class DeleteFromFavApi(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self,request):
+        if request.method == 'POST':
+            delete_favorite = request.data.get("crypto_id")
+            print(delete_favorite)
+            user = User.objects.filter(username=request.user.username).first()
+            deleteFav(user,delete_favorite)
+            print("incerc sa sterg")
+            return Response("ceva")
+
+        
+

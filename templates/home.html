@@ -70,7 +70,7 @@
                         <tr scope="row" style="color:white">
                             <td>
                                 {% if coin in fav %}
-                                <form action="deleteFavorite" method="POST">
+                                <form action="delFavView" method="POST">
                                     {% csrf_token %}
                                     <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
 
