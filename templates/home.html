@@ -36,7 +36,7 @@
                                     <tbody>
                                         {% for coin in fav %}
                                         <tr scope="row" style="color:rgb(255, 255, 255)">
-                                            <td>{{ coin.name }}</td>
+                                            <td>{{ coin.coin_id|title }}</td>
                                             <td>{{ coin.current }}</td>
                                             <td>{{ coin.high_1d }}</td>
                                             <td>{{ coin.low_1d }}</td>
@@ -75,7 +75,7 @@
                                     <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
 
                                     <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                    <input type="Submit" value="★"><span>{{ coin.name }}</span>
+                                    <input type="Submit" value="★"><span>{{ coin.coin_id|title }}</span>
                                 </form>
                                 {% else %}
                                 <form action="addFavorite" method="POST">
@@ -83,7 +83,7 @@
                                     <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
 
                                     <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                    <input type="Submit" value="☆"><span>{{ coin.name }}</span>
+                                    <input type="Submit" value="☆"><span>{{ coin.coin_id|title }}</span>
                                 </form>
                                 {% endif %}
 

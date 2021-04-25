@@ -48,21 +48,20 @@ try:
                 vs_currency=curr, per_page="250", page=f"{i}")
             price_list += price
         for j in range(250):
+            cryptoObject = mod.cryptoObject(coin_id=price_list[j]["id"], symbol=price_list[j]["symbol"],
+                                            name=price_list[j]["name"], image=price_list[j]["image"],
+                                            last_updated=correcttime(price_list[j]["last_updated"]))
+            cryptoObject.save()
             for k in range(4):
-                cryptoObject = mod.cryptoObject(coin_id=price_list[j]["id"], symbol=price_list[j]["symbol"],
-                                                name=price_list[j]["name"], image=price_list[j]["image"],
-                                                last_updated=correcttime(
-                    price_list[j]["last_updated"]),
-                    coin_currency=f"{price_list[j]['id']}_{currencies[k]}",
-                    currency=currencies[k], current=price_list[j +
-                                                               (250*k)]["current_price"],
-                    high_1d=price_list[j+(250*k)
-                                       ]["high_24h"], low_1d=price_list[j+(250*k)]["low_24h"],
-                    ath=price_list[j+(250*k)]["ath"], ath_time=correcttime(
-                    price_list[j+(250*k)]["ath_date"]),
-                    atl=price_list[j+(250*k)]["ath"], atl_time=correcttime(price_list[j+(250*k)]["atl_date"]))
-                cryptoObject.save()
-
+                crypto_value = mod.value(coin_currency=f"{price_list[j]['id']}_{currencies[k]}", coin=cryptoObject,
+                                         currency=currencies[k], current=price_list[j+(
+                                             250*k)]["current_price"],
+                                         high_1d=price_list[j+(250*k)]["high_24h"], low_1d=price_list[j+(
+                                             250*k)]["low_24h"],
+                                         ath=price_list[j+(250*k)]["ath"], ath_time=correcttime(
+                                             price_list[j+(250*k)]["ath_date"]),
+                                         atl=price_list[j+(250*k)]["ath"], atl_time=correcttime(price_list[j+(250*k)]["atl_date"]))
+                crypto_value.save()
 
 except:
     traceback.print_exc()
