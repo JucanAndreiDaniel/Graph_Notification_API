@@ -33,3 +33,4 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
     favorite = models.ManyToManyField(cryptoObject)
+    fav_currency = models.CharField(max_length=255, blank=True)

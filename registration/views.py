@@ -106,9 +106,10 @@ def logout(request):
 @login_required(login_url="login")
 def home(request):
 
-    prices = value.objects.filter(currency="usd")
+    currency = request.GET.get("currency", "usd")
+    prices = value.objects.filter(currency=currency)
     page = request.GET.get('page', 1)
-    favorites = value.objects.filter(currency="usd").filter(
+    favorites = value.objects.filter(currency=currency).filter(
         coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
     paginator = Paginator(prices, 30)
     try:
