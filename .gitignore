@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 .vscode
+mysite.sock
+django_site.conf

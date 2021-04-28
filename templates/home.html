@@ -21,7 +21,7 @@
                     <div class="form-group col-12">
                         <div class="input-group">
                             <input class="form-control py-2 border-right-0 border" type="search" name="coinname"
-                                placeholder="Name contains..." />
+                                placeholder="Name contains...">
                             <span class="input-group-append">
                                 <div class="input-group-text bg-transparent">
                                     <i class="fa fa-search"></i>
@@ -30,117 +30,118 @@
                         </div>
                     </div>
                 </div>
-                <br>
-                <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
-                    aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content" style="background-color: #5b5e5e;">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="tablefavourites" style="color:white">Your Favourites</h5>
+            </form>
+            <br>
+            <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="background-color: #5b5e5e;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tablefavourites" style="color:white">Your Favourites</h5>
+                        </div>
+                        <div class="modal-body" style="background-color: #2e2c2c;">
+                            <div class="table-responsive">
+                                <table id="table" data-toggle="table" class="table table-bordered table-hover table-sm">
+                                    <thead>
+                                        <tr style="color: rgb(255, 255, 255); background-color: #f3bb61;">
+                                            <th data-field="id" data-sortable="true" scope="col">Name </th>
+                                            <th data-field="price" data-sortable="true" scope="col">Price</th>
+                                            <th data-field="24high" data-sortable="true" scope="col">24h High</th>
+                                            <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for coin in fav %}
+                                        <tr scope="row" style="color:rgb(255, 255, 255)">
+                                            <td>{{ coin.coin_id|title }}</td>
+                                            <td>{{ coin.current }}</td>
+                                            <td>{{ coin.high_1d }}</td>
+                                            <td>{{ coin.low_1d }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="modal-body" style="background-color: #2e2c2c;">
-                                <div class="table-responsive">
-                                    <table id="table" data-toggle="table"
-                                        class="table table-bordered table-hover table-sm">
-                                        <thead>
-                                            <tr style="color: rgb(255, 255, 255); background-color: #f3bb61;">
-                                                <th data-field="id" data-sortable="true" scope="col">Name </th>
-                                                <th data-field="price" data-sortable="true" scope="col">Price</th>
-                                                <th data-field="24high" data-sortable="true" scope="col">24h High</th>
-                                                <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for coin in fav %}
-                                            <tr scope="row" style="color:rgb(255, 255, 255)">
-                                                <td>{{ coin.coin_id|title }}</td>
-                                                <td>{{ coin.current }}</td>
-                                                <td>{{ coin.high_1d }}</td>
-                                                <td>{{ coin.low_1d }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary add_btn"
-                                    data-dismiss="modal">Close</button>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary add_btn" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
-                <!-- Table Crypto -->
-                <div class="table-responsive">
-                    <table id="table" data-toggle="table" data-sortable="true" data-height="430"
-                        class="table table-bordered table-hover table-sm">
-                        <thead>
-                            <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
-                                <th data-field="id" data-sortable="true" scope="col">Name </th>
-                                <th data-field="price" data-sortable="true" scope="col">Price</th>
-                                <th data-field="24high" data-sortable="true" scope="col">24h High</th>
-                                <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for coin in crypto %}
-                            <tr scope="row" style="color:white">
-                                <td>
-                                    {% if coin in fav %}
-                                    <form action="delFavView" method="POST">
-                                        {% csrf_token %}
-                                        <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
-                                        <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                        <input type="Submit" class="btn add_btn" value="★"><span> {{ coin.coin_id|title }}</span>
-                                    </form>
-                                    {% else %}
-                                    <form action="addFavorite" method="POST">
-                                        {% csrf_token %}
-                                        <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
-                                        <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                        <input type="Submit" class="btn add_btn" value="☆"><span> {{ coin.coin_id|title }}</span>
-                                    </form>
-                                    {% endif %}
+            </div>
+            <!-- Table Crypto -->
+            <div class="table-responsive">
+                <table id="table" data-toggle="table" data-sortable="true" data-height="430"
+                    class="table table-bordered table-hover table-sm">
+                    <thead>
+                        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
+                            <th data-field="id" data-sortable="true" scope="col">Name </th>
+                            <th data-field="price" data-sortable="true" scope="col">Price</th>
+                            <th data-field="24high" data-sortable="true" scope="col">24h High</th>
+                            <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for coin in crypto %}
+                        <tr scope="row" style="color:white">
+                            <td>
+                                {% if coin in fav %}
+                                <form action="delFavView" method="POST">
+                                    {% csrf_token %}
+                                    <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
+                                    <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
+                                    <input type="Submit" class="add_btn" value="★">
+                                    <span> {{ coin.coin_id|title }}</span>
+                                </form>
+                                {% else %}
+                                <form action="addFavorite" method="POST">
+                                    {% csrf_token %}
+                                    <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
+                                    <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
+                                    <input type="Submit" class="add_btn" value="☆">
+                                    <span> {{ coin.coin_id|title }}</span>
+                                </form>
+                                {% endif %}
 
-                                </td>
-                                <td>{{ coin.current }}</td>
-                                <td>{{ coin.high_1d }}</td>
-                                <td>{{ coin.low_1d }}</td>
+                            </td>
+                            <td>{{ coin.current }}</td>
+                            <td>{{ coin.high_1d }}</td>
+                            <td>{{ coin.low_1d }}</td>
 
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <hr />
-                {% if crypto.has_other_pages %}
-                <ul class="pagination justify-content-end">
-                    {% if crypto.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1" aria-label="Previous">
-                            <span aria-hidden="true" style="color:#f7ba5b">&laquo; First</span>
-                        </a>
-                    </li> {% endif %}
-                    {% for n in crypto.paginator.page_range %}
-                    {% if crypto.number == n %}
-                    <li class="page-item active">
-                        <span class="page-link" style="background-color:#f7ba5b; border-color:#f7ba5b">{{ n }}</span>
-                    </li>
-                    {% elif n > crypto.number|add:'-5' and n < crypto.number|add:'5' %} <li class="page-item"><a
-                            class="page-link" href="?page={{ n }}" style="color:#f3b24a">{{ n }}</a></li>
-                        {% endif %}
+                        </tr>
                         {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr />
+            {% if crypto.has_other_pages %}
+            <ul class="pagination justify-content-end">
+                {% if crypto.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Previous">
+                        <span aria-hidden="true" style="color:#f7ba5b">&laquo; First</span>
+                    </a>
+                </li> {% endif %}
+                {% for n in crypto.paginator.page_range %}
+                {% if crypto.number == n %}
+                <li class="page-item active">
+                    <span class="page-link" style="background-color:#f7ba5b; border-color:#f7ba5b">{{ n }}</span>
+                </li>
+                {% elif n > crypto.number|add:'-5' and n < crypto.number|add:'5' %} <li class="page-item"><a
+                        class="page-link" href="?page={{ n }}" style="color:#f3b24a">{{ n }}</a></li>
+                    {% endif %}
+                    {% endfor %}
 
-                        {% if crypto.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ crypto.paginator.num_pages }}" aria-label="Next"
-                                style="color:#f7ba5b">
-                                <span aria-hidden="true">&raquo; Last</span>
-                            </a>
-                        </li>
-                        {% endif %}
-                </ul>
-                {% endif %}
+                    {% if crypto.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ crypto.paginator.num_pages }}" aria-label="Next"
+                            style="color:#f7ba5b">
+                            <span aria-hidden="true">&raquo; Last</span>
+                        </a>
+                    </li>
+                    {% endif %}
+            </ul>
+            {% endif %}
 
         </main>
         <div class="col"></div>
