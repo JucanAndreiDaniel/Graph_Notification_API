@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import cryptoObject, Profile, value
 
 from django.core import serializers
+from django.db.models import F,Q
 
 
 class HelloView(APIView):
@@ -29,9 +30,12 @@ class JsonObjectView(APIView):
 
     def get(self, request):
         if request.method == 'GET':
-            coins = list(value.objects.values_list(
-                "name", "current", "high_1d", "low_1d").filter(currency="usd"))
-            return JsonResponse(coins, safe=False)
+            values = list(cryptoObject.objects.annotate(current=F("value__current"),high_1d=F("value__high_1d"),low_1d=F("value__low_1d"),currency=F("value__currency")).values_list(
+                "name","current", "high_1d", "low_1d").filter(Q(currency="usd")))
+            # value.objects.values_list(
+            #     "name","current", "high_1d", "low_1d").filter(currency="usd").filter(
+            #     coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
+            return JsonResponse(values, safe=False)
 
 # Serializare Favorite in functie de user
 
@@ -43,8 +47,8 @@ class JsonFavoriteView(APIView):
         if request.method == 'GET':
             user = User.objects.filter(username=request.user.username).first()
             profile = Profile(user=user)
-            favorites = list(profile.favorite.values_list(
-                "name", "current", "high_1d", "low_1d").filter(currency="usd"))
+            favorites = list(profile.favorite.annotate(current=F("value__current"),high_1d=F("value__high_1d"),low_1d=F("value__low_1d"),currency=F("value__currency")).values_list(
+                "name","current", "high_1d", "low_1d").filter(Q(currency="usd")))
             return JsonResponse(favorites, safe=False)
 
 
@@ -62,6 +66,7 @@ def login(request):
             else:
                 return HttpResponse("Inactive user.")
         else:
+            messages.info(request, 'Invalid username or password.')
             return HttpResponseRedirect('login')
     return render(request, "login.html")
 

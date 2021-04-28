@@ -36,6 +36,13 @@ html {
     color: white !important;
 }
 
+.add_btn {
+    width: auto;
+    height: auto;
+    background: #f7ba5b !important;
+    color: white !important;
+}
+
 .login_btn:focus {
     box-shadow: none !important;
     outline: 0px !important;
