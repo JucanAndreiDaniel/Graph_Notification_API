@@ -3,20 +3,16 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col"></div>
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <br>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">  
             <h2 style="color: white;">Cryptocoins</h2>
-
-            <!-- Button trigger modal table -->
-            <button type="button" class="btn login_btn" data-toggle="modal" data-target="#favourites"
-                style="width:auto;">
+            <p></p>
+            <div class="container_sf">
+                <!-- Button trigger modal table -->
+                <button type="button" class="btn add_btn" data-toggle="modal" data-target="#favourites" style="margin-right: 1em;height:3vw">
                 Show Favourites
             </button>
-            <!-- Modal Table Load Favourites here -->
-            <!-- TODO window in center -->
-            <br>
-            <br>
             <form method="GET" action=".">
+<<<<<<< Updated upstream
                 <div class="form-row" style="width: 20%;">
                     <div class="form-group col-12">
                         <div class="input-group">
@@ -32,6 +28,21 @@
                 </div>
             </form>
             <br>
+=======
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search">
+                    <div class="input-group-append">
+                      <button class="btn add_btn" type="submit">Go</button>
+                    </div>
+                  </div>
+            </form>
+            </div>
+            
+            
+            <!-- Modal Table Load Favourites here -->
+            <p></p>
+
+>>>>>>> Stashed changes
             <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
                 aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -90,23 +101,34 @@
                                     {% csrf_token %}
                                     <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
                                     <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
+<<<<<<< Updated upstream
                                     <input type="Submit" class="add_btn" value="★">
                                     <span> {{ coin.coin_id|title }}</span>
+=======
+                                    <input type="Submit" class="add_btn" value="★"><span> {{ coin.coin_id|title }}</span>
+>>>>>>> Stashed changes
                                 </form>
                                 {% else %}
                                 <form action="addFavorite" method="POST">
                                     {% csrf_token %}
                                     <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
                                     <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
+<<<<<<< Updated upstream
                                     <input type="Submit" class="add_btn" value="☆">
                                     <span> {{ coin.coin_id|title }}</span>
                                 </form>
                                 {% endif %}
 
+=======
+                                    <input type="Submit" class="add_btn" value="☆"><span> {{ coin.coin_id|title }}</span>
+                                </form>
+                                {% endif %}
+>>>>>>> Stashed changes
                             </td>
                             <td>{{ coin.current }}</td>
                             <td>{{ coin.high_1d }}</td>
                             <td>{{ coin.low_1d }}</td>
+<<<<<<< Updated upstream
 
                         </tr>
                         {% endfor %}
@@ -132,6 +154,32 @@
                     {% endif %}
                     {% endfor %}
 
+=======
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr />
+            {% if crypto.has_other_pages %}
+            <ul class="pagination justify-content-end">
+                {% if crypto.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="Previous">
+                        <span aria-hidden="true" style="color:#f7ba5b">&laquo; First</span>
+                    </a>
+                </li> {% endif %}
+                {% for n in crypto.paginator.page_range %}
+                {% if crypto.number == n %}
+                <li class="page-item active">
+                    <span class="page-link" style="background-color:#f7ba5b; border-color:#f7ba5b">{{ n }}</span>
+                </li>
+                {% elif n > crypto.number|add:'-5' and n < crypto.number|add:'5' %} <li class="page-item"><a
+                        class="page-link" href="?page={{ n }}" style="color:#f3b24a">{{ n }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+>>>>>>> Stashed changes
                     {% if crypto.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="?page={{ crypto.paginator.num_pages }}" aria-label="Next"

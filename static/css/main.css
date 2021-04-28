@@ -29,7 +29,10 @@ html {
 #form-title {
     color: #fff;
 }
-
+.container_sf{
+    display: flex;
+    justify-content: flex-start;
+}
 .login_btn {
     width: 100%;
     background: #f7ba5b !important;
@@ -39,8 +42,8 @@ html {
 .add_btn {
     width: auto;
     height: auto;
-    background: #f7ba5b !important;
-    color: white !important;
+    background: #f7ba5b;
+    color: white;
 }
 
 .login_btn:focus {
