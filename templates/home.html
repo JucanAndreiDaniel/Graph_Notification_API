@@ -90,19 +90,15 @@
                                     <form action="delFavView" method="POST">
                                         {% csrf_token %}
                                         <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
-
                                         <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                        <input type="Submit" class="btn add_btn" value="★"><span> {{ coin.coin_id|title
-                                            }}</span>
+                                        <input type="Submit" class="btn add_btn" value="★"><span> {{ coin.coin_id|title }}</span>
                                     </form>
                                     {% else %}
                                     <form action="addFavorite" method="POST">
                                         {% csrf_token %}
                                         <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
-
                                         <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                        <input type="Submit" class="btn add_btn" value="☆"><span> {{ coin.coin_id|title
-                                            }}</span>
+                                        <input type="Submit" class="btn add_btn" value="☆"><span> {{ coin.coin_id|title }}</span>
                                     </form>
                                     {% endif %}
 
