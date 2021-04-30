@@ -110,8 +110,9 @@ def logout(request):
 
 @login_required(login_url="login")
 def home(request):
-
-    currency = request.GET.get("currency", "usd")
+    createProfileFromUserID(request.user.id)
+    currency = Profile.objects.get(user_id=request.user.id)
+    currency = currency.fav_currency
     prices = value.objects.filter(currency=currency)
     page = request.GET.get('page', 1)
     favorites = value.objects.filter(currency=currency).filter(
@@ -125,28 +126,48 @@ def home(request):
         price = paginator.page(paginator.num_pages)
     return render(request, 'home.html', {"crypto": price, "fav": favorites})
 
+def createProfileFromUserID(id):
+    try:
+        profile = Profile.objects.create(user_id=id)
+    except:
+        pass
 
-@login_required(login_url="login")
+
+def addToFav(user, crypto_id):
+    profile = Profile(user=user)
+    crypto_add = cryptoObject.objects.get(
+        coin_id=crypto_id)
+    profile.save()
+    profile.favorite.add(crypto_add)
+    profile.save()
+    return
+
 def addToFavorite(request):
     if request.method == 'POST':
         # request form html the name of crypto to be added to favorites
         add_favorite = request.POST["crypto.id"][:-4]
         # the name of user who requested a favorite crypto
-        user = User.objects.filter(username=request.user.username).first()
-        # user defines what type of currency does he want to be added later :)
-        crypto_add = cryptoObject.objects.filter(
-            coin_id=add_favorite).first()
-        profile = Profile(user=user)
-        profile.save()
-        profile.favorite.add(crypto_add)
-        profile.save()
+        user = User.objects.filter(username=request.user.username).get()
+        addToFav(user, add_favorite)
         return HttpResponseRedirect('/')
+
+
+class AddToFavAPI(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        if request.method == "POST":
+            add_favorite = request.data.get("crypto_id")
+            user = User.objects.filter(username = request.user.username).get()
+            addToFav(user, add_favorite)
+            return Response("Added")
+
 
 
 def deleteFav(user, crypto_id):
     # user defines what type of currency does he want to be added later :)
     crypto_delete = cryptoObject.objects.filter(
-        coin_id=crypto_id).first()
+        coin_id=crypto_id).get()
     profile = Profile(user=user)
     profile.favorite.remove(crypto_delete)
     profile.save()
@@ -157,7 +178,7 @@ def delFavView(request):
     # request form html the name of crypto to be added to favorites
     delete_favorite = request.POST["crypto.id"][:-4]
     # the name of user who requested a favorite crypto
-    user = User.objects.filter(username=request.user.username).first()
+    user = User.objects.filter(username=request.user.username).get()
     deleteFav(user, delete_favorite)
     return HttpResponseRedirect('/')
 
@@ -169,7 +190,6 @@ class DeleteFromFavApi(APIView):
         if request.method == 'POST':
             delete_favorite = request.data.get("crypto_id")
             print(delete_favorite)
-            user = User.objects.filter(username=request.user.username).first()
+            user = User.objects.filter(username=request.user.username).get()
             deleteFav(user, delete_favorite)
-            print("incerc sa sterg")
-            return Response("ceva")
+            return Response("Deleted")
