@@ -126,6 +126,7 @@ def home(request):
         price = paginator.page(paginator.num_pages)
     return render(request, 'home.html', {"crypto": price, "fav": favorites})
 
+
 def createProfileFromUserID(id):
     try:
         profile = Profile.objects.create(user_id=id)
@@ -141,6 +142,7 @@ def addToFav(user, crypto_id):
     profile.favorite.add(crypto_add)
     profile.save()
     return
+
 
 def addToFavorite(request):
     if request.method == 'POST':
@@ -158,10 +160,9 @@ class AddToFavAPI(APIView):
     def post(self, request):
         if request.method == "POST":
             add_favorite = request.data.get("crypto_id")
-            user = User.objects.filter(username = request.user.username).get()
+            user = User.objects.filter(username=request.user.username).get()
             addToFav(user, add_favorite)
             return Response("Added")
-
 
 
 def deleteFav(user, crypto_id):
@@ -193,3 +194,21 @@ class DeleteFromFavApi(APIView):
             user = User.objects.filter(username=request.user.username).get()
             deleteFav(user, delete_favorite)
             return Response("Deleted")
+
+
+def RenderUserSettings(request):
+    cList = ["usd", "eur", "rub", "gbp"]
+    user = Profile.objects.get(user_id=request.user.id)
+    #cList.remove(user.fav_currency)
+    return render(request, 'userSettings.html', {"curencyList": cList, "favC": user.fav_currency})
+
+def userSettings(request):
+    if request.method == 'POST':
+        cList = ["usd", "eur", "rub", "gbp"]
+        favoriteCurrency = request.POST['curr']
+        user = Profile.objects.get(user_id=request.user.id)
+        user.fav_currency = favoriteCurrency
+        profile = Profile(user=user)
+        profile.save()
+        cList.remove(user.fav_currency)
+        return render(request, 'userSettings.html', {"curencyList": cList, "favC": favoriteCurrency})
