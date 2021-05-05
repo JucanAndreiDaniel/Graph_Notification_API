@@ -34,3 +34,15 @@ class Profile(models.Model):
         User, on_delete=models.CASCADE, primary_key=True)
     favorite = models.ManyToManyField(cryptoObject)
     fav_currency = models.CharField(max_length=255, blank=True, default="eur")
+    
+
+class Notification(models.Model):
+    user = models.OneToOneField(
+        Profile, on_delete=models.CASCADE, primary_key=True)
+    value_type = models.CharField(max_length=255,default="value")
+    target_type = models.CharField(max_length=255,default=">")
+    intial_value = models.FloatField()
+    final_value = models.FloatField()
+
+
+    

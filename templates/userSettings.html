@@ -46,17 +46,15 @@
     </style>
 </head>
 <div class="dropdown">
-    <button class="dropbtn">{{ favC}}</button>
+    <button class="dropbtn">{{ favC }}</button>
     <div class="dropdown-content">
     {% for curr in currencyList %}
-    <a href="#">{{ curr }}</a>
-    {% endfor %}
-    
-    <a href="#">Link 2</a>
-    <a href="#">Link 3</a>
+      <form action="userSettings" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="curr" value="{{ curr }}">
+        <input type="Submit" class="dropdown-item" value="{{ curr }}">
+      </form>
+    {% endfor %} 
     </div>
-
   </div>
-
-
 {% endblock%}

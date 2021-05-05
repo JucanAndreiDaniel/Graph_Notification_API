@@ -196,19 +196,19 @@ class DeleteFromFavApi(APIView):
             return Response("Deleted")
 
 
-def RenderUserSettings(request):
+@login_required(login_url="login")
+def userSettings(request):
     cList = ["usd", "eur", "rub", "gbp"]
     user = Profile.objects.get(user_id=request.user.id)
-    #cList.remove(user.fav_currency)
-    return render(request, 'userSettings.html', {"curencyList": cList, "favC": user.fav_currency})
-
-def userSettings(request):
     if request.method == 'POST':
-        cList = ["usd", "eur", "rub", "gbp"]
         favoriteCurrency = request.POST['curr']
-        user = Profile.objects.get(user_id=request.user.id)
-        user.fav_currency = favoriteCurrency
-        profile = Profile(user=user)
-        profile.save()
-        cList.remove(user.fav_currency)
-        return render(request, 'userSettings.html', {"curencyList": cList, "favC": favoriteCurrency})
+        user.fav_currency = favoriteCurrency   
+        user.save() 
+        return HttpResponseRedirect('userSettings')
+    cList.remove(user.fav_currency)
+    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency})
+
+#TODO fav currency api
+
+
+
