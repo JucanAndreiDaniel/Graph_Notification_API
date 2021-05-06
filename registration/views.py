@@ -108,6 +108,7 @@ def logout(request):
     return redirect('login')
 
 
+
 @login_required(login_url="login")
 def home(request):
     createProfileFromUserID(request.user.id)
@@ -125,6 +126,26 @@ def home(request):
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
     return render(request, 'home.html', {"crypto": price, "fav": favorites})
+
+
+def filter(request):
+    currency = Profile.objects.get(user_id=request.user.id)
+    currency = currency.fav_currency
+    contain = request.GET.get('contain')
+    if(contain==""):
+        return home(request)
+    prices = cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).filter(Q(currency=currency)).filter(coin_id__contains=contain)
+    page = request.GET.get('page', 1)
+    favorites = value.objects.filter(currency=currency).filter(
+        coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
+    # paginator = Paginator(prices, 30)
+    # try:
+    #     price = paginator.page(page)
+    # except PageNotAnInteger:
+    #     price = paginator.page(1)
+    # except EmptyPage:
+    #     price = paginator.page(paginator.num_pages)
+    return render(request, 'home.html', {"crypto": prices, "fav": favorites})
 
 
 def createProfileFromUserID(id):

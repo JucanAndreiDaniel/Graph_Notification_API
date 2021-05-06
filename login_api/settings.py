@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     #LocalApps
     'registration',
 
+    'webpush',
 ]
 
 MIDDLEWARE = [
@@ -86,6 +87,12 @@ REST_FRAMEWORK = {
     ],
 }
 WSGI_APPLICATION = 'login_api.wsgi.application'
+
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "BGK6MKo6T3bDY3qlyoRWz1anVEW-tF_yLkYfh2P_6nLCrL7yUFlinoIy3c8G1KzO37g0eY1RJFlBTaZxIgX6X4s",
+    "VAPID_PRIVATE_KEY":"GuTM3WRVJ2z-DobTJGuRHbC-LLTBJAaq9QOaIj9gtNg",
+    "VAPID_ADMIN_EMAIL": "andrei.jucan00@e-uvt.ro"
+}
 
 
 # Database

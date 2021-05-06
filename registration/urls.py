@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include,re_path
 from rest_framework.authtoken.views import obtain_auth_token
 from . import views
 
@@ -15,5 +15,7 @@ urlpatterns = [
     path('jFav/', views.JsonFavoriteView.as_view(), name='jFav'),
     path('delFav/', views.DeleteFromFavApi.as_view(), name='delFav'),
     path('addFav/', views.AddToFavAPI.as_view(), name='addFav'),
-    path('',views.home,name="home")
+    path('filter', views.filter, name='home'),
+    path('',views.home,name="home"),
+    re_path(r'^webpush/', include('webpush.urls'))
 ]
