@@ -21,7 +21,13 @@
             </form>
             </div>
             
-            
+            <form id="send-push__form">
+                <h3 class="header">Send a push notification</h3>
+                <p class="error"></p>
+                <input type="text" name="head" placeholder="Header: Your favorite airline 😍">
+                <textarea name="body" id="" cols="30" rows="10" placeholder="Body: Your flight has been cancelled 😱😱😱"></textarea>
+                <button>Send Me</button>
+            </form>
             <!-- Modal Table Load Favourites here -->
             <p></p>
 
@@ -64,8 +70,8 @@
             </div>
             <!-- Table Crypto -->
             <div class="table-responsive">
-                <table id="table" data-toggle="table" data-sortable="true" data-height="430"
-                    class="table table-bordered table-hover table-sm">
+                <table id="table" data-toggle="table" data-sortable="true" data-height="350"
+                    class="table-responsive table-bordered table-hover table-sm">
                     <thead>
                         <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
                             <th data-field="id" data-sortable="true" scope="col">Name </th>

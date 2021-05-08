@@ -1,16 +1,20 @@
 from typing import Tuple
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+
+from django.views.decorators.csrf import csrf_exempt
+from webpush import send_user_notification
+import json
 # Rest-framework
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import cryptoObject, Profile, value
+from .models import cryptoObject, Profile, value, Notification
 
 from django.core import serializers
 from django.db.models import F, Q
@@ -138,14 +142,40 @@ def filter(request):
     page = request.GET.get('page', 1)
     favorites = value.objects.filter(currency=currency).filter(
         coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
-    # paginator = Paginator(prices, 30)
-    # try:
-    #     price = paginator.page(page)
-    # except PageNotAnInteger:
-    #     price = paginator.page(1)
-    # except EmptyPage:
-    #     price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": prices, "fav": favorites})
+    paginator = Paginator(prices, 10)
+    try:
+        price = paginator.page(page)
+    except PageNotAnInteger:
+        price = paginator.page(1)
+    except EmptyPage:
+        price = paginator.page(paginator.num_pages)
+    return render(request, 'home.html', {"crypto": price, "fav": favorites})
+
+
+@csrf_exempt
+def send_push(request):
+    try:
+        body = request.body
+        data = json.loads(body)
+
+        if 'head' not in data or 'body' not in data or 'id' not in data:
+            return JsonResponse(status=400, data={"message": "Invalid data format"})
+
+        user_id = data['id']
+        user = get_object_or_404(User, pk=user_id)
+        payload = {'head': data['head'], 'body': data['body']}
+        send_user_notification(user=user, payload=payload, ttl=1000)
+
+        return JsonResponse(status=200, data={"message": "Web push successful"})
+    except TypeError:
+        return JsonResponse(status=500, data={"message": "An error occurred"})
+
+
+def base(request):
+   webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+   vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+   user = request.user
+   return render(request, 'home.html', {user: user, 'vapid_key': vapid_key})
 
 
 def createProfileFromUserID(id):
@@ -221,14 +251,42 @@ class DeleteFromFavApi(APIView):
 def userSettings(request):
     cList = ["usd", "eur", "rub", "gbp"]
     user = Profile.objects.get(user_id=request.user.id)
+    favorites = value.objects.filter(currency=user.fav_currency).filter(
+        coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
     if request.method == 'POST':
         favoriteCurrency = request.POST['curr']
-        user.fav_currency = favoriteCurrency   
-        user.save() 
+        user.fav_currency = favoriteCurrency 
+        user.save()
         return HttpResponseRedirect('userSettings')
     cList.remove(user.fav_currency)
-    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency})
+    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency,"fav": favorites})
 
+
+def createNotification(request):
+    try:
+        notificare = Notification.objects.create(request.user.id)
+    except:
+        pass
+    user = Profile.objects.get(user__id=request.user.id)
+    # user = Profile(user=user)
+    coin_result = cryptoObject.objects.get(coin_id=request.POST.get('crypto.id'))
+    option = request.POST.get('option')
+    # crypto_id = request.POST.get('crypto.id')
+    crypto_value = request.POST.get('value')
+    if crypto_value < 0:
+        messages.info(request, 'Requested value is negative')
+    if option == "g_perc":
+        final_value = crypto_value + (crypto_value * final_value)/100
+    elif option == "d_perc":
+        final_value = crypto_value - (crypto_value * final_value)/100
+        if final_value < 0:
+            messages.info(request, 'Requested value is negative')
+    else:
+        final_value = crypto_value
+    notificare = Notification(user=user,coin=coin_result, value_type=option,intial_value=crypto_value,final_value=0)
+    notificare.save()
+
+    return HttpResponseRedirect('userSettings')
 #TODO fav currency api
 
 

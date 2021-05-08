@@ -9,6 +9,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
+    <meta name="vapid-key" content="{{ vapid_key }}">
+    {% if user.id %}
+        <meta name="user_id" content="{{ user.id }}">
+    {% endif %}
     <meta name="generator" content="Hugo 0.82.0">
     <style>
         .bd-placeholder-img {
@@ -72,6 +76,9 @@
     crossorigin="anonymous"></script>
 
 <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+<script src="{% static 'js/pushnotification.js' %}"></script>
+<script src="{% static '/js/site.js' %}"></script>
+<script src="{% static '/js/sw.js' %}"></script>
 
 
 </html>

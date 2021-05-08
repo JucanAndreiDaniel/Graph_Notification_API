@@ -39,10 +39,12 @@ class Profile(models.Model):
 class Notification(models.Model):
     user = models.OneToOneField(
         Profile, on_delete=models.CASCADE, primary_key=True)
-    value_type = models.CharField(max_length=255,default="value")
-    target_type = models.CharField(max_length=255,default=">")
+    coin = models.ForeignKey(cryptoObject, on_delete=models.CASCADE)
+    value_type = models.CharField(max_length=255,default="bigger") # Value or percentage
+    # target_type = models.CharField(max_length=255,default=">") # Mai mare sau mai mic
     intial_value = models.FloatField()
     final_value = models.FloatField()
+    enabled = models.BooleanField(default=True)
 
 
     

@@ -1,9 +1,9 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
 {% block content %}
 
 <head>
-    <style>
+  <style>
     .dropbtn {
       background-color: #4CAF50;
       color: white;
@@ -12,49 +12,151 @@
       border: none;
       cursor: pointer;
     }
-    
+
     .dropdown {
       position: relative;
       display: inline-block;
     }
-    
+
     .dropdown-content {
       display: none;
       position: absolute;
       background-color: #f9f9f9;
       min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
       z-index: 1;
     }
-    
+
     .dropdown-content a {
       color: black;
       padding: 12px 16px;
       text-decoration: none;
       display: block;
     }
-    
-    .dropdown-content a:hover {background-color: #f1f1f1}
-    
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1
+    }
+
     .dropdown:hover .dropdown-content {
       display: block;
     }
-    
+
     .dropdown:hover .dropbtn {
       background-color: #3e8e41;
     }
-    </style>
+  </style>
 </head>
+<p></p>
+<div class="container_sf">
+
+<h5 class="hello-msg" style="padding-left:15px ;color: white;">Preffered currency</h5>
 <div class="dropdown">
-    <button class="dropbtn">{{ favC }}</button>
-    <div class="dropdown-content">
+  <button class="dropbtn">{{ favC }}</button>
+  <div class="dropdown-content">
     {% for curr in currencyList %}
-      <form action="userSettings" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="curr" value="{{ curr }}">
-        <input type="Submit" class="dropdown-item" value="{{ curr }}">
-      </form>
-    {% endfor %} 
-    </div>
+    <form action="userSettings" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="curr" value="{{ curr }}">
+      <input type="Submit" class="dropdown-item" value="{{ curr }}">
+    </form>
+    {% endfor %}
   </div>
+  <p></p>
+  <br />
+</div>
+</div>
+<div class="container-fluid">
+  <div class="table-responsive">
+    <table id="table" data-toggle="table" data-sortable="true"
+      class="table table-bordered table-hover table-sm">
+      <thead>
+        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
+          <th data-field="id" data-sortable="true" scope="col">Name </th>
+          <th data-field="price" data-sortable="true" scope="col">Price</th>
+          <th data-field="24high" data-sortable="true" scope="col">24h High</th>
+          <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for coin in fav %}
+        <tr scope="row" style="color:white">
+          <td>
+            <div class="container_sf">
+              <form action="delFavView" method="POST">
+                {% csrf_token %}
+                <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
+                <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
+                <input type="Submit" class="add_btn" value="★">
+              </form>
+              <button type="button" class="btn add_btn" data-toggle="modal" data-target="#favourites"
+                style="margin-right: 1em;height:5%">
+                {{ coin.coin_id|title }}
+              </button>
+            </div>
+
+            <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content" style="background-color: #5b5e5e;">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="tablefavourites" style="color:white"> {{ coin.coin_id|title }} </h5>
+                  </div>
+                  <div class="container-sf">
+                    <div class="modal-body" style="background-color: #2e2c2c;">
+                      <form method="POST" action="createNotification">
+                        {% csrf_token %}
+
+                        <div class="input-group-sm">
+                          <div class="input-group-append">
+                          </div>
+                          <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
+                          <input type="hidden" name="crypto.value" value="{{ coin.current }}">
+
+                          <label for="value_type">Option for value </label>
+
+                          <select name="option" id="value_type">
+                            <option value="bigger" selected>Value Bigger than</option>
+                            <option value="lower">Value Lower than</option>
+                            <option value="equal">Value Equal to</option>
+                            <option value="g_perc">Growth with percentage</option>
+                            <option value="d_perc">Decrease with percentage</option>
+                          </select>
+
+                          <input type="input" name="value" placeholder="Value...">
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-3 login_container">
+                          <input class="btn login_btn" type="submit" value="Create Notification">
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary add_btn" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>{{ coin.current }}</td>
+          <td>{{ coin.high_1d }}</td>
+          <td>{{ coin.low_1d }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  $('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+  })
+</script>
+<style>
+  .input[type="Submit"] {
+    display: none;
+  }
+</style>
 {% endblock%}
