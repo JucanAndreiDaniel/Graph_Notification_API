@@ -131,3 +131,4 @@ dmypy.json
 .vscode
 mysite.sock
 django_site.conf
+migrations/

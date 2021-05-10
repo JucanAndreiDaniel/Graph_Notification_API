@@ -50,26 +50,25 @@
 <p></p>
 <div class="container_sf">
 
-<h5 class="hello-msg" style="padding-left:15px ;color: white;">Preffered currency</h5>
-<div class="dropdown">
-  <button class="dropbtn">{{ favC }}</button>
-  <div class="dropdown-content">
-    {% for curr in currencyList %}
-    <form action="userSettings" method="POST">
-      {% csrf_token %}
-      <input type="hidden" name="curr" value="{{ curr }}">
-      <input type="Submit" class="dropdown-item" value="{{ curr }}">
-    </form>
-    {% endfor %}
+  <h5 class="hello-msg" style="padding-left:15px ;color: white;">Preffered currency</h5>
+  <div class="dropdown">
+    <button class="dropbtn">{{ favC }}</button>
+    <div class="dropdown-content">
+      {% for curr in currencyList %}
+      <form action="userSettings" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="curr" value="{{ curr }}">
+        <input type="Submit" class="dropdown-item" value="{{ curr }}">
+      </form>
+      {% endfor %}
+    </div>
+    <p></p>
+    <br />
   </div>
-  <p></p>
-  <br />
-</div>
 </div>
 <div class="container-fluid">
   <div class="table-responsive">
-    <table id="table" data-toggle="table" data-sortable="true"
-      class="table table-bordered table-hover table-sm">
+    <table id="table" data-toggle="table" data-sortable="true" class="table table-bordered table-hover table-sm">
       <thead>
         <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
           <th data-field="id" data-sortable="true" scope="col">Name </th>
@@ -87,7 +86,7 @@
                 {% csrf_token %}
                 <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
                 <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                <input type="Submit" class="add_btn" value="★">
+                <input type="Submit" class="btn add_btn" value="★">
               </form>
               <button type="button" class="btn add_btn" data-toggle="modal" data-target="#favourites"
                 style="margin-right: 1em;height:5%">
