@@ -42,7 +42,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/toastr.css' %}" media="all">
 </head>
 
-<body>
+<body onload="javascript:myFunction()">
     {% include 'navbar.html' %} {% block content %} {% endblock %}
 
 </body>
@@ -82,5 +82,13 @@
     integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
     crossorigin="anonymous"></script>
 
-
+<script>
+    var mydata={{ notificare | safe }};
+    console.log(mydata);
+    function myFunction() {
+        for(var i in mydata){
+            toastr["success"](i + " has reached the value of " + mydata[i])
+        }
+    };
+</script>
 </html>

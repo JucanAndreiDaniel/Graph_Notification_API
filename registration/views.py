@@ -17,7 +17,6 @@ from .models import cryptoObject, Profile, value, Notification
 from django.core import serializers
 from django.db.models import F, Q
 
-
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -32,8 +31,10 @@ class JsonObjectView(APIView):
 
     def get(self, request):
         if request.method == 'GET':
+            user = User.objects.filter(username=request.user.username).get()
+            profile = Profile(user=user)
             values = list(cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values_list(
-                "name", "current", "high_1d", "low_1d").filter(Q(currency="usd")))
+                "name", "current", "high_1d", "low_1d").filter(Q(currency=profile.fav_currency)))
             # value.objects.values_list(
             #     "name","current", "high_1d", "low_1d").filter(currency="usd").filter(
             #     coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
@@ -47,10 +48,10 @@ class JsonFavoriteView(APIView):
 
     def get(self, request):
         if request.method == 'GET':
-            user = User.objects.filter(username=request.user.username).first()
+            user = User.objects.filter(username=request.user.username).get()
             profile = Profile(user=user)
             favorites = list(profile.favorite.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values_list(
-                "name", "current", "high_1d", "low_1d").filter(Q(currency="usd")))
+                "name", "current", "high_1d", "low_1d").filter(Q(currency=profile.fav_currency)))
             return JsonResponse(favorites, safe=False)
 
 
@@ -75,7 +76,7 @@ def login(request):
 
 def register(request):
     if request.method == 'POST':
-        first_name = request.POST['first_name']
+        get_name = request.POST['get_name']
         last_name = request.POST['last_name']
         user_name = request.POST['username']
         email = request.POST['email']
@@ -91,7 +92,7 @@ def register(request):
                 return redirect('register')
             else:
                 user = User.objects.create_user(
-                    username=user_name, password=password1, email=email, first_name=first_name, last_name=last_name)
+                    username=user_name, password=password1, email=email, get_name=get_name, last_name=last_name)
                 user.save()
                 messages.success(
                     request, f'Account was created for {user.username}')
@@ -113,7 +114,8 @@ def logout(request):
 
 @login_required(login_url="login")
 def home(request):
-    base(request)
+    # base(request)
+    dic = checkPrices(request)
     createProfileFromUserID(request.user.id)
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
@@ -128,7 +130,7 @@ def home(request):
         price = paginator.page(1)
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price, "fav": favorites})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic})
 
 
 def filter(request):
@@ -156,7 +158,9 @@ def base(request):
    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
    user = request.user
-   return render(request, 'home.html', {user: user, 'vapid_key': vapid_key})
+   dic = checkPrices(request)
+   print(dic)
+   return render(request, 'base.html', {user: user, 'vapid_key': vapid_key, "notificare": dic})
 
 
 def createProfileFromUserID(id):
@@ -268,6 +272,27 @@ def createNotification(request):
     notificare.save()
 
     return HttpResponseRedirect('userSettings')
+
+
+def checkPrices(request):
+    user = Profile.objects.get(user_id=request.user.id)
+    notification_coins = Notification.objects.filter(user_id=request.user.id)
+    user1 = User.objects.filter(username=request.user.username).get()
+    profile = Profile(user=user1)
+    print(notification_coins)
+    
+    favorites = value.objects.filter(currency=user.fav_currency).filter(
+        coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
+    
+    dic={}
+    for noti in notification_coins:
+        for fav in favorites:
+            if noti.coin.coin_id == fav.coin.coin_id:
+                # for testing change fav.current
+                if noti.final_value == fav.current:
+                    dic[noti.coin.coin_id]=noti.final_value
+    js_data = json.dumps(dic)
+    return js_data
 #TODO fav currency api
 
 
