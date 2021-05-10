@@ -1,13 +1,11 @@
 from typing import Tuple
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-
-from django.views.decorators.csrf import csrf_exempt
-from webpush import send_user_notification
+from django.conf import settings
 import json
 # Rest-framework
 from rest_framework.views import APIView
@@ -115,6 +113,7 @@ def logout(request):
 
 @login_required(login_url="login")
 def home(request):
+    base(request)
     createProfileFromUserID(request.user.id)
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
@@ -151,24 +150,6 @@ def filter(request):
         price = paginator.page(paginator.num_pages)
     return render(request, 'home.html', {"crypto": price, "fav": favorites})
 
-
-@csrf_exempt
-def send_push(request):
-    try:
-        body = request.body
-        data = json.loads(body)
-
-        if 'head' not in data or 'body' not in data or 'id' not in data:
-            return JsonResponse(status=400, data={"message": "Invalid data format"})
-
-        user_id = data['id']
-        user = get_object_or_404(User, pk=user_id)
-        payload = {'head': data['head'], 'body': data['body']}
-        send_user_notification(user=user, payload=payload, ttl=1000)
-
-        return JsonResponse(status=200, data={"message": "Web push successful"})
-    except TypeError:
-        return JsonResponse(status=500, data={"message": "An error occurred"})
 
 
 def base(request):

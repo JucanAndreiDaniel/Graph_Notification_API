@@ -48,8 +48,6 @@ INSTALLED_APPS = [
 
     #LocalApps
     'registration',
-
-    'webpush',
 ]
 
 MIDDLEWARE = [

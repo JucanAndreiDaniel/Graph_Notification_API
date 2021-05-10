@@ -3,31 +3,27 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col"></div>
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">  
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <h2 style="color: white;">Cryptocoins</h2>
             <p></p>
             <div class="container_sf">
                 <!-- Button trigger modal table -->
-                <button type="button" class="btn add_btn" data-toggle="modal" data-target="#favourites" style="margin-right: 1em;height:5%">
-                Show Favourites
-            </button>
-            <form method="GET" action="filter">
-                <div class="input-group mb-3">
-                    <input type="search" name="contain" class="form-control" placeholder="Search">
-                    <div class="input-group-append">
-                      <button class="btn add_btn" type="submit">Go</button>
+                <button type="button" class="btn add_btn" data-toggle="modal" data-target="#favourites"
+                    style="margin-right: 1em;height:5%">
+                    Show Favourites
+                </button>
+                <form method="GET" action="filter">
+                    <div class="input-group mb-3">
+                        <input type="search" name="contain" class="form-control" placeholder="Search">
+                        <div class="input-group-append">
+                            <button class="btn add_btn" type="submit">Go</button>
+                        </div>
                     </div>
-                  </div>
-            </form>
+                </form>
             </div>
-            
-            <form id="send-push__form">
-                <h3 class="header">Send a push notification</h3>
-                <p class="error"></p>
-                <input type="text" name="head" placeholder="Header: Your favorite airline 😍">
-                <textarea name="body" id="" cols="30" rows="10" placeholder="Body: Your flight has been cancelled 😱😱😱"></textarea>
-                <button>Send Me</button>
-            </form>
+
+            <button type="button" id="showToast" onclick="myFunction()">Click alert!</button>
+
             <!-- Modal Table Load Favourites here -->
             <p></p>
 
@@ -141,16 +137,20 @@
                     {% endif %}
             </ul>
             {% endif %}
-
         </main>
         <div class="col"></div>
     </div>
 </div>
+
 <script>
     $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
-    })
+    });
+    function myFunction() {
+        toastr["success"]("Mumu si zuzu")
+    }
 </script>
+
 <style>
     .input[type="Submit"] {
         display: none;
