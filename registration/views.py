@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import PermissionsMixin, User, auth
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -16,6 +16,7 @@ from .models import cryptoObject, Profile, value, Notification
 
 from django.db.models import F, Q
 
+from django.views.generic.list import ListView
 
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -33,7 +34,7 @@ class JsonObjectView(APIView):
         if request.method == 'GET':
             user = User.objects.filter(username=request.user.username).get()
             profile = Profile(user=user)
-            values = list(cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values_list(
+            values = list(cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values(
                 "name", "current", "high_1d", "low_1d").filter(Q(currency=profile.fav_currency)))
             # value.objects.values_list(
             #     "name","current", "high_1d", "low_1d").filter(currency="usd").filter(
@@ -42,7 +43,7 @@ class JsonObjectView(APIView):
 
 # Serializare Favorite in functie de user
 
-
+from django.shortcuts import get_object_or_404
 class JsonFavoriteView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -50,9 +51,19 @@ class JsonFavoriteView(APIView):
         if request.method == 'GET':
             user = User.objects.filter(username=request.user.username).get()
             profile = Profile(user=user)
-            favorites = list(profile.favorite.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values_list(
+            favorites = list(profile.favorite.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values(
                 "name", "current", "high_1d", "low_1d").filter(Q(currency=profile.fav_currency)))
             return JsonResponse(favorites, safe=False)
+
+
+# Returns data from crypto coin based on its id
+class CryptoSpecificView(ListView):
+    permission_classes = (IsAuthenticated,)
+    def get(self,request,**kwargs):
+        user = get_object_or_404(User.objects.filter(username=request.user.username))
+        values = get_object_or_404(cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values(
+                 "name", "current", "high_1d", "low_1d").filter(Q(currency=user.profile.fav_currency)).filter(coin_id=kwargs.get('id')))
+        return JsonResponse(values,safe=False)
 
 
 def login(request):
