@@ -27,8 +27,8 @@
                 <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
                 <input type="Submit" class="btn add_btn" value="★">
               </form>
-              <button type="button" class="btn add_btn" data-toggle="modal" data-target="#favourites"
-                style="margin-right: 1em;height:5%">
+              <button type="button" onclick="changeModalCoin('{{ coin.coin_id }}', '{{ coin.current }}')"
+                class="btn add_btn" data-toggle="modal" data-target="#favourites" style="margin-right: 1em;height:5%">
                 {{ coin.coin_id|title }}
               </button>
             </div>
@@ -48,8 +48,8 @@
                         <div class="input-group-sm">
                           <div class="input-group-append">
                           </div>
-                          <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
-                          <input type="hidden" name="crypto.value" value="{{ coin.current }}">
+                          <input type="hidden" name="cryptoid" value="">
+                          <input type="hidden" name="cryptovalue" value="">
 
                           <label for="value_type">Option for value </label>
 

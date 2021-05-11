@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import PermissionsMixin, User, auth
@@ -17,6 +18,7 @@ from .models import cryptoObject, Profile, value, Notification
 from django.db.models import F, Q
 
 from django.views.generic.list import ListView
+
 
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -43,7 +45,7 @@ class JsonObjectView(APIView):
 
 # Serializare Favorite in functie de user
 
-from django.shortcuts import get_object_or_404
+
 class JsonFavoriteView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -59,11 +61,13 @@ class JsonFavoriteView(APIView):
 # Returns data from crypto coin based on its id
 class CryptoSpecificView(ListView):
     permission_classes = (IsAuthenticated,)
-    def get(self,request,**kwargs):
-        user = get_object_or_404(User.objects.filter(username=request.user.username))
+
+    def get(self, request, **kwargs):
+        user = get_object_or_404(User.objects.filter(
+            username=request.user.username))
         values = get_object_or_404(cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values(
-                 "name", "current", "high_1d", "low_1d").filter(Q(currency=user.profile.fav_currency)).filter(coin_id=kwargs.get('id')))
-        return JsonResponse(values,safe=False)
+            "name", "current", "high_1d", "low_1d").filter(Q(currency=user.profile.fav_currency)).filter(coin_id=kwargs.get('id')))
+        return JsonResponse(values, safe=False)
 
 
 def login(request):
@@ -125,8 +129,8 @@ def logout(request):
 @login_required(login_url="login")
 def home(request):
     # base(request)
-    dic = checkPrices(request)
     createProfileFromUserID(request.user.id)
+    dic = checkPrices(request)
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
     prices = value.objects.filter(currency=currency)
@@ -261,7 +265,8 @@ def userSettings(request):
 
 @login_required(login_url="login")
 def notificationTab(request):
-    notification_coins = Notification.objects.filter(user_id=request.user.id)
+    notification_coins = Profile.objects.get(
+        user_id=request.user.id).notification.all()
     print(notification_coins)
     return render(request, 'notificationTab.html', {"notificari": notification_coins})
 
@@ -270,11 +275,9 @@ def createNotification(request):
 
     user = Profile.objects.get(user__id=request.user.id)
     coin_result = cryptoObject.objects.get(
-        coin_id=request.POST.get('crypto.id'))
-    print(request.POST.get('crypto.id'))
+        coin_id=request.POST.get('cryptoid'))
     option = request.POST.get('option')
-    crypto_value = float(request.POST.get('crypto.value'))
-    print(request.POST.get('crypto.value'))
+    crypto_value = float(request.POST.get('cryptovalue'))
     final_value = float(request.POST.get('value'))
 
     if final_value < 0:
@@ -288,18 +291,18 @@ def createNotification(request):
     else:
         final_value = final_value
 
-    notificare = Notification(user=user, coin=coin_result,
+    notificare = Notification(coin=coin_result,
                               value_type=option, intial_value=crypto_value, final_value=final_value)
     notificare.save()
+    user.notification.add(notificare)
+    user.save()
 
     return HttpResponseRedirect('userSettings')
 
 
 def checkPrices(request):
     user = Profile.objects.get(user_id=request.user.id)
-    notification_coins = Notification.objects.filter(user_id=request.user.id)
-    user1 = User.objects.filter(username=request.user.username).get()
-    profile = Profile(user=user1)
+    notification_coins = user.notification.all()
     print(notification_coins)
 
     favorites = value.objects.filter(currency=user.fav_currency).filter(
@@ -307,7 +310,7 @@ def checkPrices(request):
 
     dic = {}
     for noti in notification_coins:
-        for fav in favorites:  
+        for fav in favorites:
             if noti.coin.coin_id == fav.coin.coin_id:
                 # for testing change fav.current
                 if noti.value_type == "bigger":

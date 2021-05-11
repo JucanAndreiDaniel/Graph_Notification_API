@@ -4,9 +4,9 @@ function insertParam(key, value) {
 
     // kvp looks like ['key1=value1', 'key2=value2', ...]
     var kvp = document.location.search.substr(1).split('&');
-    let i=0;
+    let i = 0;
 
-    for(; i<kvp.length; i++){
+    for (; i < kvp.length; i++) {
         if (kvp[i].startsWith(key + '=')) {
             let pair = kvp[i].split('=');
             pair[1] = value;
@@ -15,8 +15,8 @@ function insertParam(key, value) {
         }
     }
 
-    if(i >= kvp.length){
-        kvp[kvp.length] = [key,value].join('=');
+    if (i >= kvp.length) {
+        kvp[kvp.length] = [key, value].join('=');
     }
 
     // can return this or...
@@ -25,3 +25,15 @@ function insertParam(key, value) {
     // reload page with new params
     document.location.search = params;
 }
+
+function changeModalCoin(coin, value) {
+    console.log(coin)
+    document.getElementsByName("cryptoid")[0].value = coin
+    console.log(document.getElementsByName("cryptoid")[0].value)
+    document.getElementsByName("cryptovalue")[0].value = value
+}
+
+const capitalize = str => str.length
+  ? str[0].toUpperCase() +
+    str.slice(1).toLowerCase()
+  : '';

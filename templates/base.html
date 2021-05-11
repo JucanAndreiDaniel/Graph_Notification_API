@@ -89,7 +89,7 @@
     console.log(mydata);
     function myFunction() {
         for (var i in mydata) {
-            toastr["success"](i + " has reached the value of " + mydata[i])
+            toastr["success"](capitalize(i) + " has reached the value of " + mydata[i])
         }
     };
 </script>

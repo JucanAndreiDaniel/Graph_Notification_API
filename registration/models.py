@@ -29,22 +29,20 @@ class value(models.Model):
     atl_time = models.DateTimeField(7)
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
-    favorite = models.ManyToManyField(cryptoObject)
-    fav_currency = models.CharField(max_length=255, blank=True, default="eur")
-    
-
 class Notification(models.Model):
-    user = models.OneToOneField(
-        Profile, on_delete=models.CASCADE, primary_key=True)
     coin = models.ForeignKey(cryptoObject, on_delete=models.CASCADE)
-    value_type = models.CharField(max_length=255,default="bigger") # Value or percentage
+    value_type = models.CharField(
+        max_length=255, default="bigger")  # Value or percentage
     # target_type = models.CharField(max_length=255,default=">") # Mai mare sau mai mic
     intial_value = models.FloatField()
     final_value = models.FloatField()
     enabled = models.BooleanField(default=True)
     via_mail = models.BooleanField(default=False)
 
-    
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
+    favorite = models.ManyToManyField(cryptoObject)
+    notification = models.ManyToManyField(Notification)
+    fav_currency = models.CharField(max_length=255, blank=True, default="eur")
