@@ -296,3 +296,15 @@ def checkPrices(request):
     js_data = json.dumps(dic)
     return js_data
 # TODO fav currency api
+
+
+class ChangeCurrencyFav(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        if request.method == 'POST':
+            favorite_currency = request.data.get("favorite_currency")
+            user = Profile.objects.filter(user__id=request.user.id).get()
+            user.fav_currency = favorite_currency
+            user.save()
+            return Response("Favorite currency updated")
