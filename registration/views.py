@@ -248,29 +248,29 @@ def userSettings(request):
 
 
 def createNotification(request):
-    try:
-        notificare = Notification.objects.create(request.user.id)
-    except:
-        pass
+
     user = Profile.objects.get(user__id=request.user.id)
-    # user = Profile(user=user)
     coin_result = cryptoObject.objects.get(
         coin_id=request.POST.get('crypto.id'))
     option = request.POST.get('option')
-    # crypto_id = request.POST.get('crypto.id')
-    crypto_value = request.POST.get('value')
-    if crypto_value < 0:
+    crypto_value = request.POST.get('crypto.value')
+    final_value = request.POST.get('value')
+
+    if final_value < 0:
         messages.info(request, 'Requested value is negative')
+        return HttpResponseRedirect('userSettings')
     if option == "g_perc":
         final_value = crypto_value + (crypto_value * final_value)/100
     elif option == "d_perc":
+        if final_value >= 100:
+            messages.info(request, 'Requested value is invalid')
+            return HttpResponseRedirect('userSettings')
         final_value = crypto_value - (crypto_value * final_value)/100
-        if final_value < 0:
-            messages.info(request, 'Requested value is negative')
     else:
         final_value = crypto_value
+
     notificare = Notification(user=user, coin=coin_result,
-                              value_type=option, intial_value=crypto_value, final_value=0)
+                              value_type=option, intial_value=crypto_value, final_value=final_value)
     notificare.save()
 
     return HttpResponseRedirect('userSettings')
@@ -295,7 +295,6 @@ def checkPrices(request):
                     dic[noti.coin.coin_id] = noti.final_value
     js_data = json.dumps(dic)
     return js_data
-# TODO fav currency api
 
 
 class ChangeCurrencyFav(APIView):
@@ -304,7 +303,7 @@ class ChangeCurrencyFav(APIView):
     def post(self, request):
         if request.method == 'POST':
             favorite_currency = request.data.get("favorite_currency")
-            user = Profile.objects.filter(user__id=request.user.id).get()
+            user = Profile.objects.get(user__id=request.user.id)
             user.fav_currency = favorite_currency
             user.save()
             return Response("Favorite currency updated")
