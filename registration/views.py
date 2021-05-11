@@ -286,7 +286,7 @@ def createNotification(request):
             return HttpResponseRedirect('userSettings')
         final_value = crypto_value - (crypto_value * final_value)/100
     else:
-        final_value = crypto_value
+        final_value = final_value
 
     notificare = Notification(user=user, coin=coin_result,
                               value_type=option, intial_value=crypto_value, final_value=final_value)
@@ -307,11 +307,18 @@ def checkPrices(request):
 
     dic = {}
     for noti in notification_coins:
-        for fav in favorites:
+        for fav in favorites:  
             if noti.coin.coin_id == fav.coin.coin_id:
                 # for testing change fav.current
-                if noti.final_value == fav.current:
-                    dic[noti.coin.coin_id] = noti.final_value
+                if noti.value_type == "bigger":
+                    if fav.current > noti.final_value:
+                        dic[noti.coin.coin_id] = fav.current
+                elif noti.value_type == "lower":
+                    if fav.current < noti.final_value:
+                        dic[noti.coin.coin_id] = fav.current
+                else:
+                    if noti.final_value == fav.current:
+                        dic[noti.coin.coin_id] = noti.final_value
     js_data = json.dumps(dic)
     return js_data
 
