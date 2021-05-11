@@ -82,7 +82,7 @@
         <tr scope="row" style="color:white">
           <td>
             <div class="container_sf">
-              <form action="delFavView" method="POST">
+              <form action="delFavorite" method="POST">
                 {% csrf_token %}
                 <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
                 <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
