@@ -113,7 +113,7 @@
             <ul class="pagination justify-content-end">
                 {% if crypto.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page=1" aria-label="Previous">
+                    <a class="page-link" href="javascript:insertParam('page',1)" aria-label="Previous">
                         <span aria-hidden="true" style="color:#f7ba5b">&laquo; First</span>
                     </a>
                 </li> {% endif %}
@@ -123,14 +123,16 @@
                     <span class="page-link" style="background-color:#f7ba5b; border-color:#f7ba5b">{{ n }}</span>
                 </li>
                 {% elif n > crypto.number|add:'-5' and n < crypto.number|add:'5' %} <li class="page-item"><a
-                        class="page-link" href="?page={{ n }}" style="color:#f3b24a">{{ n }}</a></li>
+                        class="page-link" href="javascript:insertParam('page',{{ n }})" style="color:#f3b24a">
+                        {{ n }}</a>
+                    </li>
                     {% endif %}
                     {% endfor %}
 
                     {% if crypto.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ crypto.paginator.num_pages }}" aria-label="Next"
-                            style="color:#f7ba5b">
+                        <a class="page-link" href="javascript:insertParam('page',{{ crypto.paginator.num_pages }})"
+                            aria-label="Next" style="color:#f7ba5b">
                             <span aria-hidden="true">&raquo; Last</span>
                         </a>
                     </li>
