@@ -264,8 +264,8 @@ def createNotification(request):
     coin_result = cryptoObject.objects.get(
         coin_id=request.POST.get('crypto.id'))
     option = request.POST.get('option')
-    crypto_value = request.POST.get('crypto.value')
-    final_value = request.POST.get('value')
+    crypto_value = float(request.POST.get('crypto.value'))
+    final_value = float(request.POST.get('value'))
 
     if final_value < 0:
         messages.info(request, 'Requested value is negative')
