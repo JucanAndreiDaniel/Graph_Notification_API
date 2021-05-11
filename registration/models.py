@@ -45,6 +45,6 @@ class Notification(models.Model):
     intial_value = models.FloatField()
     final_value = models.FloatField()
     enabled = models.BooleanField(default=True)
-
+    via_mail = models.BooleanField(default=False)
 
     

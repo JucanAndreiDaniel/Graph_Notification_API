@@ -87,7 +87,7 @@ def login(request):
 
 def register(request):
     if request.method == 'POST':
-        get_name = request.POST['get_name']
+        first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         user_name = request.POST['username']
         email = request.POST['email']
@@ -103,7 +103,7 @@ def register(request):
                 return redirect('register')
             else:
                 user = User.objects.create_user(
-                    username=user_name, password=password1, email=email, get_name=get_name, last_name=last_name)
+                    username=user_name, password=password1, email=email, first_name=first_name, last_name=last_name)
                 user.save()
                 messages.success(
                     request, f'Account was created for {user.username}')
@@ -125,8 +125,8 @@ def logout(request):
 @login_required(login_url="login")
 def home(request):
     # base(request)
-    dic = checkPrices(request)
     createProfileFromUserID(request.user.id)
+    dic = checkPrices(request)
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
     prices = value.objects.filter(currency=currency)
@@ -258,23 +258,29 @@ def userSettings(request):
     return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency, "fav": favorites})
 
 
+@login_required(login_url="login")
+def notificationTab(request):
+
+    return render(request, 'notificationTab.html', {"currencyList": []})
+
+
 def createNotification(request):
 
     user = Profile.objects.get(user__id=request.user.id)
     coin_result = cryptoObject.objects.get(
         coin_id=request.POST.get('crypto.id'))
+    print(request.POST.get('crypto.id'))
     option = request.POST.get('option')
     crypto_value = float(request.POST.get('crypto.value'))
+    print(request.POST.get('crypto.value'))
     final_value = float(request.POST.get('value'))
 
     if final_value < 0:
-        messages.info(request, 'Requested value is negative')
         return HttpResponseRedirect('userSettings')
     if option == "g_perc":
         final_value = crypto_value + (crypto_value * final_value)/100
     elif option == "d_perc":
         if final_value >= 100:
-            messages.info(request, 'Requested value is invalid')
             return HttpResponseRedirect('userSettings')
         final_value = crypto_value - (crypto_value * final_value)/100
     else:

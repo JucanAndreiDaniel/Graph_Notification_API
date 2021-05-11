@@ -21,6 +21,7 @@ urlpatterns = [
     path('changeCurrency/', views.ChangeCurrencyFav.as_view(), name='changecurrency'),
     path('filter', views.filter, name='home'),
     path('base', views.base),
+    path('notificationTab',views.notificationTab,name="notificationTab"),
     path('createNotification', views.createNotification, name="CreateNotification"),
     path('', views.home, name="home"),
 ]
