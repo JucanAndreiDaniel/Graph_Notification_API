@@ -125,8 +125,8 @@ def logout(request):
 @login_required(login_url="login")
 def home(request):
     # base(request)
-    createProfileFromUserID(request.user.id)
     dic = checkPrices(request)
+    createProfileFromUserID(request.user.id)
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
     prices = value.objects.filter(currency=currency)
@@ -144,6 +144,7 @@ def home(request):
 
 
 def filter(request):
+    dic = checkPrices(request)
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
     contain = request.GET.get('contain')
@@ -161,7 +162,7 @@ def filter(request):
         price = paginator.page(1)
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price, "fav": favorites})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic})
 
 
 def base(request):
@@ -260,8 +261,9 @@ def userSettings(request):
 
 @login_required(login_url="login")
 def notificationTab(request):
-
-    return render(request, 'notificationTab.html', {"currencyList": []})
+    notification_coins = Notification.objects.filter(user_id=request.user.id)
+    print(notification_coins)
+    return render(request, 'notificationTab.html', {"notificari": notification_coins})
 
 
 def createNotification(request):

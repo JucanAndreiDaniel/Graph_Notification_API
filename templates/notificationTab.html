@@ -1,7 +1,30 @@
 {% extends 'base.html' %} {% block content %}
 
-<p class="hello-msg">Your Notifications</p>
-
-
+<div class="container-fluid">
+<p class="hello-msg" style="padding-left: 1vh;padding-top: 1vh;">Your Notifications</p>
+<div class="table-responsive">
+    <table id="table" data-toggle="table"
+        class="table-responsive table-bordered table-hover table-sm">
+        <thead>
+            <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
+                <th data-field="id" scope="col">Name </th>
+                <th data-field="price" scope="col">Initial Value</th>
+                <th data-field="24high" scope="col">Final Value</th>
+                <th data-field="24low" scope="col">Enabled</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for noti in notificari %}
+            <tr scope="row" style="color:white">
+                <td>{{ noti.coin.name }}</td>
+                <td>{{ noti.intial_value }}</td>
+                <td>{{ noti.final_value }}</td>
+                <td>{{ noti.enabled }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
 
 {% endblock%}

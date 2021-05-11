@@ -4,24 +4,7 @@
 
 
 <p></p>
-<div class="container_sf">
-
-  <h5 class="hello-msg" style="padding-left:15px ;color: white;">Preffered currency</h5>
-  <div class="dropdown">
-    <button class="dropbtn">{{ favC }}</button>
-    <div class="dropdown-content">
-      {% for curr in currencyList %}
-      <form action="userSettings" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="curr" value="{{ curr }}">
-        <input type="Submit" class="dropdown-item" value="{{ curr }}">
-      </form>
-      {% endfor %}
-    </div>
-    <p></p>
-    <br />
-  </div>
-</div>
+<p class="hello-msg" style="padding-left: 1%;">Click on the name of a coin to create Notification</p>
 <div class="container-fluid">
   <div class="table-responsive">
     <table id="table" data-toggle="table" data-sortable="true" class="table table-bordered table-hover table-sm">
@@ -104,6 +87,25 @@
     </table>
   </div>
 </div>
+<p></p>
+<div class="container_sf">
+  <h5 class="hello-msg" style="padding-left:1%;padding-top:1vh ;color: white;">Preffered currency</h5>
+  <div class="dropdown">
+    <button class="dropbtn">{{ favC }}</button>
+    <div class="dropdown-content">
+      {% for curr in currencyList %}
+      <form action="userSettings" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="curr" value="{{ curr }}">
+        <input type="Submit" class="dropdown-item" value="{{ curr }}">
+      </form>
+      {% endfor %}
+    </div>
+    <p></p>
+    <br />
+  </div>
+</div>
+
 <script>
   $('#myModal').on('shown.bs.modal', function () {
     $('#myInput').trigger('focus')
