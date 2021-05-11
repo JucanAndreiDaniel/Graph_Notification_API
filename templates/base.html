@@ -48,6 +48,8 @@
 </body>
 
 <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/main.js' %}" type="application/javascript"></script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
     integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
@@ -83,12 +85,13 @@
     crossorigin="anonymous"></script>
 
 <script>
-    var mydata={{ notificare | safe }};
+    var mydata = {{ notificare | safe }};
     console.log(mydata);
     function myFunction() {
-        for(var i in mydata){
+        for (var i in mydata) {
             toastr["success"](i + " has reached the value of " + mydata[i])
         }
     };
 </script>
+
 </html>
