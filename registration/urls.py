@@ -6,8 +6,8 @@ from . import views
 
 urlpatterns = [
     path('register', views.register, name="register"),
-    path('addFavorite', views.addToFavorite, name="home"),
-    path('delFavView', views.delFavView, name="home"),
+    path('addFavorite', views.addToFavorite, name="addFavorite"),
+    path('delFavorite', views.delFavView, name="deleteFavorite"),
     path('login', views.login, name="login"),
     path('logout', views.logout, name="logout"),
     path('userSettings', views.userSettings, name="userSettings"),
