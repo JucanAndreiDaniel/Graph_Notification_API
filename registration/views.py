@@ -1,4 +1,3 @@
-from typing import Tuple
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
@@ -6,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.conf import settings
+from django.views.decorators.http import require_http_methods
 import json
 # Rest-framework
 from rest_framework.views import APIView
@@ -14,8 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import cryptoObject, Profile, value, Notification
 
-from django.core import serializers
 from django.db.models import F, Q
+
 
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -111,7 +111,6 @@ def logout(request):
     return redirect('login')
 
 
-
 @login_required(login_url="login")
 def home(request):
     # base(request)
@@ -137,9 +136,10 @@ def filter(request):
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
     contain = request.GET.get('contain')
-    if(contain==""):
+    if(contain == ""):
         return home(request)
-    prices = cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).filter(Q(currency=currency)).filter(coin_id__contains=contain)
+    prices = cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F(
+        "value__low_1d"), currency=F("value__currency")).filter(Q(currency=currency)).filter(coin_id__contains=contain)
     page = request.GET.get('page', 1)
     favorites = value.objects.filter(currency=currency).filter(
         coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
@@ -153,14 +153,13 @@ def filter(request):
     return render(request, 'home.html', {"crypto": price, "fav": favorites})
 
 
-
 def base(request):
-   webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
-   vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
-   user = request.user
-   dic = checkPrices(request)
-   print(dic)
-   return render(request, 'base.html', {user: user, 'vapid_key': vapid_key, "notificare": dic})
+    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+    user = request.user
+    dic = checkPrices(request)
+    print(dic)
+    return render(request, 'base.html', {user: user, 'vapid_key': vapid_key, "notificare": dic})
 
 
 def createProfileFromUserID(id):
@@ -187,7 +186,7 @@ def addToFavorite(request):
         # the name of user who requested a favorite crypto
         user = User.objects.filter(username=request.user.username).get()
         addToFav(user, add_favorite)
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class AddToFavAPI(APIView):
@@ -211,13 +210,14 @@ def deleteFav(user, crypto_id):
     return
 
 
+@require_http_methods(["POST"])
 def delFavView(request):
     # request form html the name of crypto to be added to favorites
     delete_favorite = request.POST["crypto.id"][:-4]
     # the name of user who requested a favorite crypto
     user = User.objects.filter(username=request.user.username).get()
     deleteFav(user, delete_favorite)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class DeleteFromFavApi(APIView):
@@ -240,11 +240,11 @@ def userSettings(request):
         coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
     if request.method == 'POST':
         favoriteCurrency = request.POST['curr']
-        user.fav_currency = favoriteCurrency 
+        user.fav_currency = favoriteCurrency
         user.save()
         return HttpResponseRedirect('userSettings')
     cList.remove(user.fav_currency)
-    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency,"fav": favorites})
+    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency, "fav": favorites})
 
 
 def createNotification(request):
@@ -254,7 +254,8 @@ def createNotification(request):
         pass
     user = Profile.objects.get(user__id=request.user.id)
     # user = Profile(user=user)
-    coin_result = cryptoObject.objects.get(coin_id=request.POST.get('crypto.id'))
+    coin_result = cryptoObject.objects.get(
+        coin_id=request.POST.get('crypto.id'))
     option = request.POST.get('option')
     # crypto_id = request.POST.get('crypto.id')
     crypto_value = request.POST.get('value')
@@ -268,7 +269,8 @@ def createNotification(request):
             messages.info(request, 'Requested value is negative')
     else:
         final_value = crypto_value
-    notificare = Notification(user=user,coin=coin_result, value_type=option,intial_value=crypto_value,final_value=0)
+    notificare = Notification(user=user, coin=coin_result,
+                              value_type=option, intial_value=crypto_value, final_value=0)
     notificare.save()
 
     return HttpResponseRedirect('userSettings')
@@ -280,20 +282,17 @@ def checkPrices(request):
     user1 = User.objects.filter(username=request.user.username).get()
     profile = Profile(user=user1)
     print(notification_coins)
-    
+
     favorites = value.objects.filter(currency=user.fav_currency).filter(
         coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
-    
-    dic={}
+
+    dic = {}
     for noti in notification_coins:
         for fav in favorites:
             if noti.coin.coin_id == fav.coin.coin_id:
                 # for testing change fav.current
                 if noti.final_value == fav.current:
-                    dic[noti.coin.coin_id]=noti.final_value
+                    dic[noti.coin.coin_id] = noti.final_value
     js_data = json.dumps(dic)
     return js_data
-#TODO fav currency api
-
-
-
+# TODO fav currency api
