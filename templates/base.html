@@ -28,6 +28,16 @@
                 font-size: 3.5rem;
             }
         }
+
+        #toast-container>.toast-custom {
+            content: "\f00C";
+            background-color: #5B5E5E;
+            background-image: url("{% static 'images/logo_home_36px.png' %}");
+        }
+
+        .toast-custom {
+            background-color: white;
+        }
     </style>
     <title>NotifyMe</title>
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
@@ -89,9 +99,27 @@
     console.log(mydata);
     function myFunction() {
         for (var i in mydata) {
-            toastr["success"](capitalize(i) + " has reached the value of " + mydata[i])
+            // toastr["success"](capitalize(i) + " has reached the value of " + mydata[i])
+            toastr.info("", capitalize(i) + " has reached the value of " + mydata[i],{'iconClass': "toast-custom" })
         }
     };
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
 </script>
 
 </html>
