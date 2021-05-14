@@ -27,9 +27,7 @@ function insertParam(key, value) {
 }
 
 function changeModalCoin(coin, value) {
-    console.log(coin)
     document.getElementsByName("cryptoid")[0].value = coin
-    console.log(document.getElementsByName("cryptoid")[0].value)
     document.getElementsByName("cryptovalue")[0].value = value
 }
 
