@@ -1,7 +1,5 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from django.views.generic import TemplateView
-from django.conf import settings
 from . import views
 
 urlpatterns = [
