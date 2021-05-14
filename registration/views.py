@@ -1,7 +1,6 @@
-from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import PermissionsMixin, User, auth
+from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -17,16 +16,6 @@ from .models import cryptoObject, Profile, value, Notification
 
 from django.db.models import F, Q
 
-from django.views.generic.list import ListView
-
-
-class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
-
 
 # Serializare Obiect Crypto in json
 class JsonObjectView(APIView):
@@ -34,13 +23,37 @@ class JsonObjectView(APIView):
 
     def get(self, request):
         if request.method == 'GET':
-            user = User.objects.filter(username=request.user.username).get()
-            profile = Profile(user=user)
-            values = list(cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values(
-                "name", "current", "high_1d", "low_1d").filter(Q(currency=profile.fav_currency)))
-            # value.objects.values_list(
-            #     "name","current", "high_1d", "low_1d").filter(currency="usd").filter(
-            #     coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
+
+            user = Profile.objects.get(user__id=request.user.id)
+
+            if request.GET.get('currency') is None:
+                currency = user.fav_currency
+            else:
+                currency = request.GET.get('currency')
+
+            values = list(cryptoObject.objects
+                          .annotate(current=F("value__current"),
+                                    high_1d=F("value__high_1d"),
+                                    low_1d=F("value__low_1d"),
+                                    currency=F("value__currency"),
+                                    ath=F("value__ath"),
+                                    ath_time=F("value__ath_time"),
+                                    atl=F("value__atl"),
+                                    atl_time=F("value__atl_time"))
+                          .values("coin_id",
+                                  "symbol",
+                                  "name",
+                                  "image",
+                                  "last_updated",
+                                  "current",
+                                  "high_1d",
+                                  "low_1d",
+                                  "ath",
+                                  "ath_time",
+                                  "atl",
+                                  "atl_time")
+                          .filter(Q(currency=currency)))
+
             return JsonResponse(values, safe=False)
 
 # Serializare Favorite in functie de user
@@ -51,23 +64,38 @@ class JsonFavoriteView(APIView):
 
     def get(self, request):
         if request.method == 'GET':
-            user = User.objects.filter(username=request.user.username).get()
-            profile = Profile(user=user)
-            favorites = list(profile.favorite.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values(
-                "name", "current", "high_1d", "low_1d").filter(Q(currency=profile.fav_currency)))
+
+            user = Profile.objects.get(user__id=request.user.id)
+
+            if request.GET.get('currency') is None:
+                currency = user.fav_currency
+            else:
+                currency = request.GET.get('currency')
+
+            favorites = list(user.favorite
+                             .annotate(current=F("value__current"),
+                                       high_1d=F("value__high_1d"),
+                                       low_1d=F("value__low_1d"),
+                                       currency=F("value__currency"),
+                                       ath=F("value__ath"),
+                                       ath_time=F("value__ath_time"),
+                                       atl=F("value__atl"),
+                                       atl_time=F("value__atl_time"))
+                             .values("coin_id",
+                                     "symbol",
+                                     "name",
+                                     "image",
+                                     "last_updated",
+                                     "current",
+                                     "high_1d",
+                                     "low_1d",
+                                     "ath",
+                                     "ath_time",
+                                     "atl",
+                                     "atl_time")
+                             .filter(Q(currency=currency)))
+
             return JsonResponse(favorites, safe=False)
-
-
-# Returns data from crypto coin based on its id
-class CryptoSpecificView(ListView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, **kwargs):
-        user = get_object_or_404(User.objects.filter(
-            username=request.user.username))
-        values = get_object_or_404(cryptoObject.objects.annotate(current=F("value__current"), high_1d=F("value__high_1d"), low_1d=F("value__low_1d"), currency=F("value__currency")).values(
-            "name", "current", "high_1d", "low_1d").filter(Q(currency=user.profile.fav_currency)).filter(coin_id=kwargs.get('id')))
-        return JsonResponse(values, safe=False)
 
 
 def login(request):
@@ -336,3 +364,43 @@ class ChangeCurrencyFav(APIView):
             user.fav_currency = favorite_currency
             user.save()
             return Response("Favorite currency updated")
+
+
+class AllCoinInformation(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        if request.method == 'GET':
+
+            user = Profile.objects.get(user__id=request.user.id)
+
+            if request.GET.get('currency') is None:
+                currency = user.fav_currency
+            else:
+                currency = request.GET.get('currency')
+
+            values = list(cryptoObject.objects
+                          .annotate(current=F("value__current"),
+                                    high_1d=F("value__high_1d"),
+                                    low_1d=F("value__low_1d"),
+                                    currency=F("value__currency"),
+                                    ath=F("value__ath"),
+                                    ath_time=F("value__ath_time"),
+                                    atl=F("value__atl"),
+                                    atl_time=F("value__atl_time"))
+                          .values("coin_id",
+                                  "symbol",
+                                  "name",
+                                  "image",
+                                  "last_updated",
+                                  "current",
+                                  "high_1d",
+                                  "low_1d",
+                                  "ath",
+                                  "ath_time",
+                                  "atl",
+                                  "atl_time")
+                          .filter(Q(currency=currency))
+                          .filter(coin_id=kwargs.get('id')))
+
+            return JsonResponse(values, safe=False)
