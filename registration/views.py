@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
+from django_email_verification import send_email
 import json
 # Rest-framework
 from rest_framework.views import APIView
@@ -136,7 +137,9 @@ def register(request):
             else:
                 user = User.objects.create_user(
                     username=user_name, password=password1, email=email, first_name=first_name, last_name=last_name)
+                user.is_active = False
                 user.save()
+                send_email(user)
                 messages.success(
                     request, f'Account was created for {user.username}')
                 return redirect('login')

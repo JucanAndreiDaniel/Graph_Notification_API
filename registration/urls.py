@@ -1,6 +1,7 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from . import views
+from django_email_verification import urls as email_urls
 
 urlpatterns = [
     path('register', views.register, name="register"),
@@ -20,5 +21,6 @@ urlpatterns = [
     path('base', views.base),
     path('notificationTab', views.notificationTab, name="notificationTab"),
     path('createNotification', views.createNotification, name="CreateNotification"),
+    path('email/', include(email_urls)),
     path('', views.home, name="home"),
 ]
