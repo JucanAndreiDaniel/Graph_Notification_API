@@ -25,19 +25,25 @@
                     <td>{{ noti.final_value }}</td>
                     <td>
                         {% if noti.enabled %}
-                        <form id="myform" action="notificationTab" method="POST">
-                            {% csrf_token %}
-                            <label class="switch">
-                                <input type="checkbox" name="cbox" value="true" onchange="document.getElementById('myform').submit()" checked>
-                                <span class="slider round"></span>
-                            </label>
-                            {% else %}
-                            {% csrf_token %}
-                            <label class="switch">
-                                <input type="checkbox" name="cbox" value="false" onchange="document.getElementById('myform').submit()">
-                                <span class="slider round"></span>
-                            </label>
-                        </form>
+                            <form id="myform" action="notificationTab" method="POST">
+                                {% csrf_token %}
+                                <label class="switch">
+                                    <input type="hidden" name="crypto_id" value="{{ noti.coin_id }}">
+                                    <input type="hidden" name="state" value="">
+                                    <input type="checkbox" name="cbox" onchange="document.getElementById('myform').submit()" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </form>
+                        {% else %}
+                            <form id="myform" action="notificationTab" method="POST">
+                                {% csrf_token %}
+                                <label class="switch">
+                                    <input type="hidden" name="crypto_id" value="{{ noti.coin_id }}">
+                                    <input type="hidden" name="state" value="True">
+                                    <input type="checkbox" name="cbox" onchange="document.getElementById('myform').submit()">
+                                    <span class="slider round"></span>
+                                </label>
+                            </form>
                         {% endif %}
                     </td>
                 </tr>

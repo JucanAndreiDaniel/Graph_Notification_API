@@ -71,6 +71,7 @@
                     <thead>
                         <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
                             <th data-field="id" data-sortable="true" scope="col">Name </th>
+                            <th data-field="sym"  scope="col"> Symbol </th>
                             <th data-field="price" data-sortable="true" scope="col">Price</th>
                             <th data-field="24high" data-sortable="true" scope="col">24h High</th>
                             <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
@@ -81,24 +82,31 @@
                         <tr scope="row" style="color:white">
                             <td>
                                 {% if coin in fav %}
-                                <form action="delFavorite" method="POST">
-                                    {% csrf_token %}
-                                    <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
-                                    <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                    <input type="Submit" class="btn add_btn" value="★">
-                                    <span> {{ coin.coin_id|title }}</span>
-                                </form>
+                                    <div class="container_sf">
+                                        <form action="delFavorite" method="POST">
+                                            {% csrf_token %}
+                                            <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
+                                            <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
+                                            <input type="Submit" class="btn add_btn" value="★">
+                                            <span><img src="{{ coin.image }}" style="height:auto; width:10%"></span>
+                                            <span>{{ coin.coin_id|title }}</span>
+                                        </form>
+                                    </div>
                                 {% else %}
-                                <form action="addFavorite" method="POST">
-                                    {% csrf_token %}
-                                    <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
-                                    <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
-                                    <input type="Submit" class="btn add_btn" value="☆">
-                                    <span> {{ coin.coin_id|title }}</span>
-                                </form>
+                                    <div class="container_sf">
+                                        <form action="addFavorite" method="POST">
+                                            {% csrf_token %}
+                                            <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
+                                            <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
+                                            <input type="Submit" class="btn add_btn" value="☆">
+                                            <span><img src="{{ coin.image }}" style="height:auto; width:10%"></span>
+                                            <span>{{ coin.coin_id|title }}</span>
+                                        </form>
+                                    </div>
                                 {% endif %}
 
                             </td>
+                            <td>{{ coin.symbol }}</td>
                             <td>{{ coin.current }}</td>
                             <td>{{ coin.high_1d }}</td>
                             <td>{{ coin.low_1d }}</td>

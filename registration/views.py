@@ -157,15 +157,51 @@ def logout(request):
 @login_required(login_url="login")
 def home(request):
     # base(request)
+    user = Profile.objects.get(user__id=request.user.id)
     createProfileFromUserID(request.user.id)
     lista = checkPrices(request)
     dic = lista[0]
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
-    prices = value.objects.filter(currency=currency)
+    prices = cryptoObject.objects.annotate(current=F("value__current"),
+                                    high_1d=F("value__high_1d"),
+                                    low_1d=F("value__low_1d"),
+                                    currency=F("value__currency"),
+                                    ath=F("value__ath"),
+                                    ath_time=F("value__ath_time"),
+                                    atl=F("value__atl"),
+                                    atl_time=F("value__atl_time")).values("coin_id",
+                                  "symbol",
+                                  "name",
+                                  "image",
+                                  "last_updated",
+                                  "current",
+                                  "high_1d",
+                                  "low_1d",
+                                  "ath",
+                                  "ath_time",
+                                  "atl",
+                                  "atl_time").filter(Q(currency=currency))
     page = request.GET.get('page', 1)
-    favorites = value.objects.filter(currency=currency).filter(
-        coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
+    favorites = user.favorite.annotate(current=F("value__current"),
+                                       high_1d=F("value__high_1d"),
+                                       low_1d=F("value__low_1d"),
+                                       currency=F("value__currency"),
+                                       ath=F("value__ath"),
+                                       ath_time=F("value__ath_time"),
+                                       atl=F("value__atl"),
+                                       atl_time=F("value__atl_time")).values("coin_id",
+                                     "symbol",
+                                     "name",
+                                     "image",
+                                     "last_updated",
+                                     "current",
+                                     "high_1d",
+                                     "low_1d",
+                                     "ath",
+                                     "ath_time",
+                                     "atl",
+                                     "atl_time").filter(Q(currency=currency))
     paginator = Paginator(prices, 30)
     try:
         price = paginator.page(page)
@@ -227,7 +263,7 @@ def addToFav(user, crypto_id):
 def addToFavorite(request):
     if request.method == 'POST':
         # request form html the name of crypto to be added to favorites
-        add_favorite = request.POST["crypto.id"][:-4]
+        add_favorite = request.POST["crypto.id"]
         # the name of user who requested a favorite crypto
         user = User.objects.filter(username=request.user.username).get()
         addToFav(user, add_favorite)
@@ -258,7 +294,8 @@ def deleteFav(user, crypto_id):
 @require_http_methods(["POST"])
 def delFavView(request):
     # request form html the name of crypto to be added to favorites
-    delete_favorite = request.POST["crypto.id"][:-4]
+    delete_favorite = request.POST["crypto.id"]
+    print(delete_favorite)
     # the name of user who requested a favorite crypto
     user = User.objects.filter(username=request.user.username).get()
     deleteFav(user, delete_favorite)
@@ -283,8 +320,25 @@ def userSettings(request):
     dic = lista[0]
     cList = ["usd", "eur", "rub", "gbp"]
     user = Profile.objects.get(user_id=request.user.id)
-    favorites = value.objects.filter(currency=user.fav_currency).filter(
-        coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
+    favorites = user.favorite.annotate(current=F("value__current"),
+                                       high_1d=F("value__high_1d"),
+                                       low_1d=F("value__low_1d"),
+                                       currency=F("value__currency"),
+                                       ath=F("value__ath"),
+                                       ath_time=F("value__ath_time"),
+                                       atl=F("value__atl"),
+                                       atl_time=F("value__atl_time")).values("coin_id",
+                                     "symbol",
+                                     "name",
+                                     "image",
+                                     "last_updated",
+                                     "current",
+                                     "high_1d",
+                                     "low_1d",
+                                     "ath",
+                                     "ath_time",
+                                     "atl",
+                                     "atl_time").filter(Q(currency=user.fav_currency))
     if request.method == 'POST':
         favoriteCurrency = request.POST['curr']
         user.fav_currency = favoriteCurrency
@@ -298,10 +352,14 @@ def userSettings(request):
 def notificationTab(request):
     lista = checkPrices(request)
     dic = lista[0]
+    if request.method == 'POST':
+        noti_disable = Profile.objects.get(
+                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_id'))
+        noti_disable.enabled= bool(request.POST.get('state') )
+        noti_disable.save()
+        
     notification_coins = Profile.objects.get(
         user_id=request.user.id).notification.all()
-    for noti in notification_coins:
-        print(noti.id)
     return render(request, 'notificationTab.html', {"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
 

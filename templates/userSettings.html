@@ -5,7 +5,7 @@
 
 <p></p>
 <p class="hello-msg" style="padding-left: 1%;">Click on the name of a coin to create Notification</p>
-<div class="container-fluid">
+<div class="containerfluid" style="margin-left:3em; width:80%">
   <div class="table-responsive">
     <table id="table" data-toggle="table" data-sortable="true" class="table table-bordered table-hover table-sm">
       <thead>
@@ -24,13 +24,14 @@
               <form action="delFavorite" method="POST">
                 {% csrf_token %}
                 <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
-                <input type="hidden" name="crypto.id" value="{{ coin.coin_currency }}">
+                <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                 <input type="Submit" class="btn add_btn" value="★">
               </form>
               <button type="button" onclick="changeModalCoin('{{ coin.coin_id }}', '{{ coin.current }}')"
-                class="btn add_btn" data-toggle="modal" data-target="#favourites" style="margin-right: 1em;height:5%">
+                class="btn add_btn" data-toggle="modal" data-target="#favourites" style="margin-left:1vh; height:5%">
                 {{ coin.coin_id|title }}
               </button>
+              <span><img src="{{ coin.image }}" style="margin-left:1em; height:38px; width:38px"></span>
             </div>
 
             <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
