@@ -47,6 +47,22 @@ html {
   color: white;
 }
 
+.fav_btn {
+  width: auto;
+  height: auto;
+  display: inline-block;
+  background: #f7ba5b;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: .100rem .500rem;
+  font-size: 1.5em;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
 .login_btn:focus {
   box-shadow: none !important;
   outline: 0px !important;
@@ -76,12 +92,20 @@ html {
   margin-top: 10px;
 }
 
-#data-table {
-  overflow-y: scroll;
-  min-height: 10%;
-  max-height: 80%;
+#table {
+  margin-left: auto;
+  margin-right: auto;
 }
 
+.table, td{
+  border: 1px solid rgb(59, 59, 59);
+  border-collapse: collapse;
+  width: 1em;
+}
+.th{
+  border: 1px solid rgb(71, 71, 71);
+  border-collapse: collapse;
+}
 .dropbtn {
   background-color: #f7ba5b;
   color: white;

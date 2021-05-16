@@ -22,8 +22,6 @@
                 </form>
             </div>
 
-            <!-- <button type="button" id="showToast" onclick="myFunction()">Click alert!</button> -->
-
             <!-- Modal Table Load Favourites here -->
             <p></p>
 
@@ -36,7 +34,7 @@
                         </div>
                         <div class="modal-body" style="background-color: #2e2c2c;">
                             <div class="table-responsive">
-                                <table id="table" data-toggle="table" class="table table-bordered table-hover table-sm">
+                                <table id="table" data-toggle="table" class="table table-bordered table-hover">
                                     <thead>
                                         <tr style="color: rgb(255, 255, 255); background-color: #f3bb61;">
                                             <th data-field="id" data-sortable="true" scope="col">Name </th>
@@ -66,12 +64,12 @@
             </div>
             <!-- Table Crypto -->
             <div class="table-responsive">
-                <table id="table" data-toggle="table" data-sortable="true" data-height="350"
-                    class="table-responsive table-bordered table-hover table-sm">
+                <table id="table" data-toggle="table" data-sortable="true"
+                class="table-responsive table">
                     <thead>
-                        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
+                        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61">
                             <th data-field="id" data-sortable="true" scope="col">Name </th>
-                            <th data-field="sym"  scope="col"> Symbol </th>
+                            <th data-field="sym" scope="col"> Symbol </th>
                             <th data-field="price" data-sortable="true" scope="col">Price</th>
                             <th data-field="24high" data-sortable="true" scope="col">24h High</th>
                             <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
@@ -87,7 +85,7 @@
                                             {% csrf_token %}
                                             <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
-                                            <input type="Submit" class="btn add_btn" value="★">
+                                            <input type="Submit" class="fav_btn" value="★">
                                             <span><img src="{{ coin.image }}" style="height:auto; width:10%"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </form>
@@ -98,7 +96,7 @@
                                             {% csrf_token %}
                                             <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
-                                            <input type="Submit" class="btn add_btn" value="☆">
+                                            <input type="Submit" class="fav_btn" value="☆">
                                             <span><img src="{{ coin.image }}" style="height:auto; width:10%"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </form>
