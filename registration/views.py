@@ -158,7 +158,8 @@ def logout(request):
 def home(request):
     # base(request)
     createProfileFromUserID(request.user.id)
-    dic = checkPrices(request)
+    lista = checkPrices(request)
+    dic = lista[0]
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
     prices = value.objects.filter(currency=currency)
@@ -172,11 +173,12 @@ def home(request):
         price = paginator.page(1)
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic, "nrnot": lista[1]})
 
 
 def filter(request):
-    dic = checkPrices(request)
+    lista = checkPrices(request)
+    dic = lista[0]
     currency = Profile.objects.get(user_id=request.user.id)
     currency = currency.fav_currency
     contain = request.GET.get('contain')
@@ -194,7 +196,7 @@ def filter(request):
         price = paginator.page(1)
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic,"nrnot": lista[1]})
 
 
 def base(request):
@@ -202,7 +204,6 @@ def base(request):
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     user = request.user
     dic = checkPrices(request)
-    print(dic)
     return render(request, 'base.html', {user: user, 'vapid_key': vapid_key, "notificare": dic})
 
 
@@ -278,6 +279,8 @@ class DeleteFromFavApi(APIView):
 
 @login_required(login_url="login")
 def userSettings(request):
+    lista = checkPrices(request)
+    dic = lista[0]
     cList = ["usd", "eur", "rub", "gbp"]
     user = Profile.objects.get(user_id=request.user.id)
     favorites = value.objects.filter(currency=user.fav_currency).filter(
@@ -288,15 +291,18 @@ def userSettings(request):
         user.save()
         return HttpResponseRedirect('userSettings')
     cList.remove(user.fav_currency)
-    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency, "fav": favorites})
+    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency, "fav": favorites, "notificare": dic,"nrnot": lista[1]})
 
 
 @login_required(login_url="login")
 def notificationTab(request):
+    lista = checkPrices(request)
+    dic = lista[0]
     notification_coins = Profile.objects.get(
         user_id=request.user.id).notification.all()
-    print(notification_coins)
-    return render(request, 'notificationTab.html', {"notificari": notification_coins})
+    for noti in notification_coins:
+        print(noti.id)
+    return render(request, 'notificationTab.html', {"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
 
 def createNotification(request):
@@ -331,7 +337,6 @@ def createNotification(request):
 def checkPrices(request):
     user = Profile.objects.get(user_id=request.user.id)
     notification_coins = user.notification.all()
-    print(notification_coins)
 
     favorites = value.objects.filter(currency=user.fav_currency).filter(
         coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id))
@@ -351,7 +356,7 @@ def checkPrices(request):
                     if noti.final_value == fav.current:
                         dic[noti.coin.coin_id] = noti.final_value
     js_data = json.dumps(dic)
-    return js_data
+    return [js_data,len(dic)]
 
 
 class ChangeCurrencyFav(APIView):
@@ -404,3 +409,4 @@ class AllCoinInformation(APIView):
                           .filter(coin_id=kwargs.get('id')))
 
             return JsonResponse(values, safe=False)
+

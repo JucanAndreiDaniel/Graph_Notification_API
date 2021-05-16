@@ -39,7 +39,10 @@
                     <button class="button"><a class="nav-link active" href="{% url 'home' %}">Stock Market</a></button>
                 </li>
                 <li class="nav-item">
-                    <button class="button"><a class="nav-link active" href="{% url 'notificationTab' %}">Notifications</a></button>
+                    <button class="button">
+                        <a class="nav-link active" href="{% url 'notificationTab' %}">Notifications</a>
+                        <span class="badge">{{ nrnot }}</span>
+                    </button>
                 </li>
             </ul>
         </div>
