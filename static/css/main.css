@@ -34,6 +34,9 @@ html {
   display: flex;
   justify-content: flex-start;
 }
+.container_sw {
+  display: flex;
+}
 .login_btn {
   width: 100%;
   background: #f7ba5b !important;
@@ -61,6 +64,53 @@ html {
   font-size: 1.5em;
   border-radius: .25rem;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+
+.fav1_btn {
+  width: 100%;
+  height: auto;
+  display: inline-block;
+  background: #f7ba5b;
+  color: white;
+  text-align: left;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: .100rem .500rem;
+  font-size: 1.5em;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.not_btn {
+  width: 100%;
+  height: auto;
+  background: #f7ba5b;
+  color: white;
+  text-align: left;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: .100rem .500rem;
+  font-size: 1.2em;
+  border-radius: .25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  margin-bottom: 1vh;
+}
+
+.toggle_sw{
+  margin-left: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.content_sw{
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .login_btn:focus {
@@ -95,6 +145,7 @@ html {
 #table {
   margin-left: auto;
   margin-right: auto;
+  overflow-x: auto;
 }
 
 .table, td{

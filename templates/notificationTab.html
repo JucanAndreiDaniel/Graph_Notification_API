@@ -1,58 +1,46 @@
 {% extends 'base.html' %} {% block content %}
 
 <div class="container-fluid">
-    <p class="hello-msg" style="padding-left: 1vh;padding-top: 1vh;">Your Notifications</p>
-    <form>
-        <button type="submit" class="btn add_btn">Disable all Notifcations</button>
-    </form>
-    
-    <p></p>
-    <div class="table-responsive">
-        <table id="table" data-toggle="table" class="table-responsive table-bordered table-hover table-sm">
-            <thead>
-                <tr style="color: rgb(243, 241, 241); background-color: #f3bb61;">
-                    <th data-field="id" scope="col">Name </th>
-                    <th data-field="price" scope="col">Initial Value</th>
-                    <th data-field="24high" scope="col">Final Value</th>
-                    <th data-field="24low" scope="col">Enabled</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for noti in notificari %}
-                <tr scope="row" style="color:white">
-                    <td>{{ noti.coin.name }}</td>
-                    <td>{{ noti.intial_value }}</td>
-                    <td>{{ noti.final_value }}</td>
-                    <td>
-                        {% if noti.enabled %}
-                            <form id="myform" action="notificationTab" method="POST">
-                                {% csrf_token %}
-                                <label class="switch">
-                                    <input type="hidden" name="crypto_id" value="{{ noti.coin_id }}">
-                                    <input type="hidden" name="state" value="">
-                                    <input type="checkbox" name="cbox" onchange="document.getElementById('myform').submit()" checked>
-                                    <span class="slider round"></span>
-                                </label>
-                            </form>
-                        {% else %}
-                            <form id="myform" action="notificationTab" method="POST">
-                                {% csrf_token %}
-                                <label class="switch">
-                                    <input type="hidden" name="crypto_id" value="{{ noti.coin_id }}">
-                                    <input type="hidden" name="state" value="True">
-                                    <input type="checkbox" name="cbox" onchange="document.getElementById('myform').submit()">
-                                    <span class="slider round"></span>
-                                </label>
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <p class="hello-msg">Your notifications</p>
+    <div class="container-fluid">
+        {% for noti in notificari %}
+        <div class="input-group-append container_sw not_btn">
+            <div class="content_sw">
+                <button type="button" class="fav1_btn" data-toggle="modal" data-target="#favourites">{{ noti.coin_id|title }}</button>
+                <span class="hello-msg">Initial Value {{ noti.intial_value }}</span>
+                <span class="hello-msg">Final Value {{ noti.final_value }}</span>
+            </div>
+            <div class="toggle_sw">
+                <form id="myform" action="notificationTab" method="POST">
+                    {% csrf_token %}
+                    <label class="switch">
+                        <input type="hidden" name="crypto_id" value="{{ noti.coin_id }}">
+                        <input type="hidden" name="state" value="">
+                        <input type="checkbox" name="cbox" onchange="document.getElementById('myform').submit()"
+                            checked>
+                        <span class="slider round"></span>
+                    </label>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="button" class="fav_btn" style="margin-top: 10vh;">Add Notfication</button>
+    </div>
+    <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="background-color: #5b5e5e;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tablefavourites" style="color:white">Details</h5>
+                </div>
+                <div class="modal-body" style="background-color: #2e2c2c;">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary add_btn" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<script>
-
-</script>
 {% endblock%}
