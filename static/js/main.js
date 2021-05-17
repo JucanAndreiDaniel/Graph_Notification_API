@@ -31,6 +31,10 @@ function changeModalCoin(coin, value) {
     document.getElementsByName("cryptovalue")[0].value = value
 }
 
+function changeNotificationSwitchValue(coin, activated, position) {
+    document.getElementsByName("cbox")[position].checked = activated
+}
+
 const capitalize = str => str.length
   ? str[0].toUpperCase() +
     str.slice(1).toLowerCase()

@@ -353,18 +353,24 @@ def userSettings(request):
 
 @login_required(login_url="login")
 def notificationTab(request):
+    
     lista = checkPrices(request)
     dic = lista[0]
-    if request.method == 'POST':
-        noti_disable = Profile.objects.get(
-                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_id'))
-        noti_disable.enabled= bool(request.POST.get('state') )
-        noti_disable.save()
+
         
     notification_coins = Profile.objects.get(
         user_id=request.user.id).notification.all()
     return render(request, 'notificationTab.html', {"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
+
+def modifyNotification(request):
+    if request.method == 'POST':
+        noti_disable = Profile.objects.get(
+                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_id'))
+        noti_disable.enabled= bool(request.POST.get('state'))
+        noti_disable.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
 
 def createNotification(request):
 
@@ -404,18 +410,19 @@ def checkPrices(request):
 
     dic = {}
     for noti in notification_coins:
-        for fav in favorites:
-            if noti.coin.coin_id == fav.coin.coin_id:
-                # for testing change fav.current
-                if noti.value_type == "bigger":
-                    if fav.current > noti.final_value:
-                        dic[noti.coin.coin_id] = fav.current
-                elif noti.value_type == "lower":
-                    if fav.current < noti.final_value:
-                        dic[noti.coin.coin_id] = fav.current
-                else:
-                    if noti.final_value == fav.current:
-                        dic[noti.coin.coin_id] = noti.final_value
+        if noti.enabled==1:
+            for fav in favorites:
+                if noti.coin.coin_id == fav.coin.coin_id:
+                    # for testing change fav.current
+                    if noti.value_type == "bigger":
+                        if fav.current > noti.final_value:
+                            dic[noti.coin.coin_id] = fav.current
+                    elif noti.value_type == "lower":
+                        if fav.current < noti.final_value:
+                            dic[noti.coin.coin_id] = fav.current
+                    else:
+                        if noti.final_value == fav.current:
+                            dic[noti.coin.coin_id] = noti.final_value
     js_data = json.dumps(dic)
     return [js_data,len(dic)]
 

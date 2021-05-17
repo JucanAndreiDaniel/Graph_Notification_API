@@ -20,6 +20,7 @@ urlpatterns = [
     path('filter', views.filter, name='home'),
     path('base', views.base),
     path('notificationTab', views.notificationTab, name="notificationTab"),
+    path('modifyNotification', views.modifyNotification, name="modifyNotification"),
     path('createNotification', views.createNotification, name="CreateNotification"),
     path('email/', include(email_urls)),
     path('', views.home, name="home"),

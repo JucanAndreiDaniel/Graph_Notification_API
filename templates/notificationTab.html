@@ -1,8 +1,10 @@
 {% extends 'base.html' %} {% block content %}
-
+{% load static %}
 <div class="container-fluid">
-    <p class="hello-msg">Your notifications</p>
+    <p>
+    </p>
     <div class="container-fluid">
+        <p class="custom-msg">Your notifications</p>
         {% for noti in notificari %}
         <div class="input-group-append container_sw not_btn">
             <div class="content_sw">
@@ -11,15 +13,35 @@
                 <span class="hello-msg">Final Value {{ noti.final_value }}</span>
             </div>
             <div class="toggle_sw">
-                <form id="myform" action="notificationTab" method="POST">
+                {% if noti.enabled %}
+                <form name="myform" action="modifyNotification" method="POST">
                     {% csrf_token %}
                     <label class="switch">
                         <input type="hidden" name="crypto_id" value="{{ noti.coin_id }}">
                         <input type="hidden" name="state" value="">
-                        <input type="checkbox" name="cbox" onchange="document.getElementById('myform').submit()"
+                        <input type="checkbox" name="cbox" onchange="document.getElementsByName('myform')['{{ forloop.counter0 }}'].submit()"
                             checked>
                         <span class="slider round"></span>
                     </label>
+                </form>
+                {% else %}
+                <form name="myform" action="modifyNotification" method="POST">
+                    {% csrf_token %}
+                    <label class="switch">
+                        <input type="hidden" name="crypto_id" value="{{ noti.coin_id }}">
+                        <input type="hidden" name="state" value="True">
+                        <input type="checkbox" name="cbox" onchange="document.getElementsByName('myform')['{{ forloop.counter0 }}'].submit()">
+                        <span class="slider round"></span>
+                    </label>
+                </form>
+                {% endif %}
+                <form action="" method="POST">
+                    <button class="fav1_btn toggle_sw" type="submit">
+                        <svg height="30" width="30">
+                            <line x1="0" y1="0" x2="30" y2="30" style="stroke:red; stroke-width:7" />
+                             <line x1="30" y1="0" x2="0" y2="30" style="stroke:red; stroke-width:7" />
+                        </svg>
+                    </button>
                 </form>
             </div>
         </div>
@@ -43,4 +65,5 @@
         </div>
     </div>
 </div>
+
 {% endblock%}

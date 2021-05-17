@@ -71,7 +71,7 @@ html {
   width: 100%;
   height: auto;
   display: inline-block;
-  background: #f7ba5b;
+  background: transparent;
   color: white;
   text-align: left;
   vertical-align: middle;
@@ -97,6 +97,11 @@ html {
   border-radius: .25rem;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
   margin-bottom: 1vh;
+}
+
+.custom-msg {
+  font-size: 2em;
+  color: #fff;
 }
 
 .toggle_sw{
