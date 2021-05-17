@@ -401,6 +401,16 @@ def createNotification(request):
     return HttpResponseRedirect('userSettings')
 
 
+def deleteNotification(request):
+    noti_delete = Profile.objects.get(
+                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_delete'))
+    profile = Profile(user=request.user)
+    profile.notification.remove(noti_delete)
+    profile.save()
+    print(noti_delete)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 def checkPrices(request):
     user = Profile.objects.get(user_id=request.user.id)
     notification_coins = user.notification.all()
@@ -410,7 +420,7 @@ def checkPrices(request):
 
     dic = {}
     for noti in notification_coins:
-        if noti.enabled==1:
+        if noti.enabled == 1:
             for fav in favorites:
                 if noti.coin.coin_id == fav.coin.coin_id:
                     # for testing change fav.current

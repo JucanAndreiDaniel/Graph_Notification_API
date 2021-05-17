@@ -35,7 +35,9 @@
                     </label>
                 </form>
                 {% endif %}
-                <form action="" method="POST">
+                <form action="deleteNotification" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="crypto_delete" value="{{ noti.coin_id }}">
                     <button class="fav1_btn toggle_sw" type="submit">
                         <svg height="30" width="30">
                             <line x1="0" y1="0" x2="30" y2="30" style="stroke:red; stroke-width:7" />
