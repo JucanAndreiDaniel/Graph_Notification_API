@@ -44,12 +44,16 @@ try:
             cryptoObject.save()
             for k in range(4):
                 coinFromList = price_list[j+(250*k)]
+                try:
+                    last_value = mod.value.objects.filter(currency=currencies[k]).get(
+                        coin__coin_id=price_list[j]["id"]).current
+                except:
+                    pass
                 crypto_value = mod.value(coin_currency=f"{price_list[j]['id']}_{currencies[k]}",
                                          coin=cryptoObject,
                                          currency=currencies[k],
                                          current=coinFromList["current_price"],
-                                         last_price=mod.value.objects.filter(currency=currencies[k]).get(
-                                             coin__coin_id=price_list[j]["id"]).current,
+                                         last_price=last_value if last_value is not None else None,
                                          high_1d=coinFromList["high_24h"],
                                          low_1d=coinFromList["low_24h"],
                                          ath=coinFromList["ath"],
