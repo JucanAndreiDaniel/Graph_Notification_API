@@ -160,8 +160,8 @@ def logout(request):
 @login_required(login_url="login")
 def home(request):
     # base(request)
-    user = Profile.objects.get(user__id=request.user.id)
     createProfileFromUserID(request.user.id)
+    user = Profile.objects.get(user__id=request.user.id)
     lista = checkPrices(request)
     dic = lista[0]
     currency = Profile.objects.get(user_id=request.user.id)
