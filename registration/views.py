@@ -394,14 +394,14 @@ def modifyNotification(request):
     
 
 def createNotification(request):
-
     user = Profile.objects.get(user__id=request.user.id)
     coin_result = cryptoObject.objects.get(
-        coin_id=request.POST.get('cryptoid'))
+        coin_id=request.POST.get('optionCrypto').lower())
     option = request.POST.get('option')
-    crypto_value = float(request.POST.get('cryptovalue'))
+    crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency"),
+                                ).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
+    crypto_value = crypto_value['current']
     final_value = float(request.POST.get('value'))
-
     if final_value < 0:
         return HttpResponseRedirect('userSettings')
     if option == "g_perc":

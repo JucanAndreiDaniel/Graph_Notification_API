@@ -75,51 +75,56 @@
             <h2 style="text-align: center;">Create notification</h2>
         </div>
         <div class="my-modal-body" style="border-color: blanchedalmond; color:white;">
-            <div>
+            <form method="POST" action="createNotification">
+                {% csrf_token %}
                 <div>
-                    <label class="custom-msg2" for="value_type">Create Notification for : </label>
-                    <p></p>
-                    <select class="custom-select" name="option" id="value_type" style="width: 50%;" onblur='this.size=0;'
-                        onchange='this.size=1; this.blur();'>
-                        {% for fav in favorites %}
-                        <option>{{ fav.coin_id|title }}</option>
-                        {% endfor %}
-                    </select>
-                    <p></p>
+                    <div>
+                        <label class="custom-msg2" for="value_type">Create Notification for : </label>
+                        <p></p>
+                        <select class="custom-select" name="optionCrypto" id="value_type" style="width: 50%;" onblur='this.size=0;'
+                            onchange='this.size=1; this.blur();'>
+                            {% for fav in favorites %}
+                            <option>{{ fav.coin_id|title }}</option>
+                            {% endfor %}
+                        </select>
+                        <p></p>
+                    </div>
+                    <div>
+                        <label class="custom-msg2" for="value_type">Notify me when : </label>
+                        <p></p>
+                        <select class="custom-select" name="option" id="value_type">
+                            <option value="bigger" selected>Value Bigger than</option>
+                            <option value="lower">Value Lower than</option>
+                            <option value="equal">Value Equal to</option>
+                            <option value="g_perc">Growth with percentage</option>
+                            <option value="d_perc">Decrease with percentage</option>
+                        </select>
+                        <p></p>
+                    </div>
+                    <div>
+                        <label class="custom-msg2" for="value_type">Value : </label>
+                        <p></p>
+                        <input class="placeholder_value" style="width:50%;font-size:3vh;" type="input" name="value"
+                            placeholder="Value...">
+                        <p></p>
+                    </div>
+                    <div style="margin-bottom: 3vh;">
+                        <label class="custom-msg2" for="value_type">Via email : </label>
+                        <label class="container">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
                 </div>
-                <div>
-                    <label class="custom-msg2" for="value_type">Notify me when : </label>
-                    <p></p>
-                    <select class="custom-select" name="option" id="value_type">
-                        <option value="bigger" selected>Value Bigger than</option>
-                        <option value="lower">Value Lower than</option>
-                        <option value="equal">Value Equal to</option>
-                        <option value="g_perc">Growth with percentage</option>
-                        <option value="d_perc">Decrease with percentage</option>
-                    </select>
-                    <p></p>
+            
                 </div>
-                <div>
-                    <label class="custom-msg2" for="value_type">Value : </label>
-                    <p></p>
-                    <input class="placeholder_value" style="width:50%;font-size:3vh;" type="input" name="value"
-                        placeholder="Value...">
-                    <p></p>
-                </div>
-                <div style="margin-bottom: 3vh;">
-                    <label class="custom-msg2" for="value_type">Via email : </label>
-                    <label class="container">
-                        <input type="checkbox">
-                        <span class="checkmark"></span>
-                    </label>
-                </div>
+            <div class="my-modal-footer">
+                <button name="modalSave" type="submit" class="btn btn-secondary add_btn">Save</button>
+                <button name="modalClose" type="button" class="btn btn-secondary add_btn"
+                    data-dismiss="modal">Close</button>
             </div>
-        </div>
-        <div class="my-modal-footer">
-            <button name="modalSave" type="button" class="btn btn-secondary add_btn">Save</button>
-            <button name="modalClose" type="button" class="btn btn-secondary add_btn"
-                data-dismiss="modal">Close</button>
-        </div>
+        </form>
+      </div>
     </div>
 </div>
 
