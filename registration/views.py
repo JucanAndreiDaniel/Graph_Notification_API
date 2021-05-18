@@ -164,7 +164,7 @@ def home(request):
     user = Profile.objects.get(user__id=request.user.id)
     lista = checkPrices(request)
     dic = lista[0]
-    currency = Profile.objects.get(user_id=request.user.id)
+    currency = Profile.objects.get(user__id=request.user.id)
     currency = currency.fav_currency
     prices = cryptoObject.objects.annotate(current=F("value__current"),
                                     high_1d=F("value__high_1d"),
@@ -218,7 +218,7 @@ def home(request):
 def filter(request):
     lista = checkPrices(request)
     dic = lista[0]
-    currency = Profile.objects.get(user_id=request.user.id)
+    currency = Profile.objects.get(user__id=request.user.id)
     currency = currency.fav_currency
     contain = request.GET.get('contain')
     if(contain == ""):
@@ -322,7 +322,7 @@ def userSettings(request):
     lista = checkPrices(request)
     dic = lista[0]
     cList = ["usd", "eur", "rub", "gbp"]
-    user = Profile.objects.get(user_id=request.user.id)
+    user = Profile.objects.get(user__id=request.user.id)
     favorites = user.favorite.annotate(current=F("value__current"),
                                        high_1d=F("value__high_1d"),
                                        low_1d=F("value__low_1d"),
@@ -356,9 +356,9 @@ def notificationTab(request):
     
     lista = checkPrices(request)
     dic = lista[0]
-    currency = Profile.objects.get(user_id=request.user.id)
+    currency = Profile.objects.get(user__id=request.user.id)
     currency = currency.fav_currency
-    user = Profile.objects.get(user_id=request.user.id)
+    user = Profile.objects.get(user__id=request.user.id)
     favorites = user.favorite.annotate(current=F("value__current"),
                                        high_1d=F("value__high_1d"),
                                        low_1d=F("value__low_1d"),
@@ -380,7 +380,8 @@ def notificationTab(request):
                                      "atl_time").filter(Q(currency=currency))
                                          
     notification_coins = Profile.objects.get(
-        user_id=request.user.id).notification.all()
+        user__id=request.user.id).notification.all()
+    print(notification_coins)
     return render(request, 'notificationTab.html', {"favorites":favorites,"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
 
@@ -419,12 +420,13 @@ def createNotification(request):
     user.notification.add(notificare)
     user.save()
 
-    return HttpResponseRedirect('userSettings')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def deleteNotification(request):
     noti_delete = Profile.objects.get(
                     user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_delete'))
+    noti_tabela_mare = Notification.objects.get(id = noti_delete.id).delete()
     profile = Profile(user=request.user)
     profile.notification.remove(noti_delete)
     profile.save()
@@ -433,7 +435,7 @@ def deleteNotification(request):
 
 
 def checkPrices(request):
-    user = Profile.objects.get(user_id=request.user.id)
+    user = Profile.objects.get(user__id=request.user.id)
     notification_coins = user.notification.all()
 
     favorites = value.objects.filter(currency=user.fav_currency).filter(
