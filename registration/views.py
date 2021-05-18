@@ -356,11 +356,32 @@ def notificationTab(request):
     
     lista = checkPrices(request)
     dic = lista[0]
-
-        
+    currency = Profile.objects.get(user_id=request.user.id)
+    currency = currency.fav_currency
+    user = Profile.objects.get(user_id=request.user.id)
+    favorites = user.favorite.annotate(current=F("value__current"),
+                                       high_1d=F("value__high_1d"),
+                                       low_1d=F("value__low_1d"),
+                                       currency=F("value__currency"),
+                                       ath=F("value__ath"),
+                                       ath_time=F("value__ath_time"),
+                                       atl=F("value__atl"),
+                                       atl_time=F("value__atl_time")).values("coin_id",
+                                     "symbol",
+                                     "name",
+                                     "image",
+                                     "last_updated",
+                                     "current",
+                                     "high_1d",
+                                     "low_1d",
+                                     "ath",
+                                     "ath_time",
+                                     "atl",
+                                     "atl_time").filter(Q(currency=currency))
+                                         
     notification_coins = Profile.objects.get(
         user_id=request.user.id).notification.all()
-    return render(request, 'notificationTab.html', {"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
+    return render(request, 'notificationTab.html', {"favorites":favorites,"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
 
 def modifyNotification(request):
