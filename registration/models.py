@@ -22,6 +22,8 @@ class value(models.Model):
     percentage_1d = models.FloatField(blank=True, null=True)
 
     current = models.FloatField(blank=True, null=True)
+    last_price = models.FloatField(blank=True, null=True)
+    
     high_1d = models.FloatField(blank=True, null=True)
     low_1d = models.FloatField(blank=True, null=True)
 
