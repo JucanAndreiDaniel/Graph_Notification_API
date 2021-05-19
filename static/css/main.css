@@ -108,6 +108,7 @@ html {
   color: #fff;
 }
 
+.custom-msg4,
 .custom-msg3 {
   font-size: 2.5vh;
   color: #fff;
@@ -365,6 +366,10 @@ input:checked + .slider:before {
   width: auto;
 }
 
+.modal-body{
+  width: auto;
+}
+
 .my-modal-footer {
   padding: 8px 16px;
   background-color: #5b5e5e;
@@ -463,3 +468,4 @@ input:checked + .slider:before {
   width:30%;
   min-width: 3vh;
 }
+

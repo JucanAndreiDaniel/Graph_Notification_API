@@ -388,13 +388,25 @@ def notificationTab(request):
                                        ath_time=F("coin__value__ath_time"),
                                        atl=F("coin__value__atl"),
                                        atl_time=F("coin__value__atl_time"),
-                                       image=F("coin__image")).values("coin_id",
+                                       image=F("coin__image"),
+                                       name=F("coin__name")).values("coin_id",
                                      "coin",
                                      "value_type",
                                      "intial_value",
                                      "final_value",
                                      "enabled",
-                                     "via_mail",).filter(Q(currency=currency))
+                                     "via_mail",
+                                     "current",
+                                     "high_1d",
+                                     "low_1d",
+                                     "ath",
+                                     "ath_time",
+                                     "atl",
+                                     "atl_time",
+                                     "image",
+                                     "name").filter(Q(currency=currency))
+    for noti in notification_coins:
+        print(noti)
     return render(request, 'notificationTab.html', {"favorites":favorites,"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
 

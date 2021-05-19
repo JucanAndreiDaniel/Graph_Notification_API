@@ -13,8 +13,16 @@
         <div class="input-group-append container_sw not_btn">
             <div class="content_sw">
                 <div class="fav1_btn">
-                    <button type="button" id="detail" class="fav1_btn" data-toggle="modal" data-target="#favourites"
-                        style="background-color: #f7ba5b;font-size: 3vh;" onclick="functionDetails('{{ noti }}')">{{ noti.coin_id|title }}</button>
+                    <button type="button" onclick="functionDetails('{{ noti.name }}',
+                                                                    '{{ noti.current }}',
+                                                                    '{{ noti.high_1d }}',
+                                                                    '{{ noti.low_1d }}',
+                                                                    '{{ noti.ath }}',
+                                                                    '{{ noti.atl }}',
+                                                                    '{{ noti.image }}')" id="detail" class="fav1_btn" data-toggle="modal" data-target="#favourites"
+                        style="background-color: #f7ba5b;font-size: 3vh;">
+                        {{ noti.coin_id|title }}
+                    </button>
                 </div>
                 <div class="content_values">
                     <div>
@@ -131,7 +139,7 @@
 
 <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document" style="padding-right: 3vh;">
         <div class="modal-content" style="background-color: #5b5e5e;">
             <div class="modal-header">
                 <h5 class="modal-title" id="tablefavourites" style="color:white;">Details</h5>
@@ -141,7 +149,7 @@
                     <span><img id="poza" class="coin-image-2" src="{{ notificari.0.image }}"></span>
                 </div>
                 <div style="text-align: center;">
-                    <span class="custom-msg">{{ notificari.0.coin.name }}</span>
+                    <span class="custom-msg">{{ notificari.name }}</span>
                 </div>
                 <div style="text-align: center; margin-bottom: 5vh;">
                     <label class="custom-msg"> Current Value: </label>
@@ -150,22 +158,22 @@
                 <div class="content_sw">
                     <div class="content_values" style="margin-left:4vh">
                         <div>
-                            <label class="custom-msg3">High Value 24h </label>
-                            <span class="custom-msg3">{{ favorites.0.high_1d }}</span>
+                            <label class="custom-msg4">High Value 24h </label>
+                            <span class="custom-msg4">{{ favorites.0.high_1d }}</span>
                         </div>
                         <div>
-                            <label class="custom-msg3">Low Value 24h</label>
-                            <span class="custom-msg3">{{ favorites.0.low_1d }}</span>
+                            <label class="custom-msg4">Low Value 24h</label>
+                            <span class="custom-msg4">{{ favorites.0.low_1d }}</span>
                         </div>
                     </div>
                     <div class="content-sf">
                         <div>
-                            <label class="custom-msg3">All Time Highest Value </label>
-                            <span class="custom-msg3">{{ favorites.0.ath }}</span>
+                            <label class="custom-msg4">All Time Highest Value </label>
+                            <span class="custom-msg4">{{ favorites.0.ath }}</span>
                         </div>
                         <div>
-                            <label class="custom-msg3">All time Lowest Value</label>
-                            <span class="custom-msg3">{{ favorites.0.atl }}</span>
+                            <label class="custom-msg4">All time Lowest Value</label>
+                            <span class="custom-msg4">{{ favorites.0.atl }}</span>
                         </div>
                     </div>
                 </div> 
@@ -196,11 +204,5 @@
         }
     }
 
-</script>
-<script>
-    $('#detail').click(function () {
-        var index = $('#detail').index(this);
-        $('#textnot').text("That was noti index #" + index);
-    });
 </script>
 {% endblock%}
