@@ -86,7 +86,7 @@
                                             <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav_btn" value="★">
-                                            <span><img src="{{ coin.image }}" style="height:auto; width:10%"></span>
+                                            <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </form>
                                     </div>
@@ -97,7 +97,7 @@
                                             <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav_btn" value="☆">
-                                            <span><img class="home-images" src="{{ coin.image }}" style="height:auto; width:10%"></span>
+                                            <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </form>
                                     </div>

@@ -1,10 +1,11 @@
 {% extends 'base.html' %} {% block content %}
 {% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <div class="container-fluid">
     <p>
     </p>
     <div class="container-fluid">
-        <p class="custom-msg">Your notifications</p>
+        <p id="textnot" class="custom-msg">Your notifications</p>
     </div>
     <div class="container-fluid" style="overflow:auto;max-height:350px;">
 
@@ -12,8 +13,8 @@
         <div class="input-group-append container_sw not_btn">
             <div class="content_sw">
                 <div class="fav1_btn">
-                    <button type="button" class="fav1_btn" data-toggle="modal" data-target="#favourites"
-                        style="background-color: #f7ba5b;font-size: 3vh;">{{ noti.coin_id|title }}</button>
+                    <button type="button" id="detail" class="fav1_btn" data-toggle="modal" data-target="#favourites"
+                        style="background-color: #f7ba5b;font-size: 3vh;" onclick="functionDetails('{{ noti }}')">{{ noti.coin_id|title }}</button>
                 </div>
                 <div class="content_values">
                     <div>
@@ -81,8 +82,8 @@
                     <div>
                         <label class="custom-msg2" for="value_type">Create Notification for : </label>
                         <p></p>
-                        <select class="custom-select" name="optionCrypto" id="value_type" style="width: 50%;" onblur='this.size=0;'
-                            onchange='this.size=1; this.blur();'>
+                        <select class="custom-select" name="optionCrypto" id="value_type" style="width: 50%;"
+                            onblur='this.size=0;' onchange='this.size=1; this.blur();'>
                             {% for fav in favorites %}
                             <option>{{ fav.coin_id|title }}</option>
                             {% endfor %}
@@ -110,22 +111,22 @@
                     </div>
                     <div style="margin-bottom: 3vh;">
                         <label class="custom-msg2" for="value_type">Via email : </label>
-                        <label class="container">
+                        <label class="container-checkbox">
                             <input type="checkbox">
                             <span class="checkmark"></span>
                         </label>
                     </div>
                 </div>
-            
-                </div>
-            <div class="my-modal-footer">
-                <button name="modalSave" type="submit" class="btn btn-secondary add_btn">Save</button>
-                <button name="modalClose" type="button" class="btn btn-secondary add_btn"
-                    data-dismiss="modal">Close</button>
-            </div>
+
+        </div>
+        <div class="my-modal-footer">
+            <button name="modalSave" type="submit" class="btn btn-secondary add_btn">Save</button>
+            <button name="modalClose" type="button" class="btn btn-secondary add_btn"
+                data-dismiss="modal">Close</button>
+        </div>
         </form>
-      </div>
     </div>
+</div>
 </div>
 
 <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
@@ -133,10 +134,42 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="background-color: #5b5e5e;">
             <div class="modal-header">
-                <h5 class="modal-title" id="tablefavourites" style="color:white">Details</h5>
+                <h5 class="modal-title" id="tablefavourites" style="color:white;">Details</h5>
             </div>
             <div class="modal-body" style="background-color: #2e2c2c;">
-
+                <div style="text-align: center;">
+                    <span><img id="poza" class="coin-image-2" src="{{ notificari.0.image }}"></span>
+                </div>
+                <div style="text-align: center;">
+                    <span class="custom-msg">{{ notificari.0.coin.name }}</span>
+                </div>
+                <div style="text-align: center; margin-bottom: 5vh;">
+                    <label class="custom-msg"> Current Value: </label>
+                    <span class="custom-msg"> {{ favorites.0.current }}</span>
+                </div>
+                <div class="content_sw">
+                    <div class="content_values" style="margin-left:4vh">
+                        <div>
+                            <label class="custom-msg3">High Value 24h </label>
+                            <span class="custom-msg3">{{ favorites.0.high_1d }}</span>
+                        </div>
+                        <div>
+                            <label class="custom-msg3">Low Value 24h</label>
+                            <span class="custom-msg3">{{ favorites.0.low_1d }}</span>
+                        </div>
+                    </div>
+                    <div class="content-sf">
+                        <div>
+                            <label class="custom-msg3">All Time Highest Value </label>
+                            <span class="custom-msg3">{{ favorites.0.ath }}</span>
+                        </div>
+                        <div>
+                            <label class="custom-msg3">All time Lowest Value</label>
+                            <span class="custom-msg3">{{ favorites.0.atl }}</span>
+                        </div>
+                    </div>
+                </div> 
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary add_btn" data-dismiss="modal">Close</button>
@@ -146,30 +179,28 @@
 </div>
 
 <script>
-    var modal = document.getElementById("myModal");
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("mybtn");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByName("modalClose")[0];
-
     // When the user clicks the button, open the modal 
-    btn.onclick = function () {
-        modal.style.display = "block";
+    document.getElementById("mybtn").onclick = function () {
+        document.getElementById("myModal").style.display = "block";
     }
 
     // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-        modal.style.display = "none";
+    document.getElementsByName("modalClose")[0].onclick = function () {
+        document.getElementById("myModal").style.display = "none";
     }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        if (event.target == document.getElementById("myModal")) {
+            document.getElementById("myModal").style.display = "none";
         }
     }
-</script>
 
+</script>
+<script>
+    $('#detail').click(function () {
+        var index = $('#detail').index(this);
+        $('#textnot').text("That was noti index #" + index);
+    });
+</script>
 {% endblock%}

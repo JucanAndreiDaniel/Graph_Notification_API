@@ -121,7 +121,6 @@ html {
 }
 
 .toggle_sw{
-  margin-left: auto;
   margin-top: auto;
   margin-bottom: auto;
   display: flex;
@@ -387,7 +386,7 @@ input:checked + .slider:before {
   outline: none;
 }
 
-.container {
+.container-checkbox {
   display: block;
   position: relative;
   padding-left: 35px;
@@ -401,7 +400,7 @@ input:checked + .slider:before {
 }
 
 /* Hide the browser's default checkbox */
-.container input {
+.container-checkbox input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -420,12 +419,12 @@ input:checked + .slider:before {
 }
 
 /* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
+.container-checkbox:hover input ~ .checkmark {
   background-color: #ccc;
 }
 
 /* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
+.container-checkbox input:checked ~ .checkmark {
   background-color: #f0b24e;
 }
 
@@ -437,12 +436,12 @@ input:checked + .slider:before {
 }
 
 /* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
+.container-checkbox input:checked ~ .checkmark:after {
   display: block;
 }
 
 /* Style the checkmark/indicator */
-.container .checkmark:after {
+.container-checkbox .checkmark:after {
   left: 9px;
   top: 5px;
   width: 5px;
@@ -452,4 +451,15 @@ input:checked + .slider:before {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+.coin-image{
+  height:auto; 
+  width:10%;
+  min-width: 3vh;
+}
+
+.coin-image-2{
+  height:auto; 
+  width:30%;
+  min-width: 3vh;
 }

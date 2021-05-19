@@ -380,8 +380,21 @@ def notificationTab(request):
                                      "atl_time").filter(Q(currency=currency))
                                          
     notification_coins = Profile.objects.get(
-        user__id=request.user.id).notification.all()
-    print(notification_coins)
+        user__id=request.user.id).notification.annotate(current=F("coin__value__current"),
+                                       high_1d=F("coin__value__high_1d"),
+                                       low_1d=F("coin__value__low_1d"),
+                                       currency=F("coin__value__currency"),
+                                       ath=F("coin__value__ath"),
+                                       ath_time=F("coin__value__ath_time"),
+                                       atl=F("coin__value__atl"),
+                                       atl_time=F("coin__value__atl_time"),
+                                       image=F("coin__image")).values("coin_id",
+                                     "coin",
+                                     "value_type",
+                                     "intial_value",
+                                     "final_value",
+                                     "enabled",
+                                     "via_mail",).filter(Q(currency=currency))
     return render(request, 'notificationTab.html', {"favorites":favorites,"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
 

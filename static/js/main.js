@@ -35,6 +35,11 @@ function changeNotificationSwitchValue(coin, activated, position) {
     document.getElementsByName("cbox")[position].checked = activated
 }
 
+function functionDetails(noti){
+    console.log(noti.image);
+    document.getElementById("poza").src = noti.image
+}
+
 const capitalize = str => str.length
   ? str[0].toUpperCase() +
     str.slice(1).toLowerCase()
