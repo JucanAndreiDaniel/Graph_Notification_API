@@ -366,9 +366,6 @@ input:checked + .slider:before {
   width: auto;
 }
 
-.modal-body{
-  width: auto;
-}
 
 .my-modal-footer {
   padding: 8px 16px;

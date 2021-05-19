@@ -405,8 +405,6 @@ def notificationTab(request):
                                      "atl_time",
                                      "image",
                                      "name").filter(Q(currency=currency))
-    for noti in notification_coins:
-        print(noti)
     return render(request, 'notificationTab.html', {"favorites":favorites,"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
 
 
