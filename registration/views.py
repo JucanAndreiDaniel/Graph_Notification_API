@@ -392,7 +392,7 @@ def notificationTab(request):
                                        name=F("coin__name")).values("coin_id",
                                      "coin",
                                      "value_type",
-                                     "intial_value",
+                                     "initial_value",
                                      "final_value",
                                      "enabled",
                                      "via_mail",
@@ -422,7 +422,7 @@ def createNotification(request):
     coin_result = cryptoObject.objects.get(
         coin_id=request.POST.get('optionCrypto').lower())
     option = request.POST.get('option')
-    crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency"),
+    crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")
                                 ).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
     crypto_value = crypto_value['current']
     final_value = float(request.POST.get('value'))
@@ -438,12 +438,39 @@ def createNotification(request):
         final_value = final_value
 
     notificare = Notification(coin=coin_result,
-                              value_type=option, intial_value=crypto_value, final_value=final_value)
+                              value_type=option, initial_value=crypto_value, final_value=final_value)
     notificare.save()
     user.notification.add(notificare)
     user.save()
-
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+class CreateNotificationApi(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request):
+        if request.method == 'POST':
+            user = Profile.objects.get(user__id=request.user.id)
+            coin_result = cryptoObject.objects.get(coin_id=request.POST.get('optionCrypto'))
+            option = request.POST.get('option')
+            crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
+            crypto_value = crypto_value['current']
+            final_value = float(request.POST.get('value'))
+            if final_value < 0:
+                return HttpResponseRedirect('userSettings')
+            if option == "g_perc":
+                final_value = crypto_value + (crypto_value * final_value)/100
+            elif option == "d_perc":
+                if final_value >= 100:
+                    return HttpResponseRedirect('userSettings')
+                final_value = crypto_value - (crypto_value * final_value)/100
+            else:
+                final_value = final_value
+
+            notificare = Notification(coin=coin_result,value_type=option, initial_value=crypto_value, final_value=final_value)
+            notificare.save()
+            user.notification.add(notificare)
+            user.save()
+            return Response("Notification Created")
 
 
 def deleteNotification(request):
@@ -455,6 +482,19 @@ def deleteNotification(request):
     profile.save()
     print(noti_delete)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+class DeleteNotificationApi(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request):
+        if request.method == 'POST':
+            noti_delete = Profile.objects.get(
+            user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_delete'))
+            noti_tabela_mare = Notification.objects.get(id = noti_delete.id).delete()
+            profile = Profile(user=request.user)
+            profile.notification.remove(noti_delete)
+            profile.save()
+            return Response("Notication Deleted")
 
 
 def checkPrices(request):

@@ -83,7 +83,7 @@ class Notification(models.Model):
     value_type = models.CharField(
         max_length=255, default="bigger")  # Value or percentage
     # target_type = models.CharField(max_length=255,default=">") # Mai mare sau mai mic
-    intial_value = models.FloatField()
+    initial_value = models.FloatField(default=0)
     final_value = models.FloatField()
     enabled = models.BooleanField(default=True)
     via_mail = models.BooleanField(default=False)
