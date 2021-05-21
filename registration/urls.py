@@ -25,6 +25,8 @@ urlpatterns = [
     path('createNotificationApi', views.CreateNotificationApi.as_view(), name="createNotificationApi"),
     path('deleteNotification', views.deleteNotification, name="deleteNotification"),
     path('deleteNotificationApi', views.DeleteNotificationApi.as_view(), name="deleteNotificationApi"),
+    path('changeNotification', views.changeNotification, name="changeNotification"),
+    path('changeNotificationApi', views.changeNotificationApi.as_view(), name="changeNotificationApi"),
     path('email/', include(email_urls)),
     path('', views.home, name="home"),
 ]

@@ -8,6 +8,7 @@ from django.conf import settings
 from django.views.decorators.http import require_http_methods
 from django_email_verification import send_email
 import json
+import requests
 # Rest-framework
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -427,15 +428,25 @@ def createNotification(request):
     crypto_value = crypto_value['current']
     final_value = float(request.POST.get('value'))
     if final_value < 0:
-        return HttpResponseRedirect('userSettings')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     if option == "g_perc":
         final_value = crypto_value + (crypto_value * final_value)/100
     elif option == "d_perc":
         if final_value >= 100:
-            return HttpResponseRedirect('userSettings')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         final_value = crypto_value - (crypto_value * final_value)/100
     else:
         final_value = final_value
+    viamail=request.post.get('viamail')
+    #If we have viamail enabled the notification will be created with field in mind otherwise its false by default
+    if viamail=="on":
+        viamail=True
+        notificare = Notification(coin=coin_result,
+                              value_type=option, initial_value=crypto_value, final_value=final_value,via_mail=viamail)
+        notificare.save()
+        user.notification.add(notificare)
+        user.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     notificare = Notification(coin=coin_result,
                               value_type=option, initial_value=crypto_value, final_value=final_value)
@@ -455,6 +466,7 @@ class CreateNotificationApi(APIView):
             crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
             crypto_value = crypto_value['current']
             final_value = float(request.POST.get('value'))
+            
             if final_value < 0:
                 return HttpResponseRedirect('userSettings')
             if option == "g_perc":
@@ -465,7 +477,19 @@ class CreateNotificationApi(APIView):
                 final_value = crypto_value - (crypto_value * final_value)/100
             else:
                 final_value = final_value
+            
 
+            viamail=request.POST.get('viamail')
+            if viamail=="on":
+                viamail=True
+                notificare = Notification(coin=coin_result,
+                              value_type=option, initial_value=crypto_value, final_value=final_value,via_mail=viamail)
+                notificare.save()
+                user.notification.add(notificare)
+                user.save()
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+            
             notificare = Notification(coin=coin_result,value_type=option, initial_value=crypto_value, final_value=final_value)
             notificare.save()
             user.notification.add(notificare)
@@ -495,6 +519,102 @@ class DeleteNotificationApi(APIView):
             profile.notification.remove(noti_delete)
             profile.save()
             return Response("Notication Deleted")
+
+
+def changeNotification(request):
+    user = Profile.objects.get(user__id=request.user.id)
+    
+    option = request.POST.get('option')
+    crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")
+                                ).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('crypto_name'))
+    
+    final_value = request.POST.get('cvalue')
+    final_value = float(final_value)
+    if final_value < 0:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    if option == "g_perc":
+        final_value = crypto_value + (crypto_value * final_value)/100
+    elif option == "d_perc":
+        if final_value >= 100:
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        final_value = crypto_value - (crypto_value * final_value)/100
+    else:
+        final_value = final_value
+
+
+    viamail=request.POST.get('viamail')
+    if viamail=="on":
+        viamail=True
+        notificare = Profile.objects.get(
+                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
+        
+        notificare.value_type=option
+        notificare.final_value=final_value
+        notificare.via_mail=viamail
+
+        notificare.save()
+        user.notification.add(notificare)
+        user.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    notificare = Profile.objects.get(
+                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
+    notificare.value_type=option
+    notificare.final_value=final_value  
+    notificare.save()   
+    user.notification.add(notificare)
+    user.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+class changeNotificationApi(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request):
+        if request.method == 'POST':
+            user = Profile.objects.get(user__id=request.user.id)
+    
+            option = request.POST.get('option')
+            crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")
+                                ).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('crypto_name'))
+    
+            final_value = request.POST.get('cvalue')
+            final_value = float(final_value)
+            if final_value < 0:
+                return Response("Invalid Value")
+            if option == "g_perc":
+                final_value = crypto_value + (crypto_value * final_value)/100
+            elif option == "d_perc":
+                if final_value >= 100:
+                    return Response("Invalid Value")
+                final_value = crypto_value - (crypto_value * final_value)/100
+            else:
+                final_value = final_value
+
+            viamail=request.POST.get('viamail')
+            if viamail==True:
+                viamail=True
+                notificare = Profile.objects.get(
+                            user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
+                
+                notificare.value_type=option
+                notificare.final_value=final_value
+                notificare.via_mail=viamail
+
+                notificare.save()
+                user.notification.add(notificare)
+                user.save()
+                return Response("Notification Changed")
+
+            notificare = Profile.objects.get(
+                            user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
+            notificare.value_type=option
+            notificare.final_value=final_value  
+            notificare.save()   
+            user.notification.add(notificare)
+            user.save()
+
+            return Response("Notification Changed")
+
 
 
 def checkPrices(request):

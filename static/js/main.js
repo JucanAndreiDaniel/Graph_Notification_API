@@ -35,14 +35,11 @@ function changeNotificationSwitchValue(coin, activated, position) {
     document.getElementsByName("cbox")[position].checked = activated
 }
 
-function functionDetails(name,current_value,high_1d,low_1d,ath,atl,image){
+function functionDetails(name,current_value,image,id){
     document.getElementById("poza").src = image;
     document.getElementsByClassName("custom-msg")[1].innerHTML=name;
-    document.getElementsByClassName("custom-msg")[3].innerHTML=current_value;
-    document.getElementsByClassName("custom-msg4")[1].innerHTML=high_1d;
-    document.getElementsByClassName("custom-msg4")[3].innerHTML=low_1d;
-    document.getElementsByClassName("custom-msg4")[5].innerHTML=ath;
-    document.getElementsByClassName("custom-msg4")[7].innerHTML=atl;
+    document.getElementById("crypto_name").value = id;
+    document.getElementsByClassName("placeholder_value")[1].placeholder=current_value;
 }
 
 const capitalize = str => str.length

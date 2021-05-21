@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 {% load static %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <div class="container-fluid">
     <p>
     </p>
@@ -15,19 +15,16 @@
                 <div class="fav1_btn">
                     <button type="button" onclick="functionDetails('{{ noti.name }}',
                                                                     '{{ noti.current }}',
-                                                                    '{{ noti.high_1d }}',
-                                                                    '{{ noti.low_1d }}',
-                                                                    '{{ noti.ath }}',
-                                                                    '{{ noti.atl }}',
-                                                                    '{{ noti.image }}')" id="detail" class="fav1_btn" data-toggle="modal" data-target="#favourites"
-                        style="background-color: #f7ba5b;font-size: 3vh;">
+                                                                    '{{ noti.image }}',
+                                                                    '{{ noti.coin_id }}')" id="detail" class="fav1_btn"
+                        data-toggle="modal" data-target="#favourites" style="background-color: #f7ba5b;font-size: 3vh;">
                         {{ noti.coin_id|title }}
                     </button>
                 </div>
                 <div class="content_values">
                     <div>
                         <label class="custom-msg3">Initial Value </label>
-                        <span class="custom-msg3">{{ noti.intial_value }}</span>
+                        <span class="custom-msg3" style="margin-left:2vh">{{ noti.initial_value }}</span>
                     </div>
                     <div>
                         <label class="custom-msg3">Final Value </label>
@@ -77,8 +74,8 @@
         <button id="mybtn" type="button" class="fav_btn" style="margin-top: 5vh;">Add Notification</button>
     </div>
 </div>
+<!-- Modal for creating notification -->
 <div id="myModal" class="my-modal">
-    <!-- Modal content -->
     <div class="my-modal-content">
         <div class="my-modal-header">
             <h2 style="text-align: center;">Create notification</h2>
@@ -88,7 +85,7 @@
                 {% csrf_token %}
                 <div>
                     <div>
-                        <label class="custom-msg2" for="value_type">Create Notification for : </label>
+                        <label class="custom-msg2" for="value_type">Create Notification for  </label>
                         <p></p>
                         <select class="custom-select" name="optionCrypto" id="value_type" style="width: 50%;"
                             onblur='this.size=0;' onchange='this.size=1; this.blur();'>
@@ -99,7 +96,7 @@
                         <p></p>
                     </div>
                     <div>
-                        <label class="custom-msg2" for="value_type">Notify me when : </label>
+                        <label class="custom-msg2" for="value_type">Notify me when   </label>
                         <p></p>
                         <select class="custom-select" name="option" id="value_type">
                             <option value="bigger" selected>Value Bigger than</option>
@@ -111,21 +108,21 @@
                         <p></p>
                     </div>
                     <div>
-                        <label class="custom-msg2" for="value_type">Value : </label>
+                        <label class="custom-msg2" for="value_type">Value   </label>
                         <p></p>
                         <input class="placeholder_value" style="width:50%;font-size:3vh;" type="number" name="value"
                             placeholder="Value...">
                         <p></p>
                     </div>
-                    <div style="margin-bottom: 3vh;">
-                        <label class="custom-msg2" for="value_type">Via email : </label>
-                        <label class="container-checkbox">
-                            <input type="checkbox">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
+                    <label class="container-checkbox" style="display:inline-block;">
+                        <p style="color: white;">Via email</p>
+                        <input type="checkbox" name="viamail">
+                        <span class="checkmark"></span>
+                    </label>
                 </div>
+                <div>
 
+                </div>
         </div>
         <div class="my-modal-footer">
             <button name="modalSave" type="submit" class="btn btn-secondary add_btn">Save</button>
@@ -136,52 +133,54 @@
     </div>
 </div>
 </div>
-
+<!-- Modal For details and Modifying notification -->
 <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document" style="padding-right: 3vh;">
-        <div class="modal-content" style="background-color: #5b5e5e;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color: #5b5e5e">
             <div class="modal-header">
-                <h5 class="modal-title" id="tablefavourites" style="color:white;">Details</h5>
+                <h5 class="modal-title" id="tablefavourites" style="color:white;">Update Notification</h5>
             </div>
-            <div class="modal-body" style="background-color: #2e2c2c;">
+            <div class="modal-body" style="background-color: #2e2c2c">
+                <form method="POST" action="changeNotification">
+                {% csrf_token %}
                 <div style="text-align: center;">
-                    <span><img id="poza" class="coin-image-2" src="{{ notificari.0.image }}"></span>
-                </div>
-                <div style="text-align: center;">
-                    <span class="custom-msg">{{ notificari.name }}</span>
-                </div>
-                <div style="text-align: center; margin-bottom: 5vh;">
-                    <label class="custom-msg"> Current Value: </label>
-                    <span class="custom-msg"> {{ favorites.0.current }}</span>
-                </div>
-                <div class="content_sw">
-                    <div class="content_values" style="margin-left:4vh">
-                        <div>
-                            <label class="custom-msg4">High Value 24h </label>
-                            <span class="custom-msg4">{{ favorites.0.high_1d }}</span>
-                        </div>
-                        <div>
-                            <label class="custom-msg4">Low Value 24h</label>
-                            <span class="custom-msg4">{{ favorites.0.low_1d }}</span>
-                        </div>
+                    <div>
+                        <span><img id="poza" class="coin-image-2" src="{{ notificari.0.image }}"></span>
+                        <span class="custom-msg"> {{ notificari.name }}</span>
+                        <input type="hidden" id="crypto_name" name="crypto_name" value="{{ notificari.id }}">
                     </div>
-                    <div class="content-sf">
-                        <div>
-                            <label class="custom-msg4">All Time Highest Value </label>
-                            <span class="custom-msg4">{{ favorites.0.ath }}</span>
+                    <br>
+                        <div style="padding-bottom: 2vh;">
+                            <label class="custom-msg2" for="value_type">Change Option</label>
+                            <br>
+                            <select class="custom-select" name="option" id="value_type">
+                                <option value="bigger" selected>Value Bigger than</option>
+                                <option value="lower">Value Lower than</option>
+                                <option value="equal">Value Equal to</option>
+                                <option value="g_perc">Growth with percentage</option>
+                                <option value="d_perc">Decrease with percentage</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="custom-msg4">All time Lowest Value</label>
-                            <span class="custom-msg4">{{ favorites.0.atl }}</span>
+                            <label class="custom-msg2" for="value_type">Value  </label>
+                            <br>
+                            <input class="placeholder_value" style="font-size:3vh;" type="number" name="cvalue"
+                                placeholder="Value...">
                         </div>
-                    </div>
-                </div> 
-                
+                        <br>
+                        <label class="container-checkbox" style="display:inline-block;">
+                            <p style="color: white;">Via email</p>
+                            <input type="checkbox" name="viamail">
+                            <span class="checkmark"></span>
+                        </label>
+                </div>
             </div>
             <div class="modal-footer">
+                <button name="modalChange" type="submit" class="btn btn-secondary add_btn">Update</button>
                 <button type="button" class="btn btn-secondary add_btn" data-dismiss="modal">Close</button>
             </div>
+        </form>
         </div>
     </div>
 </div>
@@ -202,7 +201,6 @@
         if (event.target == document.getElementById("myModal")) {
             document.getElementById("myModal").style.display = "none";
         }
-    }
-
+    };
 </script>
 {% endblock%}
