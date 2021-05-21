@@ -21,6 +21,7 @@ urlpatterns = [
     path('base', views.base),
     path('notificationTab', views.notificationTab, name="notificationTab"),
     path('modifyNotification', views.modifyNotification, name="modifyNotification"),
+    path('changeEnabledNoti', views.changeEnabledNoti.as_view(), name="changeEnabledNoti"),
     path('createNotification', views.createNotification, name="CreateNotification"),
     path('createNotificationApi', views.CreateNotificationApi.as_view(), name="createNotificationApi"),
     path('deleteNotification', views.deleteNotification, name="deleteNotification"),

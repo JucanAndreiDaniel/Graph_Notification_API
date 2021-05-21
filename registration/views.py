@@ -416,6 +416,16 @@ def modifyNotification(request):
         noti_disable.enabled= bool(request.POST.get('state'))
         noti_disable.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+class changeEnabledNoti(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request):
+        noti_disable = Profile.objects.get(
+                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_id'))
+        noti_disable.enabled= request.POST.get('state')
+        noti_disable.save()
+        return Response(f"Notification State:{noti_disable.enabled}")
     
 
 def createNotification(request):
