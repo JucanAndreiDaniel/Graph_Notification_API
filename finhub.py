@@ -18,7 +18,7 @@ try:
     from registration.models import StockPrices
     import time
 
-    token = 'c2kesraad3i96dg8avc0'
+
 
     r = requests.get('https://finnhub.io/api/v1/stock/symbol?exchange=US&token='+token)
     #print(r.json()[0]['symbol'])
