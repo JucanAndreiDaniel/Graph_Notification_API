@@ -18,8 +18,7 @@ try:
     from registration.models import StockPrices
     import time
 
-
-
+    token = os.environ.get('TOKEN_FINHUB')
     r = requests.get('https://finnhub.io/api/v1/stock/symbol?exchange=US&token='+token)
     #print(r.json()[0]['symbol'])
     tickers = r.json()

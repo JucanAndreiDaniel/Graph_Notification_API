@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import cryptoObject, Profile, value, Notification
+from .models import cryptoObject, Profile, value, Notification,CompanyProfile,StockPrices
 
 from django.db.models import F, Q
 
@@ -216,6 +216,40 @@ def home(request):
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
     return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic, "nrnot": lista[1], "currencyList": cList, "favC": user.fav_currency})
+
+
+def stock(request):
+    stock_data = CompanyProfile.objects.annotate(
+                                closed = F('stockprices__closed'),
+                                high24 = F('stockprices__high24'),
+                                low24 = F('stockprices__low24'),
+                                open = F('stockprices__open'),
+                                previous_closed = F('stockprices__previous_closed')
+                                ).values("country",
+                                  "exchange",
+                                  "date_founded",
+                                  "market_cap",
+                                  "company_name",
+                                  "shareOutstanding",
+                                  "symbol",
+                                  "weburl",
+                                  "logo",
+                                  "finnhubIndustry",
+                                  "closed",
+                                  "high24",
+                                  "low24",
+                                  "open",
+                                  "previous_closed")
+    page = request.GET.get('page', 1)
+    paginator = Paginator(stock_data, 30)
+    try:
+        stocks = paginator.page(page)
+    except PageNotAnInteger:
+        stocks = paginator.page(1)
+    except EmptyPage:
+        stocks = paginator.page(paginator.num_pages)
+    print(stock_data)
+    return render(request, 'stock.html', {"stonks":stocks})
 
 
 def filter(request):

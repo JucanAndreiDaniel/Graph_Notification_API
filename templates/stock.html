@@ -1,0 +1,162 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col"></div>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <h2 style="color: white;"> Stocks </h2>
+            <p></p>
+            <div class="container_sf">
+                <!-- Button trigger modal table -->
+                <div class="input-group-append" style="margin-right:1vw">
+                    <button type="button" class="not_btn1" data-toggle="modal" data-target="#favourites"
+                    >Favourites</button>
+                </div>
+                <form method="GET" action="filter">
+                    <div class="input-group mb-3">
+                        <input type="search" name="contain" class="form-control" placeholder="TODO">
+                        <div class="input-group-append">
+                            <button class="btn add_btn" type="submit">Go</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <!-- Modal Table Load Favourites here -->
+            <p></p>
+
+            <div class="modal fade" id="favourites" tabindex="-1" role="dialog" aria-labelledby="tablefavourites"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="background-color: #5b5e5e;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tablefavourites" style="color:white">Your Favourites</h5>
+                        </div>
+                        <div class="my-modal-body" style="background-color: #2e2c2c;">
+                            <div class="table-responsive">
+                                <table id="table" data-toggle="table" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61">
+                                            <th data-field="sym" data-sortable="true" scope="col"> Symbol </th>
+                                            <th data-field="closed" data-sortable="true" scope="col"> Closed </th>
+                                            <th data-field="24high" data-sortable="true" scope="col"> 24h High </th>
+                                            <th data-field="24low" data-sortable="true" scope="col"> 24h Low </th>
+                                            <th data-field="open" data-sortable="true" scope="col"> Open </th>
+                                            <th data-field="previous_closed" data-sortable="true" scope="col"> Previous Closed </th>
+                                        </tr>
+                                    </thead>
+                                    <p class="hello-msg">TODO</p>
+                                    <!-- <tbody>
+                                        {% for stock in favStock %}
+                                        <tr scope="row" style="color:rgb(255, 255, 255)">
+                                            <td>{{ stock.closed }}</td>
+                                            <td>{{ stock.closed }}</td>
+                                            <td>{{ stock.high24 }}</td>
+                                            <td>{{ stock.low24 }}</td>
+                                            <td>{{ stock.open }}</td>
+                                            <td>{{ stock.previous_closed }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody> -->
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary add_btn" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table Stocks -->
+            <div>
+                <table id="table" data-toggle="table" data-sortable="true" class="table-responsive table">
+                    <thead>
+                        <tr style="color: rgb(243, 241, 241); background-color: #f3bb61">
+                            <th data-field="sym" data-sortable="true" scope="col"> Symbol </th>
+                            <th data-field="closed" data-sortable="true" scope="col"> Closed </th>
+                            <th data-field="24high" data-sortable="true" scope="col"> 24h High </th>
+                            <th data-field="24low" data-sortable="true" scope="col"> 24h Low </th>
+                            <th data-field="open" data-sortable="true" scope="col"> Open </th>
+                            <th data-field="previous_closed" data-sortable="true" scope="col"> Previous Closed </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in stonks %}
+                        <tr scope="row" style="color:white">
+                            <td>
+                                {% if stock in favstock %}
+                                    <div class="container_sf">
+                                        <form action="delFavorite" method="POST">
+                                            {% csrf_token %}
+                                            <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
+                                            <input type="hidden" name="crypto.id" value="{{ stock.symbol }}">
+                                            <input type="Submit" class="fav_btn" value="★">
+                                            <span><img class="coin-image" src="{{ stock.logo }}"></span>
+                                            <span>{{ stock.symbol }}</span>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <div class="container_sf">
+                                        <form action="addFavorite" method="POST">
+                                            {% csrf_token %}
+                                            <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
+                                            <input type="hidden" name="crypto.id" value="{{ stock.symbol }}">
+                                            <input type="Submit" class="fav_btn" value="☆">
+                                            <span><img class="coin-image" src="{{ stock.logo }}"></span>
+                                            <span>{{ stock.symbol }}</span>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>{{ stock.closed }}</td>
+                            <td>{{ stock.high24 }}</td>
+                            <td>{{ stock.low24 }}</td>
+                            <td>{{ stock.open }}</td>
+                            <td>{{ stock.previous_closed }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr />
+            {% if stonks.has_other_pages %}
+            <ul class="pagination justify-content-end">
+                {% if stonks.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="javascript:insertParam('page',1)" aria-label="Previous">
+                        <span aria-hidden="true" style="color:#f7ba5b">&laquo; First</span>
+                    </a>
+                </li> {% endif %}
+                {% for n in stonks.paginator.page_range %}
+                {% if stonks.number == n %}
+                <li class="page-item active">
+                    <span class="page-link" style="background-color:#f7ba5b; border-color:#f7ba5b">{{ n }}</span>
+                </li>
+                {% elif n > stonks.number|add:'-5' and n < stonks.number|add:'5' %} <li class="page-item"><a
+                        class="page-link" href="javascript:insertParam('page',{{ n }})" style="color:#f3b24a">
+                        {{ n }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if stonks.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:insertParam('page',{{ stonks.paginator.num_pages }})"
+                            aria-label="Next" style="color:#f7ba5b">
+                            <span aria-hidden="true">&raquo; Last</span>
+                        </a>
+                    </li>
+                    {% endif %}
+            </ul>
+            {% endif %}
+        </main>
+        <div class="col"></div>
+    </div>
+</div>
+
+<style>
+    .input[type="Submit"] {
+        display: none;
+    }
+</style>
+{% endblock%}
