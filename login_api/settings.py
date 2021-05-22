@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'registration',
 
     'django_email_verification',
+    'fcm_devices',
 ]
 
 MIDDLEWARE = [
@@ -160,6 +161,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
+
 def verified_callback(user):
     user.is_active = True
 
@@ -170,7 +172,9 @@ EMAIL_MAIL_SUBJECT = 'Confirm your email'
 EMAIL_MAIL_HTML = 'mail_body.html'
 EMAIL_MAIL_PLAIN = 'mail_body.txt'
 EMAIL_NOTI_PLAIN = 'noti.txt'
-EMAIL_NOTI_HTML  = 'noti.html'
+EMAIL_NOTI_HTML = 'noti.html'
 EMAIL_TOKEN_LIFE = 60 * 60
 EMAIL_PAGE_TEMPLATE = 'confirm_template.html'
 EMAIL_PAGE_DOMAIN = 'http://stockcrypto.ddns.net/'
+
+FCM_DEVICES_API_KEY = os.environ.get("FCM_DEVICES_API_KEY")

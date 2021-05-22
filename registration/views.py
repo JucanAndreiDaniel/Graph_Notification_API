@@ -169,24 +169,24 @@ def home(request):
     currency = Profile.objects.get(user__id=request.user.id)
     currency = currency.fav_currency
     prices = cryptoObject.objects.annotate(current=F("value__current"),
-                                    high_1d=F("value__high_1d"),
-                                    low_1d=F("value__low_1d"),
-                                    currency=F("value__currency"),
-                                    ath=F("value__ath"),
-                                    ath_time=F("value__ath_time"),
-                                    atl=F("value__atl"),
-                                    atl_time=F("value__atl_time")).values("coin_id",
-                                  "symbol",
-                                  "name",
-                                  "image",
-                                  "last_updated",
-                                  "current",
-                                  "high_1d",
-                                  "low_1d",
-                                  "ath",
-                                  "ath_time",
-                                  "atl",
-                                  "atl_time").filter(Q(currency=currency))
+                                           high_1d=F("value__high_1d"),
+                                           low_1d=F("value__low_1d"),
+                                           currency=F("value__currency"),
+                                           ath=F("value__ath"),
+                                           ath_time=F("value__ath_time"),
+                                           atl=F("value__atl"),
+                                           atl_time=F("value__atl_time")).values("coin_id",
+                                                                                 "symbol",
+                                                                                 "name",
+                                                                                 "image",
+                                                                                 "last_updated",
+                                                                                 "current",
+                                                                                 "high_1d",
+                                                                                 "low_1d",
+                                                                                 "ath",
+                                                                                 "ath_time",
+                                                                                 "atl",
+                                                                                 "atl_time").filter(Q(currency=currency))
     page = request.GET.get('page', 1)
     favorites = user.favorite.annotate(current=F("value__current"),
                                        high_1d=F("value__high_1d"),
@@ -196,17 +196,17 @@ def home(request):
                                        ath_time=F("value__ath_time"),
                                        atl=F("value__atl"),
                                        atl_time=F("value__atl_time")).values("coin_id",
-                                     "symbol",
-                                     "name",
-                                     "image",
-                                     "last_updated",
-                                     "current",
-                                     "high_1d",
-                                     "low_1d",
-                                     "ath",
-                                     "ath_time",
-                                     "atl",
-                                     "atl_time").filter(Q(currency=currency))
+                                                                             "symbol",
+                                                                             "name",
+                                                                             "image",
+                                                                             "last_updated",
+                                                                             "current",
+                                                                             "high_1d",
+                                                                             "low_1d",
+                                                                             "ath",
+                                                                             "ath_time",
+                                                                             "atl",
+                                                                             "atl_time").filter(Q(currency=currency))
     cList.remove(user.fav_currency)
     paginator = Paginator(prices, 30)
     try:
@@ -238,7 +238,7 @@ def filter(request):
         price = paginator.page(1)
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic,"nrnot": lista[1]})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic, "nrnot": lista[1]})
 
 
 def base(request):
@@ -334,24 +334,24 @@ def userSettings(request):
                                        ath_time=F("value__ath_time"),
                                        atl=F("value__atl"),
                                        atl_time=F("value__atl_time")).values("coin_id",
-                                     "symbol",
-                                     "name",
-                                     "image",
-                                     "last_updated",
-                                     "current",
-                                     "high_1d",
-                                     "low_1d",
-                                     "ath",
-                                     "ath_time",
-                                     "atl",
-                                     "atl_time").filter(Q(currency=user.fav_currency))
+                                                                             "symbol",
+                                                                             "name",
+                                                                             "image",
+                                                                             "last_updated",
+                                                                             "current",
+                                                                             "high_1d",
+                                                                             "low_1d",
+                                                                             "ath",
+                                                                             "ath_time",
+                                                                             "atl",
+                                                                             "atl_time").filter(Q(currency=user.fav_currency))
     if request.method == 'POST':
         favoriteCurrency = request.POST['curr']
         user.fav_currency = favoriteCurrency
         user.save()
         return HttpResponseRedirect('userSettings')
     cList.remove(user.fav_currency)
-    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency, "fav": favorites, "notificare": dic,"nrnot": lista[1]})
+    return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency, "fav": favorites, "notificare": dic, "nrnot": lista[1]})
 
 
 def changeFavCurrency(request):
@@ -366,7 +366,7 @@ def changeFavCurrency(request):
 
 @login_required(login_url="login")
 def notificationTab(request):
-    
+
     lista = checkPrices(request)
     dic = lista[0]
     currency = Profile.objects.get(user__id=request.user.id)
@@ -380,73 +380,81 @@ def notificationTab(request):
                                        ath_time=F("value__ath_time"),
                                        atl=F("value__atl"),
                                        atl_time=F("value__atl_time")).values("coin_id",
-                                     "symbol",
-                                     "name",
-                                     "image",
-                                     "last_updated",
-                                     "current",
-                                     "high_1d",
-                                     "low_1d",
-                                     "ath",
-                                     "ath_time",
-                                     "atl",
-                                     "atl_time").filter(Q(currency=currency))
-                                         
+                                                                             "symbol",
+                                                                             "name",
+                                                                             "image",
+                                                                             "last_updated",
+                                                                             "current",
+                                                                             "high_1d",
+                                                                             "low_1d",
+                                                                             "ath",
+                                                                             "ath_time",
+                                                                             "atl",
+                                                                             "atl_time").filter(Q(currency=currency))
+
     notification_coins = Profile.objects.get(
         user__id=request.user.id).notification.annotate(current=F("coin__value__current"),
-                                       high_1d=F("coin__value__high_1d"),
-                                       low_1d=F("coin__value__low_1d"),
-                                       currency=F("coin__value__currency"),
-                                       ath=F("coin__value__ath"),
-                                       ath_time=F("coin__value__ath_time"),
-                                       atl=F("coin__value__atl"),
-                                       atl_time=F("coin__value__atl_time"),
-                                       image=F("coin__image"),
-                                       name=F("coin__name")).values("coin_id",
-                                     "coin",
-                                     "value_type",
-                                     "initial_value",
-                                     "final_value",
-                                     "enabled",
-                                     "via_mail",
-                                     "current",
-                                     "high_1d",
-                                     "low_1d",
-                                     "ath",
-                                     "ath_time",
-                                     "atl",
-                                     "atl_time",
-                                     "image",
-                                     "name").filter(Q(currency=currency))
-    return render(request, 'notificationTab.html', {"favorites":favorites,"notificari": notification_coins,"notificare": dic,"nrnot": lista[1]})
+                                                        high_1d=F(
+                                                            "coin__value__high_1d"),
+                                                        low_1d=F(
+                                                            "coin__value__low_1d"),
+                                                        currency=F(
+                                                            "coin__value__currency"),
+                                                        ath=F(
+                                                            "coin__value__ath"),
+                                                        ath_time=F(
+                                                            "coin__value__ath_time"),
+                                                        atl=F(
+                                                            "coin__value__atl"),
+                                                        atl_time=F(
+                                                            "coin__value__atl_time"),
+                                                        image=F("coin__image"),
+                                                        name=F("coin__name")).values("coin_id",
+                                                                                     "coin",
+                                                                                     "value_type",
+                                                                                     "initial_value",
+                                                                                     "final_value",
+                                                                                     "enabled",
+                                                                                     "via_mail",
+                                                                                     "current",
+                                                                                     "high_1d",
+                                                                                     "low_1d",
+                                                                                     "ath",
+                                                                                     "ath_time",
+                                                                                     "atl",
+                                                                                     "atl_time",
+                                                                                     "image",
+                                                                                     "name").filter(Q(currency=currency))
+    return render(request, 'notificationTab.html', {"favorites": favorites, "notificari": notification_coins, "notificare": dic, "nrnot": lista[1]})
 
 
 def modifyNotification(request):
     if request.method == 'POST':
         noti_disable = Profile.objects.get(
-                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_id'))
-        noti_disable.enabled= bool(request.POST.get('state'))
+            user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_id'))
+        noti_disable.enabled = bool(request.POST.get('state'))
         noti_disable.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class changeEnabledNoti(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         noti_disable = Profile.objects.get(
-                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_id'))
-        noti_disable.enabled= request.POST.get('state')
+            user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_id'))
+        noti_disable.enabled = request.POST.get('state')
         noti_disable.save()
         return Response(f"Notification State:{noti_disable.enabled}")
-    
+
 
 def createNotification(request):
     user = Profile.objects.get(user__id=request.user.id)
     coin_result = cryptoObject.objects.get(
         coin_id=request.POST.get('optionCrypto').lower())
     option = request.POST.get('option')
-    crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")
-                                ).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
+    crypto_value = cryptoObject.objects.annotate(current=F("value__current"), currency=F("value__currency")
+                                                 ).values("current", "currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
     crypto_value = crypto_value['current']
     final_value = float(request.POST.get('value'))
     if final_value < 0:
@@ -459,12 +467,12 @@ def createNotification(request):
         final_value = crypto_value - (crypto_value * final_value)/100
     else:
         final_value = final_value
-    viamail=request.POST.get('viamail')
-    #If we have viamail enabled the notification will be created with field in mind otherwise its false by default
-    if viamail=="on":
-        viamail=True
+    viamail = request.POST.get('viamail')
+    # If we have viamail enabled the notification will be created with field in mind otherwise its false by default
+    if viamail == "on":
+        viamail = True
         notificare = Notification(coin=coin_result,
-                              value_type=option, initial_value=crypto_value, final_value=final_value,via_mail=viamail)
+                                  value_type=option, initial_value=crypto_value, final_value=final_value, via_mail=viamail)
         notificare.save()
         user.notification.add(notificare)
         user.save()
@@ -480,15 +488,18 @@ def createNotification(request):
 
 class CreateNotificationApi(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         if request.method == 'POST':
             user = Profile.objects.get(user__id=request.user.id)
-            coin_result = cryptoObject.objects.get(coin_id=request.POST.get('optionCrypto'))
+            coin_result = cryptoObject.objects.get(
+                coin_id=request.POST.get('optionCrypto'))
             option = request.POST.get('option')
-            crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
+            crypto_value = cryptoObject.objects.annotate(current=F("value__current"), currency=F("value__currency")).values(
+                "current", "currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
             crypto_value = crypto_value['current']
             final_value = float(request.POST.get('value'))
-            
+
             if final_value < 0:
                 return HttpResponseRedirect('userSettings')
             if option == "g_perc":
@@ -499,20 +510,19 @@ class CreateNotificationApi(APIView):
                 final_value = crypto_value - (crypto_value * final_value)/100
             else:
                 final_value = final_value
-            
 
-            viamail=request.POST.get('viamail')
-            if viamail=="on":
-                viamail=True
+            viamail = request.POST.get('viamail')
+            if viamail == "on":
+                viamail = True
                 notificare = Notification(coin=coin_result,
-                              value_type=option, initial_value=crypto_value, final_value=final_value,via_mail=viamail)
+                                          value_type=option, initial_value=crypto_value, final_value=final_value, via_mail=viamail)
                 notificare.save()
                 user.notification.add(notificare)
                 user.save()
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-            
-            notificare = Notification(coin=coin_result,value_type=option, initial_value=crypto_value, final_value=final_value)
+            notificare = Notification(
+                coin=coin_result, value_type=option, initial_value=crypto_value, final_value=final_value)
             notificare.save()
             user.notification.add(notificare)
             user.save()
@@ -521,8 +531,8 @@ class CreateNotificationApi(APIView):
 
 def deleteNotification(request):
     noti_delete = Profile.objects.get(
-                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_delete'))
-    noti_tabela_mare = Notification.objects.get(id = noti_delete.id).delete()
+        user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_delete'))
+    noti_tabela_mare = Notification.objects.get(id=noti_delete.id).delete()
     profile = Profile(user=request.user)
     profile.notification.remove(noti_delete)
     profile.save()
@@ -532,11 +542,13 @@ def deleteNotification(request):
 
 class DeleteNotificationApi(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         if request.method == 'POST':
             noti_delete = Profile.objects.get(
-            user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_delete'))
-            noti_tabela_mare = Notification.objects.get(id = noti_delete.id).delete()
+                user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_delete'))
+            noti_tabela_mare = Notification.objects.get(
+                id=noti_delete.id).delete()
             profile = Profile(user=request.user)
             profile.notification.remove(noti_delete)
             profile.save()
@@ -545,15 +557,15 @@ class DeleteNotificationApi(APIView):
 
 def changeNotification(request):
     user = Profile.objects.get(user__id=request.user.id)
-    
+
     option = request.POST.get('option')
-    crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")
-                                ).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('crypto_name'))
-    
+    crypto_value = cryptoObject.objects.annotate(current=F("value__current"), currency=F("value__currency")
+                                                 ).values("current", "currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('crypto_name'))
+
     final_value = request.POST.get('cvalue')
     if final_value == '':
         notificare = Profile.objects.get(
-                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
+            user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_name'))
         final_value = notificare.final_value
     else:
         if final_value < 0:
@@ -567,16 +579,15 @@ def changeNotification(request):
         else:
             final_value = final_value
 
-
-    viamail=request.POST.get('viamail')
-    if viamail=="on":
-        viamail=True
+    viamail = request.POST.get('viamail')
+    if viamail == "on":
+        viamail = True
         notificare = Profile.objects.get(
-                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
-        
-        notificare.value_type=option
-        notificare.final_value=final_value
-        notificare.via_mail=viamail
+            user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_name'))
+
+        notificare.value_type = option
+        notificare.final_value = final_value
+        notificare.via_mail = viamail
 
         notificare.save()
         user.notification.add(notificare)
@@ -584,10 +595,10 @@ def changeNotification(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     notificare = Profile.objects.get(
-                    user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
-    notificare.value_type=option
-    notificare.final_value=final_value  
-    notificare.save()   
+        user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_name'))
+    notificare.value_type = option
+    notificare.final_value = final_value
+    notificare.save()
     user.notification.add(notificare)
     user.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -595,41 +606,44 @@ def changeNotification(request):
 
 class changeNotificationApi(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         if request.method == 'POST':
             user = Profile.objects.get(user__id=request.user.id)
-    
+
             option = request.POST.get('option')
-            crypto_value = cryptoObject.objects.annotate(current=F("value__current"),currency=F("value__currency")
-                                ).values("current","currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('crypto_name'))
-    
+            crypto_value = cryptoObject.objects.annotate(current=F("value__current"), currency=F("value__currency")
+                                                         ).values("current", "currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('crypto_name'))
+
             final_value = request.POST.get('cvalue')
             final_value = request.POST.get('cvalue')
             if final_value == '':
                 notificare = Profile.objects.get(
-                            user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
+                    user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_name'))
                 final_value = notificare.final_value
             else:
                 if final_value < 0:
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
                 if option == "g_perc":
-                    final_value = crypto_value + (crypto_value * final_value)/100
+                    final_value = crypto_value + \
+                        (crypto_value * final_value)/100
                 elif option == "d_perc":
                     if final_value >= 100:
                         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-                    final_value = crypto_value - (crypto_value * final_value)/100
+                    final_value = crypto_value - \
+                        (crypto_value * final_value)/100
                 else:
                     final_value = final_value
 
-            viamail=request.POST.get('viamail')
-            if viamail==True:
-                viamail=True
+            viamail = request.POST.get('viamail')
+            if viamail == True:
+                viamail = True
                 notificare = Profile.objects.get(
-                            user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
-                
-                notificare.value_type=option
-                notificare.final_value=final_value
-                notificare.via_mail=viamail
+                    user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_name'))
+
+                notificare.value_type = option
+                notificare.final_value = final_value
+                notificare.via_mail = viamail
 
                 notificare.save()
                 user.notification.add(notificare)
@@ -637,15 +651,14 @@ class changeNotificationApi(APIView):
                 return Response("Notification Changed")
 
             notificare = Profile.objects.get(
-                            user__id=request.user.id).notification.get(coin_id = request.POST.get('crypto_name'))
-            notificare.value_type=option
-            notificare.final_value=final_value  
-            notificare.save()   
+                user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_name'))
+            notificare.value_type = option
+            notificare.final_value = final_value
+            notificare.save()
             user.notification.add(notificare)
             user.save()
 
             return Response("Notification Changed")
-
 
 
 def checkPrices(request):
@@ -671,7 +684,7 @@ def checkPrices(request):
                         if noti.final_value == fav.current:
                             dic[noti.coin.coin_id] = noti.final_value
     js_data = json.dumps(dic)
-    return [js_data,len(dic)]
+    return [js_data, len(dic)]
 
 
 class ChangeCurrencyFav(APIView):
@@ -725,3 +738,15 @@ class AllCoinInformation(APIView):
 
             return JsonResponse(values, safe=False)
 
+
+class UserNotifications(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        if request.method == 'GET':
+
+            user = Profile.objects.get(user__id=request.user.id)
+
+            values = list(user.notification.all().values())
+
+            return JsonResponse(values, safe=False)

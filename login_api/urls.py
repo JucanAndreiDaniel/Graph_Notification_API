@@ -18,8 +18,14 @@ from django.conf.urls import include
 from django.urls import path
 # Pentru favicons
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.conf import settings
 from django.views.generic.base import RedirectView
+from rest_framework.routers import SimpleRouter
+
+from fcm_devices.api.drf.views import DeviceViewSet
+
+
+router = SimpleRouter()
+router.register("devices", DeviceViewSet, basename="devices")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +34,5 @@ urlpatterns = [
         "favicon.ico",
         RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
     ),
-] 
+    path('v1/', include(router.urls))
+]
