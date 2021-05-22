@@ -8,10 +8,11 @@
             <p></p>
             <div class="container_sf">
                 <!-- Button trigger modal table -->
-                <button type="button" class="btn add_btn" data-toggle="modal" data-target="#favourites"
-                    style="margin-right: 1em;height:5%">
-                    Show Favourites
-                </button>
+                <div class="input-group-append" style="margin-right:1vw">
+                    <button type="button" class="not_btn1" data-toggle="modal" data-target="#favourites"
+                    >Favourites</button>
+                </div>
+                
                 <form method="GET" action="filter">
                     <div class="input-group mb-3">
                         <input type="search" name="contain" class="form-control" placeholder="Search">
@@ -20,8 +21,21 @@
                         </div>
                     </div>
                 </form>
+                <div style="padding-left: 1vh;">
+                    <div class="dropdown">
+                      <button class="dropbtn"> {{ favC }}</button>
+                      <div class="dropdown-content">
+                        {% for curr in currencyList %}
+                        <form action="" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="curr" value="{{ curr }}">
+                          <input type="Submit" class="dropdown-item" value="{{ curr }}">
+                        </form>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
             </div>
-
             <!-- Modal Table Load Favourites here -->
             <p></p>
 
@@ -102,13 +116,11 @@
                                         </form>
                                     </div>
                                 {% endif %}
-
                             </td>
                             <td>{{ coin.symbol }}</td>
                             <td>{{ coin.current }}</td>
                             <td>{{ coin.high_1d }}</td>
                             <td>{{ coin.low_1d }}</td>
-
                         </tr>
                         {% endfor %}
                     </tbody>

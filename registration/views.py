@@ -165,6 +165,7 @@ def home(request):
     user = Profile.objects.get(user__id=request.user.id)
     lista = checkPrices(request)
     dic = lista[0]
+    cList = ["usd", "eur", "rub", "gbp"]
     currency = Profile.objects.get(user__id=request.user.id)
     currency = currency.fav_currency
     prices = cryptoObject.objects.annotate(current=F("value__current"),
@@ -206,6 +207,7 @@ def home(request):
                                      "ath_time",
                                      "atl",
                                      "atl_time").filter(Q(currency=currency))
+    cList.remove(user.fav_currency)
     paginator = Paginator(prices, 30)
     try:
         price = paginator.page(page)
@@ -213,7 +215,7 @@ def home(request):
         price = paginator.page(1)
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic, "nrnot": lista[1]})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic, "nrnot": lista[1], "currencyList": cList, "favC": user.fav_currency})
 
 
 def filter(request):
@@ -350,6 +352,16 @@ def userSettings(request):
         return HttpResponseRedirect('userSettings')
     cList.remove(user.fav_currency)
     return render(request, 'userSettings.html', {"currencyList": cList, "favC": user.fav_currency, "fav": favorites, "notificare": dic,"nrnot": lista[1]})
+
+
+def changeFavCurrency(request):
+    user = Profile.objects.get(user__id=request.user.id)
+    if request.method == 'POST':
+        favoriteCurrency = request.POST['curr']
+        user.fav_currency = favoriteCurrency
+        user.save()
+        return HttpResponseRedirect('userSettings')
+    return Response("something went wrong")
 
 
 @login_required(login_url="login")
