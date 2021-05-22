@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.fields.json import HasKeyLookup
+from django.db.models.fields.related import ForeignKey
 
 
 class cryptoObject(models.Model):
@@ -95,3 +97,25 @@ class Profile(models.Model):
     favorite = models.ManyToManyField(cryptoObject)
     notification = models.ManyToManyField(Notification)
     fav_currency = models.CharField(max_length=255, blank=True, default="eur")
+
+
+class CompanyProfile(models.Model):
+    country = models.CharField(max_length=255, default='N/A')
+    exchange = models.CharField(max_length=255, default='N/A')
+    date_founded = models.DateField(7)
+    market_cap = models.IntegerField(default = 0)
+    company_name = models.CharField(max_length=255, default='N/A')
+    shareOutstanding = models.FloatField(default = 0)
+    symbol = models.CharField(max_length=255, primary_key=True)
+    weburl = models.CharField(max_length=255, default='N/A')
+    logo = models.CharField(max_length = 255, default='N/A')
+    finnhubIndustry = models.CharField(max_length = 255, default='N/A')
+
+
+class StockPrices(models.Model):
+    symbol = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    closed = models.FloatField()
+    high24 = models.FloatField()
+    low24 = models.FloatField()
+    open = models.FloatField()
+    previous_closed = models.FloatField()
