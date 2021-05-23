@@ -113,7 +113,7 @@ class CompanyProfile(models.Model):
 
 
 class StockPrices(models.Model):
-    symbol = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    symbol = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, primary_key=True)
     closed = models.FloatField()
     high24 = models.FloatField()
     low24 = models.FloatField()
