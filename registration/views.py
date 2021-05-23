@@ -548,7 +548,10 @@ class CreateNotificationApi(APIView):
                 if option_list[0] == "Value":
                     option = option_list[1].lower()
 
-            viamail = request.POST.get('viamail')
+            if request.POST.get('viamail')=="true":
+                viamail=True
+            else:
+                viamail=False
             try:
                 notificare = user.notification.get(
                     coin_id=request.POST.get('crypto_name'))
