@@ -476,7 +476,10 @@ class changeEnabledNoti(APIView):
     def post(self, request):
         noti_disable = Profile.objects.get(
             user__id=request.user.id).notification.get(coin_id=request.POST.get('crypto_id'))
-        noti_disable.enabled = request.POST.get('state')
+        if request.POST.get('state')=="true":
+                noti_disable.enabled=True
+        else:
+                noti_disable.enabled=False
         noti_disable.save()
         return Response(f"Notification State:{noti_disable.enabled}")
 
