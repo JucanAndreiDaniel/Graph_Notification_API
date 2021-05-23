@@ -1,6 +1,5 @@
 {% extends 'base.html' %} {% block content %}
 {% load static %}
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <div class="container-fluid">
     <p>
     </p>
@@ -8,7 +7,6 @@
         <p id="textnot" class="custom-msg">Your notifications</p>
     </div>
     <div class="container-fluid" style="overflow:auto;max-height:350px;">
-
         {% for noti in notificari %}
         <div class="input-group-append container_sw not_btn">
             <div class="content_sw">
@@ -23,8 +21,8 @@
                 </div>
                 <div class="content_values">
                     <div>
-                        <label class="custom-msg3">Initial Value </label>
-                        <span class="custom-msg3" style="margin-left:2vh">{{ noti.initial_value }}</span>
+                        <label class="custom-msg3">Option </label>
+                        <span class="custom-msg3" style="margin-left:2vh">{{ noti.value_type }}</span>
                     </div>
                     <div>
                         <label class="custom-msg3">Final Value </label>
