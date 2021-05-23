@@ -526,10 +526,10 @@ class CreateNotificationApi(APIView):
         if request.method == 'POST':
             user = Profile.objects.get(user__id=request.user.id)
             coin_result = cryptoObject.objects.get(
-                coin_id=request.POST.get('optionCrypto'))
+                coin_id=request.POST.get('crypto_id'))
             option = request.POST.get('option')
             crypto_value = cryptoObject.objects.annotate(current=F("value__current"),
-                                                         currency=F("value__currency")).values("current", "currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('optionCrypto').lower())
+                                                         currency=F("value__currency")).values("current", "currency").filter(Q(currency=user.fav_currency)).get(coin_id=request.POST.get('crypto_id').lower())
             crypto_value = crypto_value['current']
             final_value = float(request.POST.get('value'))
 
