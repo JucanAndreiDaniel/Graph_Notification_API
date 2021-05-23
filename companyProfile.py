@@ -24,9 +24,9 @@ try:
     tickers = r.json()
     j = 0
     for i in tickers:
-        if j==9:
-            time.sleep(2)
-            j=0
+        # if j==3:
+        #     time.sleep(1)
+        #     j=0
         symbol = i['symbol']
         r = requests.get('https://finnhub.io/api/v1/stock/profile2?symbol='+symbol+'&token='+token) # company info
         values = r.json()
@@ -44,17 +44,8 @@ try:
                                         shareOutstanding = values['shareOutstanding'] if values['shareOutstanding'] is not None else 0,
                                         finnhubIndustry = values['finnhubIndustry'] if values['finnhubIndustry'] is not None else 0)
         companyProfile.save()
-        z = requests.get('https://finnhub.io/api/v1/quote?symbol='+i['symbol']+'&token='+token) # stock info quoutes
-        values = z.json()
-        stockPrices = StockPrices(symbol = companyProfile,
-                                  closed= values['c'],
-                                  high24= values['h'],
-                                  low24 = values['l'],
-                                  open = values['o'],
-                                  previous_closed = values['pc'])
-        stockPrices.save()
-        j+=1
-        print(values)
+        #j+=1
+        time.sleep(1)
 except:
     traceback.print_exc()
 
