@@ -26,7 +26,7 @@ urlpatterns = [
      path('coins/', views.JsonObjectView.as_view()),
      path('coins/<str:id>', views.AllCoinInformation.as_view()),
      path('favorites/', views.JsonFavoriteView.as_view()),
-     path('favorites/add', views.DeleteFromFavApi.as_view()),
+     path('favorites/delete', views.DeleteFromFavApi.as_view()),
      path('favorites/add', views.AddToFavAPI.as_view()),
      path('notifications/change', views.changeEnabledNoti.as_view()),
      path('notifications/create', views.CreateNotificationApi.as_view()),
