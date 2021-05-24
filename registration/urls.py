@@ -17,6 +17,7 @@ urlpatterns = [
      path('createNotification', views.createNotification, name="CreateNotification"),
      path('deleteNotification', views.deleteNotification, name="deleteNotification"),
      path('changeNotification', views.changeNotification, name="changeNotification"),
+     path('stockTickFinder',views.stockTickFinder,name='stockTickFinder'),
      path('email/', include(email_urls)),
      path('', views.home, name="home"),
 

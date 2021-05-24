@@ -1,3 +1,4 @@
+from os import name
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
@@ -258,7 +259,6 @@ def stock(request):
         stocks = paginator.page(1)
     except EmptyPage:
         stocks = paginator.page(paginator.num_pages)
-    print(stock_data)
     return render(request, 'stock.html', {"stonks": stocks})
 
 
@@ -715,3 +715,71 @@ class UserNotifications(APIView):
             values = list(user.notification.all().values())
 
             return JsonResponse(values, safe=False)
+
+
+def cmpProfile(contain,cee):
+    a = CompanyProfile.objects.annotate(
+                        closed=F('stockprices__closed'),
+                        high24=F('stockprices__high24'),
+                        low24=F('stockprices__low24'),
+                        open=F('stockprices__open'),
+                        previous_closed=F('stockprices__previous_closed')
+                    ).values("country",
+                            "exchange",
+                            "date_founded",
+                            "market_cap",
+                            "company_name",
+                            "shareOutstanding",
+                            "symbol",
+                            "weburl",
+                            "logo",
+                            "finnhubIndustry",
+                            "closed",
+                            "high24",
+                            "low24",
+                            "open",
+                            "previous_closed")
+    if contain != '':
+        if cee=='symbol':
+            a = a.filter(symbol__icontains = contain)
+        elif cee=='name':
+            a = a.filter(company_name__icontains = contain)
+
+    return a
+
+def stockTickFinder(request):
+    symbolOrName = request.GET.get('contain')
+    print(symbolOrName)
+    companiesSymbol = cmpProfile(symbolOrName,'symbol')
+    namez     = cmpProfile(symbolOrName,'name')
+    if companiesSymbol:
+        page = request.GET.get('page', 1)
+        paginator = Paginator(companiesSymbol, 30)
+        try:
+            companiesSymbol = paginator.page(page)
+        except PageNotAnInteger:
+            companiesSymbol = paginator.page(1)
+        except EmptyPage:
+            companiesSymbol = paginator.page(paginator.num_pages)
+        return render(request, 'stock.html', {"stonks": companiesSymbol})
+    if namez:
+        page = request.GET.get('page', 1)
+        paginator = Paginator(namez, 30)
+        try:
+            namez = paginator.page(page)
+        except PageNotAnInteger:
+            namez = paginator.page(1)
+        except EmptyPage:
+            namez = paginator.page(paginator.num_pages)
+        return render(request, 'stock.html', {"stonks": namez})
+    allz = cmpProfile('','all') 
+    return render(request, 'stock.html',{'stonks': allz})
+
+        
+
+
+
+
+
+
+

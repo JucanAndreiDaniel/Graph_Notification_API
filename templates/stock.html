@@ -12,9 +12,9 @@
                     <button type="button" class="not_btn1" data-toggle="modal" data-target="#favourites"
                     >Favourites</button>
                 </div>
-                <form method="GET" action="filter">
+                <form method="GET" action="stockTickFinder">
                     <div class="input-group mb-3">
-                        <input type="search" name="contain" class="form-control" placeholder="TODO">
+                        <input type="search" name="contain" class="form-control" placeholder="Find company by symbol...">
                         <div class="input-group-append">
                             <button class="btn add_btn" type="submit">Go</button>
                         </div>
@@ -84,18 +84,18 @@
                         {% for stock in stonks %}
                         <tr scope="row" style="color:white">
                             <td>
-                                {% if stock in favstock %}
+                                <!-- {% if stock in favstock %}
                                     <div class="container_sf">
                                         <form action="delFavorite" method="POST">
                                             {% csrf_token %}
-                                            <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
+                                            
                                             <input type="hidden" name="crypto.id" value="{{ stock.symbol }}">
                                             <input type="Submit" class="fav_btn" value="★">
                                             <span><img class="coin-image" src="{{ stock.logo }}"></span>
                                             <span>{{ stock.symbol }}</span>
                                         </form>
                                     </div>
-                                {% else %}
+                                {% else %} -->
                                     <div class="container_sf">
                                         <form action="addFavorite" method="POST">
                                             {% csrf_token %}
@@ -106,7 +106,7 @@
                                             <span>{{ stock.symbol }}</span>
                                         </form>
                                     </div>
-                                {% endif %}
+                                <!-- {% endif %} -->
                             </td>
                             <td>{{ stock.closed }}</td>
                             <td>{{ stock.high24 }}</td>
