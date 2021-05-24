@@ -103,15 +103,14 @@
     $(function () {
         /** This code runs when everything has been loaded on the page */
         /* Inline sparklines take their values from the contents of the tag */
-        $('.inlinesparkline').sparkline('html', {type: 'line', disableHiddenCheck: true, height: '200px', width: '500px'});
+        $('.inlinesparkline').sparkline('html', {type: 'line', disableHiddenCheck: true, height: '20px', width: '50px'});
 
         /* Sparklines can also take their values from the first argument 
         passed to the sparkline() function */
-        var myvalues = [10, 8, 5, 7, 4, 4, 1];
-        $('.dynamicsparkline').sparkline(myvalues, {type:'line', barColor:'green', disableHiddenCheck: true, height: '200px', width: '500px'});
+        $('.dynamicsparkline').sparkline('html', {type:'line', barColor:'green', disableHiddenCheck: true, height: '200px', width: '500px'});
 
         /* The second argument gives options such as chart type */
-        $('.dynamicbar').sparkline(myvalues, {type:'bar', disableHiddenCheck: true,height: '20px', width: '50px'});
+        $('.dynamicbar').sparkline('html', {type:'bar', barColor:'#f7ba5b', disableHiddenCheck: true,height: '5vh', width: '50vh'});
 
         /* Use 'html' instead of an array of values to pass options 
         to a sparkline with data in the tag */
@@ -122,7 +121,6 @@
 
 <script>
     var mydata = {{ notificare | safe }};
-    console.log(mydata);
     function myFunction() {
         for (var i in mydata) {
             // toastr["success"](capitalize(i) + " has reached the value of " + mydata[i])

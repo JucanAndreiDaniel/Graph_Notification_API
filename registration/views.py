@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import cryptoObject, Profile, value, Notification, CompanyProfile, StockPrices
+from .models import cryptoObject, Profile, market_chart, value, Notification, CompanyProfile, StockPrices
 
 from django.db.models import F, Q
 
@@ -188,6 +188,8 @@ def home(request):
                                                                                  "ath_time",
                                                                                  "atl",
                                                                                  "atl_time").filter(Q(currency=currency))
+    # charts =  market_chart.objects.filter(currency=currency)
+    dic1 = {}                                                    
     page = request.GET.get('page', 1)
     favorites = user.favorite.annotate(current=F("value__current"),
                                        high_1d=F("value__high_1d"),
@@ -210,16 +212,20 @@ def home(request):
                                                                              "ath_time",
                                                                              "atl",
                                                                              "atl_time").filter(Q(currency=currency))
-    print(favorites)
     cList.remove(user.fav_currency)
-    paginator = Paginator(prices, 30)
+    pret_zi = market_chart.objects.filter(day=market_chart.Days.ONE).filter(currency=currency)
+    for j in pret_zi:
+        dic1[j.coin_id] = [j.price1,j.price2,j.price3,j.price4,j.price5,j.price6,j.price7,j.price8,j.price9,j.price10,j.price11,j.price12,j.price13,j.price14,j.price15,j.price16,j.price17,j.price18,j.price19,j.price20,j.price21,j.price22,j.price23,j.price24]
+    
+    paginator = Paginator(prices,30)
+    charts = json.dumps(dic1)
     try:
         price = paginator.page(page)
     except PageNotAnInteger:
         price = paginator.page(1)
     except EmptyPage:
         price = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic, "nrnot": lista[1], "currencyList": cList, "favC": user.fav_currency})
+    return render(request, 'home.html', {"crypto": price, "fav": favorites, "notificare": dic, "nrnot": lista[1], "currencyList": cList, "favC": user.fav_currency,"chart": charts})
 
 
 def stock(request):

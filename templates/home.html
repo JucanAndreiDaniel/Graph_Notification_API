@@ -1,6 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 
-
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <div class="container-fluid">
     <div id="myModal" class="my-modal">
         <div class="my-modal-content">
@@ -120,9 +120,9 @@
                             <th data-field="id" data-sortable="true" scope="col">Name </th>
                             <th data-field="sym" scope="col"> Symbol </th>
                             <th data-field="price" data-sortable="true" scope="col">Price</th>
-                            <th data-field="last_price" data-sortable="true" scope="col">Last Price</th>
                             <th data-field="24high" data-sortable="true" scope="col">24h High</th>
                             <th data-field="24low" data-sortable="true" scope="col">24h Low</th>
+                            <th data-field="Last 7 Days" data-sortable="true" scope="col">Last 24 Hours</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,8 +137,7 @@
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav_btn" value="★">    
                                         </form>
-                                        <button name="btndetali" id="mybtn" type="button" class="fav1_btn" style="background-color: transparent;" 
-                                        onclick="showModal()">
+                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal()">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </button>
@@ -151,7 +150,7 @@
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav_btn" value="☆">
                                         </form>
-                                        <button name="btndetali" id="mybtn" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal()">
+                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal()">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </button>
@@ -159,10 +158,10 @@
                                 {% endif %}
                             </td>
                             <td>{{ coin.symbol }}</td>
-                            <td>{{ coin.current }}</td>
-                            <td>{{ coin.last_price }}</td>
+                            <td><span name="pret_curent">{{ coin.current }}</span></td>
                             <td>{{ coin.high_1d }}</td>
                             <td>{{ coin.low_1d }}</td>
+                            <td style="text-align: center; width:15%;"><span name="sparkline_crypto" class="dynamicbar"></span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -208,12 +207,14 @@
         display: none;
     }
 </style>
+
+
 <script>
+    
+    // When the user clicks the button, open the modal
     function showModal(){
         document.getElementById("myModal").style.display = "block";
     }
-    // When the user clicks the button, open the modal 
-    
 
     // When the user clicks on <span> (x), close the modal
     document.getElementsByName("modalClose")[0].onclick = function () {
@@ -226,5 +227,15 @@
             document.getElementById("myModal").style.display = "none";
         }
     };
+    function changeSparkline(){
+        var myvar = {{ chart | safe }};
+        var arr = document.getElementsByName("crypto.id");
+        for (let index = 0; index < 30; index++) {
+            document.getElementsByName("sparkline_crypto")[index].innerHTML = myvar[arr[index].value];
+        }
+    }
+    $(document).ready(function() {
+        changeSparkline();
+    });
 </script>
 {% endblock%}
