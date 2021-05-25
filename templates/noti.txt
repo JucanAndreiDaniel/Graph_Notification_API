@@ -1,12 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <style>
+        .mail-body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            text-align: center;
+            color: whitesmoke;
+            background: #2e2c2c !important;
+            display: flex;
+        }
+        .mail-div {
+            background-color: #5b5e5e;
+            margin-top: 5vh;
+            width: 70%;
+            border-radius: .25rem;
+            margin-left: 15%;
+            margin-bottom: 5vh;
+        }
+        .h-style{
+            text-align: left;
+            margin-left: 2vh;
+        }
+    </style>
     <meta charset="UTF-8">
-    <title>Email Confirmation</title>
+    <title>NotifyMe Price Alert!</title>
 </head>
-<body>
-<h1>Hey, {{ user.username }}!</h1><br>
-<h2>You received this email as {{ cName }} has reached the value of {{ cVal }}</h2>
-<h2>Please click <a href="{{ link }}">here</a> to view more informations.</h2>
+
+<body class="mail-body">
+    <div class="mail-div">
+        <a href="#" style="cursor: none;"><img src="https://stockcrypto.ddns.net/static/images/logo_home.png" style="z-index:1; width:10vw; height: auto; margin-top: 2vw;"></a>
+        <h1>Hey, {{ user }},</h1><br>
+        <h2 class="h-style">You received this email as {{ cName }} has reached the value of {{ cVal }}!</h2>
+        <div class="h-style">
+            <h2>Please click <a href="{{ link }}" style="text-decoration: none;color:#f3bb61">here</a> to view more informations.</h2> 
+        </div>  
+    </div>
 </body>
+
 </html>
