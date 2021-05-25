@@ -90,7 +90,7 @@
                                             {% csrf_token %}
                                             
                                             <input type="hidden" name="crypto.id" value="{{ stock.symbol }}">
-                                            <input type="Submit" class="fav_btn" value="★">
+                                            <input type="Submit" class="fav_btn" style="color:#f3b24a" value="★">
                                             <span><img class="coin-image" src="{{ stock.logo }}"></span>
                                             <span>{{ stock.symbol }}</span>
                                         </form>
@@ -101,10 +101,12 @@
                                             {% csrf_token %}
                                             <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
                                             <input type="hidden" name="crypto.id" value="{{ stock.symbol }}">
-                                            <input type="Submit" class="fav_btn" value="☆">
+                                            <input type="Submit" class="fav1_btn" style="color:#f3b24a" value="☆">
+                                        </form>
+                                        <div class="fav1_btn">
                                             <span><img class="coin-image" src="{{ stock.logo }}"></span>
                                             <span>{{ stock.symbol }}</span>
-                                        </form>
+                                        </div>         
                                     </div>
                                 <!-- {% endif %} -->
                             </td>

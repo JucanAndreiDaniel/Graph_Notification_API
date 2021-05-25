@@ -135,7 +135,7 @@
                                             {% csrf_token %}
                                             <!--when clicked this button will sent a request to delete the current crypto from user favorites -->
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
-                                            <input type="Submit" class="fav_btn" value="★">    
+                                            <input type="Submit" class="fav1_btn" style="color:#f3b24a" value="★">    
                                         </form>
                                         <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal()">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
@@ -148,7 +148,7 @@
                                             {% csrf_token %}
                                             <!--when clicked this button will sent a request to add the current crypto to favorites of user -->
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
-                                            <input type="Submit" class="fav_btn" value="☆">
+                                            <input type="Submit" class="fav1_btn" style="color:#f3b24a" value="☆">
                                         </form>
                                         <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal()">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
