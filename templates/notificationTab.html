@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block content %}
 {% load static %}
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <div class="container-fluid">
     <p>
     </p>
@@ -17,12 +18,13 @@
                                                                     '{{ noti.coin_id }}')" id="detail" class="fav1_btn"
                         data-toggle="modal" data-target="#favourites" style="background-color: #f7ba5b;font-size: 3vh;">
                         {{ noti.coin_id|title }}
+                        <span style="margin-left:1vh">{{ noti.current }}</span>
                     </button>
                 </div>
                 <div class="content_values">
                     <div>
                         <label class="custom-msg3">Option </label>
-                        <span class="custom-msg3" style="margin-left:2vh">{{ noti.value_type }}</span>
+                        <span name="tip_optiune" class="custom-msg3" style="margin-left:2vh">{{ noti.value_type }}</span>
                     </div>
                     <div>
                         <label class="custom-msg3">Final Value </label>
@@ -108,7 +110,7 @@
                     <div>
                         <label class="custom-msg2" for="value_type">Value   </label>
                         <p></p>
-                        <input class="placeholder_value" style="width:50%;font-size:3vh;" type="number" name="value"
+                        <input class="placeholder_value" style="width:50%;font-size:3vh;" type="number" step="0.0001" name="value"
                             placeholder="Value...">
                         <p></p>
                     </div>
@@ -163,8 +165,7 @@
                         <div>
                             <label class="custom-msg2" for="value_type">Value  </label>
                             <br>
-                            <input class="placeholder_value" style="font-size:3vh;" type="number" name="cvalue"
-                                placeholder="Value...">
+                            <input class="placeholder_value" style="font-size:3vh;" type="number" name="cvalue" step="0.0001" placeholder="Value...">
                         </div>
                         <br>
                         <label class="container-checkbox" style="display:inline-block;">
@@ -200,5 +201,34 @@
             document.getElementById("myModal").style.display = "none";
         }
     };
+    function changeOption(){
+        var arr = document.getElementsByName("tip_optiune");
+        for (let index = 0; index < arr.length; index++) {
+           console.log(arr[index].innerHTML);
+           var string = arr[index].innerHTML;
+            switch(string) {
+                case "bigger":
+                    document.getElementsByName("tip_optiune")[index].innerHTML="Bigger Than";
+                    break;
+                case "lower":
+                    document.getElementsByName("tip_optiune")[index].innerHTML="Lower Than";
+                    break;
+                case "equal":
+                    document.getElementsByName("tip_optiune")[index].innerHTML="Equal To";
+                    break;
+                case "g_perc":
+                    document.getElementsByName("tip_optiune")[index].innerHTML="Growth With Percentage";
+                    break;
+                case "d_perc":
+                    document.getElementsByName("tip_optiune")[index].innerHTML="Decrease With Percentage";
+                    break;
+                default:
+                    console.log("something went wrong");
+            }
+           }
+        }
+    $(document).ready(function() {
+        changeOption();
+    });
 </script>
 {% endblock%}

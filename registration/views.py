@@ -284,7 +284,6 @@ def home(request):
             j.price23,
             j.price24,
         ]
-
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
     try:
@@ -746,7 +745,7 @@ def changeNotification(request):
         .filter(Q(currency=user.fav_currency))
         .get(coin_id=request.POST.get("crypto_name"))
     )
-
+    crypto_value = crypto_value["current"]
     final_value = request.POST.get("cvalue")
     if final_value == "":
         notificare = Profile.objects.get(user__id=request.user.id).notification.get(
@@ -754,6 +753,7 @@ def changeNotification(request):
         )
         final_value = notificare.final_value
     else:
+        final_value = float(final_value)
         if final_value < 0:
             return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
         if option == "g_perc":
