@@ -42,6 +42,10 @@ function functionDetails(name,current_value,image,id){
     document.getElementsByClassName("placeholder_value")[1].placeholder=current_value;
 }
 
+function changePlaceholderValue(current){
+    document.getElementsByClassName("placeholder_value")[0].placeholder=current;
+}
+
 const capitalize = str => str.length
   ? str[0].toUpperCase() +
     str.slice(1).toLowerCase()
