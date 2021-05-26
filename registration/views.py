@@ -254,35 +254,62 @@ def home(request):
         .filter(Q(currency=currency))
     )
     cList.remove(user.fav_currency)
-    pret_zi = market_chart.objects.filter(day=market_chart.Days.ONE).filter(
-        currency=currency
-    )
+
+    pret_zi = market_chart.objects.annotate(
+        last_price=F("coin__value__last_price")
+    ).values("coin_id",
+            "price1",
+            "price2",
+            "price3",
+            "price4",
+            "price5",
+            "price6",
+            "price7",
+            "price8",
+            "price9",
+            "price10",
+            "price11",
+            "price12",
+            "price13",
+            "price14",
+            "price15",
+            "price16",
+            "price17",
+            "price18",
+            "price19",
+            "price20",
+            "price21",
+            "price22",
+            "price23",
+            "price24",
+            "last_price").filter(day=market_chart.Days.ONE).filter(currency=currency)
     for j in pret_zi:
-        dic1[j.coin_id] = [
-            j.price1,
-            j.price2,
-            j.price3,
-            j.price4,
-            j.price5,
-            j.price6,
-            j.price7,
-            j.price8,
-            j.price9,
-            j.price10,
-            j.price11,
-            j.price12,
-            j.price13,
-            j.price14,
-            j.price15,
-            j.price16,
-            j.price17,
-            j.price18,
-            j.price19,
-            j.price20,
-            j.price21,
-            j.price22,
-            j.price23,
-            j.price24,
+        dic1[f"{j['coin_id']}"] = [
+            [j["last_price"]],
+            [j["price1"],
+            j["price2"],
+            j["price3"],
+            j["price4"],
+            j["price5"],
+            j["price6"],
+            j["price7"],
+            j["price8"],
+            j["price9"],
+            j["price10"],
+            j["price11"],
+            j["price12"],
+            j["price13"],
+            j["price14"],
+            j["price15"],
+            j["price16"],
+            j["price17"],
+            j["price18"],
+            j["price19"],
+            j["price20"],
+            j["price21"],
+            j["price22"],
+            j["price23"],
+            j["price24"]]
         ]
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
@@ -305,6 +332,11 @@ def home(request):
             "chart": charts,
         },
     )
+
+
+def averagePricePerDay(mchart):
+    print(mchart)
+    return
 
 
 def stock(request):

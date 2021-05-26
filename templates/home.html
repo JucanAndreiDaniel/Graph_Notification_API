@@ -10,15 +10,14 @@
             <div class="my-modal-body" style="text-align:center;border-color: blanchedalmond; color:white;">
                 <div>
                     <p>Sparkline with dynamic data:</p> 
-                    <span class="dynamicsparkline">1,2,3,4,5,6,7</span>
+                    <span class="dynamicsparkline"></span>
                 </div>
             </div>
             <div class="my-modal-footer">
                 <button name="modalClose" type="button" class="btn btn-secondary add_btn"
                     data-dismiss="modal">Close</button>
             </div>
-            
-            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col"></div>
@@ -108,7 +107,7 @@
                             <th data-field="price" scope="col">Price</th>
                             <th data-field="24high" scope="col">24h High</th>
                             <th data-field="24low" scope="col">24h Low</th>
-                            <th data-field="Last 7 Days" scope="col">Last 24 Hours</th>
+                            <th data-field="Last 24 Hours" scope="col">Last 24 Hours</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -147,7 +146,7 @@
                             <td><span name="pret_curent">{{ coin.current }}</span></td>
                             <td>{{ coin.high_1d }}</td>
                             <td>{{ coin.low_1d }}</td>
-                            <td style="text-align: center; width:15%;"><span name="sparkline_crypto" class="dynamicbar"></span></td>
+                            <td style="text-align: center; width:15%;"><span name="sparkline_crypto" class="inlinesparkline"></span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -215,8 +214,17 @@
     function changeSparkline(){
         var myvar = {{ chart | safe }};
         var arr = document.getElementsByName("crypto.id");
+        var arr2 = document.getElementsByName("pret_curent");
+        console.log(arr2[0].innerHTML);
         for (let index = 0; index < 30; index++) {
-            document.getElementsByName("sparkline_crypto")[index].innerHTML = myvar[arr[index].value];
+            document.getElementsByName("sparkline_crypto")[index].innerHTML = myvar[arr[index].value][1];
+            console.log(arr2[index],myvar[arr[index].value][0]);
+            if (arr2[index].innerHTML > myvar[arr[index].value][0]) {
+                document.getElementsByName("pret_curent")[index].style.color="lightgreen";
+            }
+            else{
+                document.getElementsByName("pret_curent")[index].style.color="#ff6666";
+            }
         }
     }
     $(document).ready(function() {

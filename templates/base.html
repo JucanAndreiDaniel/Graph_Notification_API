@@ -103,7 +103,7 @@
     $(function () {
         /** This code runs when everything has been loaded on the page */
         /* Inline sparklines take their values from the contents of the tag */
-        $('.inlinesparkline').sparkline('html', {type: 'line', disableHiddenCheck: true, height: '20px', width: '50px'});
+        $('.inlinesparkline').sparkline('html', {type: 'line',lineColor:'#f7ba5b',spotColor:'white',minSpotColor:'red',maxSpotColor:'#7FFF00',fillColor:'#2e2c2c',lineWidth:2, disableHiddenCheck: true, height: '7vh', width: '30vh'});
 
         /* Sparklines can also take their values from the first argument 
         passed to the sparkline() function */
