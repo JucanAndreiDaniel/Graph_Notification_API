@@ -90,7 +90,7 @@
                         <select class="custom-select" name="optionCrypto" id="value_type" style="width: 50%;"
                             onblur='this.size=0;' onchange="changePlaceholderValue(this.value)">
                             {% for fav in favorites %}
-                            <option value="{{ fav.current }}">{{ fav.coin_id|title }}</option>
+                                <option value="{{ fav.coin_id }}+{{ fav.current }}">{{ fav.coin_id|title }}</option>
                             {% endfor %}
                         </select>
                         <p></p>
@@ -111,7 +111,7 @@
                         <label class="custom-msg2" for="value_type">Value   </label>
                         <p></p>
                         <input class="placeholder_value" style="width:50%;font-size:3vh;" type="number" step="0.0001" 
-                        name="value" placeholder="Value...">
+                        name="value" placeholder="Value..." required>
                         <p></p>
                     </div>
                     <label class="container-checkbox" style="display:inline-block;">
@@ -165,7 +165,7 @@
                         <div>
                             <label class="custom-msg2" for="value_type">Value  </label>
                             <br>
-                            <input class="placeholder_value" style="font-size:3vh;" type="number" name="cvalue" step="0.0001" placeholder="Value...">
+                            <input class="placeholder_value" style="font-size:3vh;" type="number" name="cvalue" step="0.0001" placeholder="Value..." required>
                         </div>
                         <br>
                         <label class="container-checkbox" style="display:inline-block;">
@@ -189,7 +189,7 @@
     document.getElementById("mybtn").onclick = function () {
         document.getElementById("myModal").style.display = "block";
         current = document.getElementsByName("optionCrypto")[0].value;
-        console.log(current);
+        current = (current.split("+"))[1]
         document.getElementsByClassName("placeholder_value")[0].placeholder=current;
     }
 

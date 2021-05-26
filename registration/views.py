@@ -358,11 +358,6 @@ def home(request):
     )
 
 
-def averagePricePerDay(mchart):
-    print(mchart)
-    return
-
-
 def stock(request):
     stock_data = CompanyProfile.objects.annotate(
         closed=F("stockprices__closed"),
@@ -641,9 +636,10 @@ class changeEnabledNoti(APIView):
 
 def createNotification(request):
     if request.method == "POST":
+        optionCrypto = (request.POST.get('optionCrypto').split("+"))[0]
         user = Profile.objects.get(user__id=request.user.id)
         coin_result = cryptoObject.objects.get(
-            coin_id=request.POST.get("optionCrypto").lower()
+            coin_id=optionCrypto
         )
         option = request.POST.get("option")
         crypto_value = (
@@ -652,10 +648,11 @@ def createNotification(request):
             )
             .values("current", "currency")
             .filter(Q(currency=user.fav_currency))
-            .get(coin_id=request.POST.get("optionCrypto").lower())
+            .get(coin_id=optionCrypto)
         )
         crypto_value = crypto_value["current"]
-        final_value = float(request.POST.get("value"))
+        final_value = request.POST.get("value")
+        final_value = float(final_value)
 
         if final_value < 0:
             return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -678,7 +675,7 @@ def createNotification(request):
             viamail = False
         try:
             notificare = user.notification.get(
-                coin_id=request.POST.get("optionCrypto").lower()
+                coin_id=optionCrypto
             )
             notificare.value_type = option
             notificare.final_value = final_value

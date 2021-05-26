@@ -43,6 +43,8 @@ function functionDetails(name,current_value,image,id){
 }
 
 function changePlaceholderValue(current){
+    current = document.getElementsByName("optionCrypto")[0].value;
+    current = (current.split("+"))[1]
     document.getElementsByClassName("placeholder_value")[0].placeholder=current;
 }
 
