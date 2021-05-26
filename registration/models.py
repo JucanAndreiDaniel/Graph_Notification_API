@@ -79,6 +79,8 @@ class market_chart(models.Model):
     price23 = models.FloatField(blank=True, null=True)
     price24 = models.FloatField(blank=True, null=True)
 
+    media = models.FloatField(blank=True, null=True)
+
 
 class Notification(models.Model):
     coin = models.ForeignKey(cryptoObject, on_delete=models.CASCADE)

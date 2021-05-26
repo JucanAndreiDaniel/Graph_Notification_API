@@ -48,7 +48,7 @@ try:
                     last_value = mod.value.objects.filter(currency=currencies[k]).get(
                         coin__coin_id=price_list[j]["id"]).current
                 except:
-                    pass
+                    last_value=0
                 crypto_value = mod.value(coin_currency=f"{price_list[j]['id']}_{currencies[k]}",
                                          coin=cryptoObject,
                                          currency=currencies[k],

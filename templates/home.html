@@ -8,9 +8,9 @@
                 <h2 style="text-align: center;">Cryptocoin Details</h2>
             </div>
             <div class="my-modal-body" style="text-align:center;border-color: blanchedalmond; color:white;">
-                <div>
-                    <p>Sparkline with dynamic data:</p> 
-                    <span class="dynamicsparkline"></span>
+                <p class="custom-msg">7 days Average</p>
+                <div>&nbsp;
+                    <span id="sparkline_crypto_detalii" class="inlinesparklinemodal"></span>&nbsp;
                 </div>
             </div>
             <div class="my-modal-footer">
@@ -123,7 +123,7 @@
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav1_btn" style="color:#f3b24a" value="★">    
                                         </form>
-                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal()">
+                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal('{{ coin.coin_id }}')">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </button>
@@ -136,7 +136,7 @@
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav1_btn" style="color:#f3b24a" value="☆">
                                         </form>
-                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal()">
+                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal('{{ coin.coin_id }}')">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
                                         </button>
@@ -197,8 +197,13 @@
 
 <script>
     // When the user clicks the button, open the modal
-    function showModal(){
+    function sparklineDetails(coinId){
+        var avg_day = {{ avgDay | safe }};
+        $('.inlinesparklinemodal').sparkline(avg_day[coinId], {type: 'line',lineColor:'#f7ba5b',spotColor:'white',minSpotColor:'red',maxSpotColor:'#7FFF00',fillColor:'#2e2c2c',lineWidth:2, disableHiddenCheck: true, height: '30vh', width: '70vh'});
+    }
+    function showModal(coinId){
         document.getElementById("myModal").style.display = "block";
+        sparklineDetails(coinId)
     }
 
     // When the user clicks on <span> (x), close the modal
@@ -241,6 +246,7 @@
     };
     $(document).ready(function() {
         changeSparkline();
+
     });
 </script>
 {% endblock%}

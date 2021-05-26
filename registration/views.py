@@ -1,4 +1,5 @@
 from os import name
+from django.db.models.aggregates import Avg
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
@@ -9,6 +10,8 @@ from django.conf import settings
 from django.views.decorators.http import require_http_methods
 from django_email_verification import send_email
 import json
+import traceback
+from statistics import mean
 
 # Rest-framework
 from rest_framework.views import APIView
@@ -182,6 +185,26 @@ def logout(request):
     return redirect("login")
 
 
+def averagePerDay(currency):
+    dic={}
+    cryptoPrices = market_chart.objects.all().filter(currency=currency)
+    try:
+        for i in range(0,len(cryptoPrices),7):
+            list_avg=[]
+            list_avg.append(cryptoPrices[i].media)
+            list_avg.append(cryptoPrices[i+1].media)
+            list_avg.append(cryptoPrices[i+2].media)
+            list_avg.append(cryptoPrices[i+3].media)
+            list_avg.append(cryptoPrices[i+4].media)
+            list_avg.append(cryptoPrices[i+5].media)
+            list_avg.append(cryptoPrices[i+6].media)
+            dic[cryptoPrices[i].coin_id] = list_avg
+    except:
+        traceback.print_exc()
+    dic = json.dumps(dic)
+    return dic
+
+
 @login_required(login_url="login")
 def home(request):
     # base(request)
@@ -221,7 +244,6 @@ def home(request):
         )
         .filter(Q(currency=currency))
     )
-    # charts =  market_chart.objects.filter(currency=currency)
     dic1 = {}
     page = request.GET.get("page", 1)
     favorites = (
@@ -313,6 +335,7 @@ def home(request):
         ]
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
+    avg_day = averagePerDay(currency)
     try:
         price = paginator.page(page)
     except PageNotAnInteger:
@@ -330,6 +353,7 @@ def home(request):
             "currencyList": cList,
             "favC": user.fav_currency,
             "chart": charts,
+            "avgDay": avg_day,
         },
     )
 

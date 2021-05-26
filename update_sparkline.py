@@ -2,6 +2,8 @@
 from pycoingecko import CoinGeckoAPI
 import django
 import os
+import traceback
+from statistics import mean
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'login_api.settings')
 
@@ -32,71 +34,51 @@ try:
                 vs_currency=curr, per_page="250", page=f"{i}", sparkline="true")
             price_list += price
         for j in range(250):
-            cryptoObject = cryptoObject(coin_id=price_list[j]["id"], symbol=price_list[j]["symbol"],
+            cryptoobject = cryptoObject(coin_id=price_list[j]["id"], symbol=price_list[j]["symbol"],
                                             name=price_list[j]["name"], image=price_list[j]["image"],
                                             last_updated=correcttime(price_list[j]["last_updated"]))
-            cryptoObject.save()
+            cryptoobject.save()
             for k in range(4):
                 coinFromList = price_list[j+(250*k)]
                 for l in range(1, 8):
                     try:
+                        prices = []
+                        for price in range(24):
+                            prices.append(coinFromList["sparkline_in_7d"]["price"][price+(
+                                                            24*(int(market_chart.Days(f"{l}").value)-2))])
                         crypto_market = market_chart(coin_currency_day=f"{price_list[j]['id']}_{currencies[k]}_{(l-1)}",
-                                                        coin=cryptoObject,
+                                                        coin=cryptoobject,
                                                         currency=currencies[k],
                                                         day=market_chart.Days(
                                                             f"{l}"),
-                                                        price1=coinFromList["sparkline_in_7d"]["price"][0+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price2=coinFromList["sparkline_in_7d"]["price"][1+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price3=coinFromList["sparkline_in_7d"]["price"][2+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price4=coinFromList["sparkline_in_7d"]["price"][3+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price5=coinFromList["sparkline_in_7d"]["price"][4+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price6=coinFromList["sparkline_in_7d"]["price"][5+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price7=coinFromList["sparkline_in_7d"]["price"][6+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price8=coinFromList["sparkline_in_7d"]["price"][7+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price9=coinFromList["sparkline_in_7d"]["price"][8+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price10=coinFromList["sparkline_in_7d"]["price"][9+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price11=coinFromList["sparkline_in_7d"]["price"][10+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price12=coinFromList["sparkline_in_7d"]["price"][11+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price13=coinFromList["sparkline_in_7d"]["price"][12+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price14=coinFromList["sparkline_in_7d"]["price"][13+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price15=coinFromList["sparkline_in_7d"]["price"][14+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price16=coinFromList["sparkline_in_7d"]["price"][15+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price17=coinFromList["sparkline_in_7d"]["price"][16+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price18=coinFromList["sparkline_in_7d"]["price"][17+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price19=coinFromList["sparkline_in_7d"]["price"][18+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price20=coinFromList["sparkline_in_7d"]["price"][19+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price21=coinFromList["sparkline_in_7d"]["price"][20+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price22=coinFromList["sparkline_in_7d"]["price"][21+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price23=coinFromList["sparkline_in_7d"]["price"][22+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        price24=coinFromList["sparkline_in_7d"]["price"][23+(
-                                                            24*(int(market_chart.Days(f"{l}").value)-2))],
-                                                        )
+                                                        price1=prices[0],
+                                                        price2=prices[1],
+                                                        price3=prices[2],
+                                                        price4=prices[3],
+                                                        price5=prices[4],
+                                                        price6=prices[5],
+                                                        price7=prices[6],
+                                                        price8=prices[7],
+                                                        price9=prices[8],
+                                                        price10=prices[9],
+                                                        price11=prices[10],
+                                                        price12=prices[11],
+                                                        price13=prices[12],
+                                                        price14=prices[13],
+                                                        price15=prices[14],
+                                                        price16=prices[15],
+                                                        price17=prices[16],
+                                                        price18=prices[17],
+                                                        price19=prices[18],
+                                                        price20=prices[19],
+                                                        price21=prices[20],
+                                                        price22=prices[21],
+                                                        price23=prices[22],
+                                                        price24=prices[23],
+                                                        media=mean(prices))
                     except Exception as e:
-                        pass
+                        traceback.print_exc()
                     finally:
                         crypto_market.save()
 except Exception as e:
-    pass
+    traceback.print_exc()
