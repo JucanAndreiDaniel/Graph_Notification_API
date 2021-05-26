@@ -27,7 +27,7 @@
             <div class="container_sf">
                 <!-- Button trigger modal table -->
                 <div class="input-group-append" style="margin-right:1vh">
-                    <button type="button" class="not_btn1" data-toggle="modal" data-target="#favourites"
+                    <button type="button" class="not_btn1" data-toggle="modal" data-target="#favourites" onclick="changeFavPriceColor()"
                     >Favourites</button>
                 </div>
                 
@@ -79,10 +79,11 @@
                                         {% for coin in fav %}
                                         <tr scope="row" style="color:rgb(255, 255, 255)">
                                             <td>
+                                                <input type="hidden" name="fav_coins_name" value="{{ coin.coin_id }}">
                                                 <span><img class="coin-image" src="{{ coin.image }}"></span>
-                                                {{ coin.coin_id|title }}                                          
+                                                <span>{{ coin.coin_id|title }}</span>                                
                                             </td>
-                                            <td>{{ coin.current }}</td>
+                                            <td><span name="pret_curent_fav">{{ coin.current }}</span></td>
                                             <td>{{ coin.high_1d }}</td>
                                             <td>{{ coin.low_1d }}</td>
                                         </tr>
@@ -211,14 +212,25 @@
             document.getElementById("myModal").style.display = "none";
         }
     };
+    function changeFavPriceColor(){
+        var market_chart = {{ chart | safe }};
+        var favs_price = document.getElementsByName("pret_curent_fav");
+        var favs_name = document.getElementsByName("fav_coins_name");
+        for (let index = 0; index < favs_name.length; index++) {
+            if (favs_price[index].innerHTML > market_chart[favs_name[index].value][0]) {
+                document.getElementsByName("pret_curent_fav")[index].style.color="lightgreen";
+            }
+            else{
+                document.getElementsByName("pret_curent_fav")[index].style.color="#ff6666";
+            }
+        }
+    };
     function changeSparkline(){
         var myvar = {{ chart | safe }};
         var arr = document.getElementsByName("crypto.id");
         var arr2 = document.getElementsByName("pret_curent");
-        console.log(arr2[0].innerHTML);
-        for (let index = 0; index < 30; index++) {
+        for (let index = 0; index < arr.length; index++) {
             document.getElementsByName("sparkline_crypto")[index].innerHTML = myvar[arr[index].value][1];
-            console.log(arr2[index],myvar[arr[index].value][0]);
             if (arr2[index].innerHTML > myvar[arr[index].value][0]) {
                 document.getElementsByName("pret_curent")[index].style.color="lightgreen";
             }
@@ -226,7 +238,7 @@
                 document.getElementsByName("pret_curent")[index].style.color="#ff6666";
             }
         }
-    }
+    };
     $(document).ready(function() {
         changeSparkline();
     });
