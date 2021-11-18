@@ -21,11 +21,9 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
 from rest_framework.routers import SimpleRouter
 
-from fcm_devices.api.drf.views import DeviceViewSet
 
 
 router = SimpleRouter()
-router.register("devices", DeviceViewSet, basename="devices")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

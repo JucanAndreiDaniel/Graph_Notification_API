@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'registration',
 
     'django_email_verification',
-    'fcm_devices',
 ]
 
 MIDDLEWARE = [

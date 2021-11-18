@@ -53,7 +53,7 @@ html {
 .add_btn {
   width: auto;
   height: auto;
-  background: #f7ba5b;
+  background: #4a73fa;
   color: white;
 }
 
@@ -109,7 +109,7 @@ html {
 .not_btn1 {
   width: 100%;
   height: auto;
-  background: #f7ba5b;
+  background: #4a73fa;
   color: white;
   text-align: left;
   vertical-align: middle;
@@ -212,7 +212,7 @@ html {
   border-collapse: collapse;
 }
 .dropbtn {
-  background-color: #f7ba5b;
+  background-color: #4a73fa;
   color: white;
   padding: 0.5rem 1rem;
   font-size: 1.2 em;
@@ -323,7 +323,7 @@ input:checked + .slider:before {
   right: -7px;
   padding: 7px 10px;
   border-radius: 50%;
-  background: red;
+  background: #f7ba5b;
   color: white;
 }
 
