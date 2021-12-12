@@ -174,6 +174,6 @@ EMAIL_NOTI_PLAIN = 'noti.txt'
 EMAIL_NOTI_HTML = 'noti.html'
 EMAIL_TOKEN_LIFE = 60 * 60
 EMAIL_PAGE_TEMPLATE = 'confirm_template.html'
-EMAIL_PAGE_DOMAIN = 'http://stockcrypto.ddns.net/'
+EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
 
 FCM_DEVICES_API_KEY = os.environ.get("FCM_DEVICES_API_KEY")
