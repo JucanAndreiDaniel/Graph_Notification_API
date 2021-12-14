@@ -574,7 +574,7 @@ def filter(request):
         ]
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
-    avg_day = averagePerDay(currency)
+    avg_day = averagePerDay(currency,"")
     try:
         price = paginator.page(page)
     except PageNotAnInteger:
