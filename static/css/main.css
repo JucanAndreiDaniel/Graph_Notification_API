@@ -82,6 +82,7 @@ html {
   color: white;
   text-align: left;
   vertical-align: middle;
+  text-decoration: none;
   cursor: pointer;
   border: 1px solid transparent;
   padding: .100rem .500rem;
@@ -514,3 +515,32 @@ input:checked + .slider:before {
   text-decoration: none;
   color:white;
 }
+
+.details_container{
+  display: flex;
+  align-items:center;
+}
+
+.details_container_row:after{
+  display: flex;
+  align-items:center;
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.details_container_row span{
+  margin-left : 1rem;
+  display: block;
+}
+
+.details_container span{
+  margin-left : 1rem;
+  display: block;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+} 

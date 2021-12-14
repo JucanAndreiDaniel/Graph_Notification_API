@@ -58,7 +58,7 @@
     {% if user.is_authenticated %}
     <div>
         <span class="btn add_btn"> Hello, {{request.user}} </span>
-        <span class="btn add_btn"><a class="link" href="{% url 'logout' %}">Logout</a></span> {% else %}
+        <span class="btn add_btn" style="margin-right:0.5rem"><a class="link" href="{% url 'logout' %}">Logout</a></span> {% else %}
         <span class="hello-msg">You are not logged in</span>
         <span><a class="hello-msg" href="{% url 'login' %}">Click here to log in</a></span> {% endif %} {% endblock %}
     </div>

@@ -7,6 +7,7 @@ urlpatterns = [
      path('register', views.register, name="register"),
      path('addFavorite', views.addToFavorite, name="addFavorite"),
      path('delFavorite', views.delFavView, name="deleteFavorite"),
+     path('details/<str:value>', views.crypto_details, name="details"),
      path('login', views.login, name="login"),
      path('logout', views.logout, name="logout"),
      path('changeFavCurrency', views.changeFavCurrency, name="changeCurrency"),
