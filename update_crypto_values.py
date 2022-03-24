@@ -59,11 +59,11 @@ try:
                                          ath=coinFromList["ath"],
                                          ath_time=correcttime(
                                              coinFromList["ath_date"]),
-                                         atl=coinFromList["ath"],
+                                         atl=coinFromList["atl"],
                                          atl_time=correcttime(
                                              coinFromList["atl_date"]),
                                          percentage_1d=coinFromList["price_change_percentage_24h"],
-                                         percentage_1h=coinFromList["price_change_percentage_24h"])
+                                         percentage_1h=coinFromList["price_change_percentage_1h_in_currency"])
                 crypto_value.save()
 except:
     traceback.print_exc()

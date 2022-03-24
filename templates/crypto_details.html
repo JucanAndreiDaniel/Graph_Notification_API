@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% block content %}
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<div class="details_container_row" style="margin-top: 1rem;">
+    <div class="column">
+        <div class="details_container">
+            <img id="poza" class="coin-image" src="{{ details.image }}">
+            <div>
+                <span class="custom-msg"> {{ details.name }} </span>
+                <span class="custom-msg"> {{ details.current }} </span>
+            </div>
+            <span id="id" hidden class="custom-msg"> {{ details.coin_id }} </span>
+        </div>
+        <p class="custom-msg">7 days Average</p>
+        <div>&nbsp;
+            <span id="sparkline_crypto_detalii" class="inlinesparklinemodal"></span>&nbsp;
+        </div>
+    </div>
+    <div class="column">
+        <div class="details_container_row">
+            <span class="custom-msg">USD {{ current.0.current }}</span>
+            <span class="custom-msg">EUR {{ current.1.current }}</span>
+            <span class="custom-msg">GBP {{ current.2.current }}</span>
+            <span class="custom-msg">RUB {{ current.3.current }}</span>
+            {% for noti in notificare %}
+                <span class="custom-msg">Notification created with target {{ noti.final_value }}</span>
+            {% endfor %}
+            <span class="custom-msg">All time high {{ details.ath }}</span>
+            <span class="custom-msg">All time low {{ details.atl }}</span>
+            <span class="custom-msg">High 1d {{ details.high_1d }}</span>
+            <span class="custom-msg">Low 1d {{ details.low_1d }}</span>
+            <span class="custom-msg">Change Percentage 1h {{ details.perc1h }}</span>
+            <span class="custom-msg">Change Percentage 1d {{ details.perc1d }}</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sparklineDetails(){
+        var avg_day = {{ avgDay | safe }};
+        var id = document.getElementById("id").innerHTML;
+        for (var key in avg_day){
+            $('.inlinesparklinemodal').sparkline(avg_day[key], {type: 'line',lineColor:'#f7ba5b',spotColor:'white',minSpotColor:'red',maxSpotColor:'#7FFF00',fillColor:'#2e2c2c',lineWidth:2, disableHiddenCheck: true, height: '30vh', width: '70vh'});
+        }
+    }
+    $(document).ready(function() {
+        sparklineDetails();
+    });
+</script>
+{% endblock%}

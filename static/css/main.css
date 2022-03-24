@@ -53,7 +53,7 @@ html {
 .add_btn {
   width: auto;
   height: auto;
-  background: #f7ba5b;
+  background: #4a73fa;
   color: white;
 }
 
@@ -82,6 +82,7 @@ html {
   color: white;
   text-align: left;
   vertical-align: middle;
+  text-decoration: none;
   cursor: pointer;
   border: 1px solid transparent;
   padding: .100rem .500rem;
@@ -109,7 +110,7 @@ html {
 .not_btn1 {
   width: 100%;
   height: auto;
-  background: #f7ba5b;
+  background: #4a73fa;
   color: white;
   text-align: left;
   vertical-align: middle;
@@ -212,7 +213,7 @@ html {
   border-collapse: collapse;
 }
 .dropbtn {
-  background-color: #f7ba5b;
+  background-color: #4a73fa;
   color: white;
   padding: 0.5rem 1rem;
   font-size: 1.2 em;
@@ -323,7 +324,7 @@ input:checked + .slider:before {
   right: -7px;
   padding: 7px 10px;
   border-radius: 50%;
-  background: red;
+  background: #f7ba5b;
   color: white;
 }
 
@@ -501,3 +502,45 @@ input:checked + .slider:before {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
 }
+
+.nav-image{
+  width: 4vw; 
+  height: auto;
+  margin-left:1rem;
+  margin-right:1rem;
+  min-width: 2rem;
+}
+
+.link{
+  text-decoration: none;
+  color:white;
+}
+
+.details_container{
+  display: flex;
+  align-items:center;
+}
+
+.details_container_row:after{
+  display: flex;
+  align-items:center;
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.details_container_row span{
+  margin-left : 1rem;
+  display: block;
+}
+
+.details_container span{
+  margin-left : 1rem;
+  display: block;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+} 

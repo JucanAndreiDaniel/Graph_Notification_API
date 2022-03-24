@@ -185,9 +185,13 @@ def logout(request):
     return redirect("login")
 
 
-def averagePerDay(currency):
+def averagePerDay(currency,coinId):
     dic={}
-    cryptoPrices = market_chart.objects.all().filter(currency=currency)
+    if coinId == "":
+        cryptoPrices = market_chart.objects.all().filter(currency=currency)
+    else:
+        cryptoPrices = market_chart.objects.all().filter(currency=currency).filter(coin_id=coinId)
+    
     try:
         for i in range(0,len(cryptoPrices),7):
             list_avg=[]
@@ -335,7 +339,7 @@ def home(request):
         ]
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
-    avg_day = averagePerDay(currency)
+    avg_day = averagePerDay(currency,"")
     try:
         price = paginator.page(page)
     except PageNotAnInteger:
@@ -391,6 +395,100 @@ def stock(request):
     except EmptyPage:
         stocks = paginator.page(paginator.num_pages)
     return render(request, "stock.html", {"stonks": stocks})
+
+
+
+def crypto_details(request, value):
+    user = Profile.objects.get(user__id=request.user.id)
+    cList = ["usd", "eur", "rub", "gbp"]
+    currency = Profile.objects.get(user__id=request.user.id)
+    currency = currency.fav_currency
+    details = (
+        cryptoObject.objects.annotate(
+            current=F("value__current"),
+            high_1d=F("value__high_1d"),
+            low_1d=F("value__low_1d"),
+            currency=F("value__currency"),
+            last_price=F("value__last_price"),
+            ath=F("value__ath"),
+            ath_time=F("value__ath_time"),
+            atl=F("value__atl"),
+            atl_time=F("value__atl_time"),
+            perc1h=F("value__percentage_1h"),
+            perc1d=F("value__percentage_1d")
+        )
+        .values(
+            "coin_id",
+            "symbol",
+            "name",
+            "image",
+            "last_updated",
+            "current",
+            "high_1d",
+            "low_1d",
+            "last_price",
+            "ath",
+            "ath_time",
+            "atl",
+            "atl_time",
+            "perc1h",
+            "perc1d",
+        )
+        .filter(Q(currency=currency))
+    ).get(name=value)
+
+    current = (
+        cryptoObject.objects.annotate(
+            current=F("value__current"),
+        )
+        .values(
+            "current",
+        )
+    ).filter(name=value)
+
+    
+
+    lista = checkPrices(request)
+    dic = lista[0]
+    
+    notifications = (
+        Profile.objects.get(user__id=request.user.id)
+        .notification.annotate(
+            current=F("coin__value__current"),
+            high_1d=F("coin__value__high_1d"),
+            low_1d=F("coin__value__low_1d"),
+            currency=F("coin__value__currency"),
+            ath=F("coin__value__ath"),
+            ath_time=F("coin__value__ath_time"),
+            atl=F("coin__value__atl"),
+            atl_time=F("coin__value__atl_time"),
+            image=F("coin__image"),
+            name=F("coin__name"),
+        )
+        .values(
+            "coin_id",
+            "coin",
+            "value_type",
+            "initial_value",
+            "final_value",
+            "enabled",
+            "via_mail",
+            "current",
+            "high_1d",
+            "low_1d",
+            "ath",
+            "ath_time",
+            "atl",
+            "atl_time",
+            "image",
+            "name",
+        )
+        .filter(Q(currency=currency))
+    ).filter(coin_id=details['coin_id'])
+    
+    avg_day = averagePerDay(currency,details['coin_id'])
+    
+    return render(request, "crypto_details.html", {"details":details,"avgDay":avg_day,"nrnot": lista[1],"notificare":notifications,"current":current})
 
 
 def filter(request):
@@ -476,7 +574,7 @@ def filter(request):
         ]
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
-    avg_day = averagePerDay(currency)
+    avg_day = averagePerDay(currency,"")
     try:
         price = paginator.page(page)
     except PageNotAnInteger:

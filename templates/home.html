@@ -123,10 +123,10 @@
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav1_btn" style="color:#f3b24a" value="★">    
                                         </form>
-                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal('{{ coin.coin_id }}')">
+                                        <a name="btndetali" type="button" class="fav1_btn" href="{% url 'details' value=coin.coin_id|title %}">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
-                                        </button>
+                                        </a>
                                     </div>
                                 {% else %}
                                     <div class="container_sf">
@@ -136,10 +136,10 @@
                                             <input type="hidden" name="crypto.id" value="{{ coin.coin_id }}">
                                             <input type="Submit" class="fav1_btn" style="color:#f3b24a" value="☆">
                                         </form>
-                                        <button name="btndetali" type="button" class="fav1_btn" style="background-color: transparent;" onclick="showModal('{{ coin.coin_id }}')">
+                                        <a name="btndetali" type="button" class="fav1_btn" href="{% url 'details' value=coin.coin_id|title %}">
                                             <span><img class="coin-image" src="{{ coin.image }}"></span>
                                             <span>{{ coin.coin_id|title }}</span>
-                                        </button>
+                                        </a>
                                     </div>
                                 {% endif %}
                             </td>
@@ -246,7 +246,6 @@
     };
     $(document).ready(function() {
         changeSparkline();
-
     });
 </script>
 {% endblock%}

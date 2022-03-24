@@ -24,19 +24,25 @@
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5b5e5e;">
-    <img src="{% static 'images/logo_home.png' %}" style="width: 5vw; height: auto; margin-left:10px">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="btn-group">
-        <div class="collapse navbar-collapse" id="navbarNav">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #302f35;border-bottom:0.1rem solid #f3bb61">
+    <div>
+        <img class="nav-image" src="{% static 'images/logo_home.png' %}">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="btn-group">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <button class="button"> <a class="nav-link active" href="{% url 'home' %}">Cryptocurrency</a></button>
+                    <button class="button"> 
+                        <a class="nav-link active" href="{% url 'home' %}">Cryptocurrency</a>
+                    </button>
                 </li>
                 <li class="nav-item">
-                    <button class="button"><a class="nav-link active" href="{% url 'stock' %}">Stock Market</a></button>
+                    <button class="button">
+                        <a class="nav-link active" href="{% url 'stock' %}">Stock Market</a>
+                    </button>
                 </li>
                 <li class="nav-item">
                     <button class="button">
@@ -48,17 +54,12 @@
         </div>
     </div>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            
-        </ul>
-    </div>
-
     {% block content %} 
     {% if user.is_authenticated %}
-    <span class="btn add_btn" style="right: 1em;position: relative;cursor:default"> Hello, {{request.user}} </span>
-    <span style="right: 1em;position: relative;"><a class="btn login_btn" href="{% url 'logout' %}">Logout</a></span> {% else %}
-    <span class="hello-msg">You are not logged in</span>
-    <span><a class="hello-msg" href="{% url 'login' %}">Click here to log in</a></span> {% endif %} {% endblock %}
-
+    <div>
+        <span class="btn add_btn"> Hello, {{request.user}} </span>
+        <span class="btn add_btn" style="margin-right:0.5rem"><a class="link" href="{% url 'logout' %}">Logout</a></span> {% else %}
+        <span class="hello-msg">You are not logged in</span>
+        <span><a class="hello-msg" href="{% url 'login' %}">Click here to log in</a></span> {% endif %} {% endblock %}
+    </div>
 </nav>
