@@ -1,3 +1,6 @@
+from multiprocessing import AuthenticationError
+from nturl2path import url2pathname
+from turtle import title
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.fields.json import HasKeyLookup
@@ -121,3 +124,14 @@ class StockPrices(models.Model):
     low24 = models.FloatField()
     open = models.FloatField()
     previous_closed = models.FloatField()
+
+class News(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    source_name = models.CharField(max_length=255)
+    author = models.CharField(max_length=255,null=True)
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255,null=True)
+    url = models.CharField(max_length=255)
+    image_url = models.CharField(max_length=255)
+    published_at = models.DateTimeField(7)
+    content = models.CharField(max_length=255)
