@@ -8,10 +8,9 @@ info:
     \ - Andrei Jucan \
     \ - Gabriel Mares \
     \ - Lascu-Adelin Craciunesc \
-    \ - Bogdan Dragos "
+    \ - Bogdan Dragos"
   version: "1.0"
   title: "NotifyMe API for Crypto, Stock, Users and News"
-host: ""
 tags:
 - name: "coins"
   description: "API calls legate de monede crypto"
@@ -42,8 +41,8 @@ paths:
         - "coins"
         summary: "Cerere pentru a primi mai multe detalii fata de API call-ul de mai sus pentru o moneda crypto"
         parameters:
+          - in: "path"
             name: "coinId"
-            in: "path"
             description: "ID-ul monedei cautate"
             required: true
             type: "integer"
@@ -71,8 +70,8 @@ paths:
         - "stock"
         summary: "Cerere pentru a primi mai multe detalii fata de API call-ul de mai sus pentru o actiune"
         parameters:
+          - in: "path"
             name: "stockId"
-            in: "path"
             description: "ID-ul actiunii cautate"
             required: true
             type: "integer"
@@ -100,7 +99,7 @@ paths:
         - "notification"
         summary: "Cerere pentru a crea o notificare"
         parameters:
-            in: "body"
+          - in: "body"
             name: "body"
             description: "Elemente necesare pentru crearea unei notificari"
             required: true
@@ -113,13 +112,19 @@ paths:
                 description: "successful operation"
             400:
                 description: "invalid values"
-  /notification/change:
-    post:
+  /notification/change/{id}:
+    patch:
         tags:
         - "notification"
         summary: "Cerere pentru a modifica o notificare"
         parameters:
-            in: "body"
+          - in: "path"
+            name: "id"
+            description: "ID-ul monezii sau actiunii pentru care se va modifica notificarea"
+            required: true
+            type: "integer"
+            format: "int64"
+          - in: "body"
             name: "body"
             description: "Elementele modificate ale unei notificari"
             required: true
@@ -132,14 +137,14 @@ paths:
                 description: "successful operation"
             400:
                 description: "invalid values"
-  /notification/delete:
-    post:
+  /notification/delete/{id}:
+    delete:
         tags:
         - "notification"
         summary: "Cerere pentru a modifica o notificare"
         parameters:
-            name: "ID"
-            in: "path"
+          - in: "path"
+            name: "id"
             description: "ID-ul monezii sau actiunii pentru care se va sterge notificarea"
             required: true
             type: "integer"
@@ -156,7 +161,7 @@ paths:
         summary: "Creeaza un utilizator cu informatii din POST"
         operationId: "register"
         parameters:
-            in: "body"
+          - in: "body"
             name: "body"
             description: "Informatii relevante pentru crearea de utilizator"
             required: true
@@ -164,9 +169,9 @@ paths:
                 type: "array"
                 items: 
                     $ref: "#/definitions/UserRegister"
-            responses:
-                default:
-                    description: "successful operation"
+        responses:
+            default:
+                description: "successful operation"
   /user/login:
     post:
         tags:
@@ -174,7 +179,7 @@ paths:
         summary: "Permite accesul unui utilizator pe platforma NotifyMe"
         operationId: "login"
         parameters:
-            in: "body"
+          - in: "body"
             name: "body"
             description: "Nume de utilizator si parola utilizatorului pentru login"
             required: true
@@ -211,7 +216,7 @@ paths:
         - "user"
         operationId: "addFavorite"
         parameters:
-            in: "body"
+          - in: "body"
             name: "body"
             description: "Nume de utilizator si id-ul monedei sau actiunii adaugate ca favorit"
             schema:
@@ -221,13 +226,19 @@ paths:
         responses:
             default:
                 description: "successful operation"
-  /user/delFavorite:
-    post:
+  /user/delFavorite/{id}:
+    delete:
         tags:
         - "user"
         operationId: "delFavorite"
         parameters:
-            in: "body"
+          - in: "path"
+            name: "id"
+            description: "ID-ul obiectului Favorite care urmeaza sa fie sters"
+            required: true
+            type: "integer"
+            format: "int64"
+          - in: "body"
             name: "body"
             description: "Nume de utilizator si id-ul monedei sau actiunii sterse din lista de favorite"
             schema:
@@ -237,13 +248,19 @@ paths:
         responses:
             default:
                 description: "successful operation"
-  /user/changeCurrency:
-    post:
+  /user/changeCurrency/{id}:
+    patch:
         tags:
         - "user"
         operationId: "changeCurrency"
         parameters:
-            in: "body"
+          - in: "path"
+            name: "id"
+            description: "ID-ul obiectului Favorite care urmeaza sa fie modificat"
+            required: true
+            type: "integer"
+            format: "int64"
+          - in: "body"
             name: "body"
             description: "Nume de utilizator si valuta preferata care sa apara in diverse locuri (e.g. creare de notificari sau pagina principala"
             schema:
@@ -416,10 +433,9 @@ definitions:
                 format: "int64"
             favObjects:
                 type: "array"
-                properties:
-                    object_id:
-                        type: "integer"
-                        format: "int64"
+                items:
+                    type: "integer"
+                    format: "int64"
   UserCurrency:
     type: "object"
     properties:
