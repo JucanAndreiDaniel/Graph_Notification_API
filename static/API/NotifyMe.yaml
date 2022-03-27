@@ -22,8 +22,6 @@ tags:
   description: "API calls legate de operatiuni CRUD pentru notificarile create de utilizatori"
 - name: "user"
   description: "API calls legate de operatiuni CRUD pentru utilizatori sau setari relevante pentru acestia"
-schemes:
-- "https"
 paths:
   /coins:
     get:
@@ -83,7 +81,53 @@ paths:
                     $ref: "#/definitions/StockDetailed"
             404:
                 description: "Actiunea cu ID-ul primit nu exista"
-  /notification/:
+  /news:
+    get:
+        tags:
+        - "news"
+        summary: "Cerere pentru a primi toate stirile aflate in baza de date"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    type: array
+                    items:
+                        $ref: "#/definitions/News"
+            404:
+                description: "no news in db"
+  /news/latest:
+    get:
+        tags:
+        - "news"
+        summary: "Cerere pentru a primi cea mai recenta stire din baza de date"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/News"
+            404:
+                description: "no news in db"
+  /news/{keyword}:
+    get:
+        tags:
+        - "news"
+        summary: "Cerere pentru a primi stirile ce au in titlu sau in descrierea lor un cuvant cheie"
+        parameters:
+          - in: "path"
+            name: "keyword"
+            description: "Cuvantul cheie cautat"
+            required: true
+            type: "string"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    type: array
+                    items:
+                        $ref: "#/definitions/News"
+            404:
+                description: "no relevant news in db"
+  /notification:
     get:
         tags:
         - "notification"
@@ -388,6 +432,24 @@ definitions:
                 type: "number"
                 multipleOf: 0.001
             atl_time:
+                type: "string"
+  News:
+    type: "object"
+    properties:
+            id:
+                type: "integer"
+                format: "int64"
+            source_name:
+                type: "string"
+            author:
+                type: "string"
+            title:
+                type: "string"
+            description:
+                type: "string"
+            url:
+                type: "string"
+            published_at:
                 type: "string"
   Notification:
     type: "object"
