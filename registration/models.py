@@ -12,7 +12,7 @@ class cryptoObject(models.Model):
     coin_id = models.CharField(max_length=255, primary_key=True)
     symbol = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    image = models.CharField(max_length=255)
+    image = models.CharField(max_length=355)
 
     last_updated = models.DateTimeField(7)
 
