@@ -11,8 +11,8 @@ django.setup()
 try:
     #from django_email_verification import send_email
     #from django.contrib.auth.models import User
-    from registration.models import Profile as ProfileModels
-    from registration.models import Notification as NotificationModels
+    from caca.models import Profile as ProfileModels
+    from caca.models import Notification as NotificationModels
     from django.contrib.auth.models import User, auth
     from django.template.loader import render_to_string
     from django.core.mail import send_mail

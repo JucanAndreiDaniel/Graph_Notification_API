@@ -27,10 +27,13 @@ router = SimpleRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('registration.urls')),
+    path('old/', include('oldAPI.urls')),
     path(
         "favicon.ico",
         RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
     ),
-    path('v1/', include(router.urls))
+    path('v1/', include(router.urls)),
+    path("api/", include("dj_rest_auth.urls")),
+    path("api/registration/", include("dj_rest_auth.registration.urls")),
+
 ]

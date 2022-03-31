@@ -17,8 +17,8 @@ def correcttime(timestamp: str):
 try:
 
     import requests
-    from registration.models import CompanyProfile
-    from registration.models import StockPrices
+    from caca.models import CompanyProfile
+    from caca.models import StockPrices
     import time
 
     token = os.environ.get('TOKEN_FINHUB')

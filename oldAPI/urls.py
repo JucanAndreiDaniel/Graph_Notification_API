@@ -1,6 +1,6 @@
 from django.urls import path, include
 from django.views.generic import TemplateView
-from rest_framework.authtoken.views import obtain_auth_token
+# from rest_framework.authtoken.views import obtain_auth_token
 from . import views
 from django_email_verification import urls as email_urls
 
@@ -23,7 +23,7 @@ urlpatterns = [
     path("email/", include(email_urls)),
     path("", views.home, name="home"),
     #     API
-    path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
+    # path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
     path("changeCurrency/", views.ChangeCurrencyFav.as_view()),
     path("coins/", views.JsonObjectView.as_view()),
     path("coins/<str:id>", views.AllCoinInformation.as_view()),

@@ -17,7 +17,7 @@ def correcttime(timestamp: str):
 
 try:
     import requests
-    from registration.models import News
+    from oldAPI.models import News
 
     token = os.environ.get('TOKEN_NEWS')
 

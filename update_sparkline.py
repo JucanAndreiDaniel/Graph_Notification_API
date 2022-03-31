@@ -26,7 +26,7 @@ cg = CoinGeckoAPI()
 currencies = ["usd", "eur", "gbp", "rub"]
 
 try:
-    from registration.models import market_chart, cryptoObject
+    from oldAPI.models import market_chart, cryptoObject
     for i in range(1, 26):
         price_list = []
         for curr in currencies:

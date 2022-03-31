@@ -16,6 +16,8 @@ import os
 
 load_dotenv(find_dotenv())
 SECRET_KEY = os.environ.get('TOKEN')
+DATABASE_HOST = os.environ.get('DATABASE_HOST')
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -45,14 +47,23 @@ INSTALLED_APPS = [
     # Rest-Framework
     'rest_framework',
     'rest_framework.authtoken',
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+
+    "corsheaders",
 
     # LocalApps
-    'registration',
+    'oldAPI',
 
     'django_email_verification',
+    # 'fcm_devices',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,6 +71,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    # "http://127.0.0.1:9000",
+    # "http://*",
 ]
 
 ROOT_URLCONF = 'login_api.urls'
@@ -81,11 +98,14 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        # "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.TokenAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ),
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
+
 WSGI_APPLICATION = 'login_api.wsgi.application'
 
 WEBPUSH_SETTINGS = {
@@ -98,12 +118,31 @@ WEBPUSH_SETTINGS = {
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'NotifyMe',
+        'USER': 'andrew',
+        'HOST': DATABASE_HOST,
+        'PASSWORD': DATABASE_PASSWORD,
+        'PORT': '3306',
     }
 }
+AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+
+REST_SESSION_LOGIN=True
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = "auth"
+
+SITE_ID = 1
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation

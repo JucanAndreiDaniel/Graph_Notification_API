@@ -33,17 +33,18 @@ from django.db.models import F, Q
 
 # Serializare Obiect Crypto in json
 class JsonObjectView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         if request.method == "GET":
 
-            user = Profile.objects.get(user__id=request.user.id)
+            # user = Profile.objects.get(user__id=request.user.id)
 
-            if request.GET.get("currency") is None:
-                currency = user.fav_currency
-            else:
-                currency = request.GET.get("currency")
+            # if request.GET.get("currency") is None:
+                # currency = user.fav_currency
+            # else:
+            currency = request.GET.get("currency")
+            limit = request.GET.get("limit")
 
             values = list(
                 cryptoObject.objects.annotate(
@@ -70,7 +71,7 @@ class JsonObjectView(APIView):
                     "atl",
                     "atl_time",
                 )
-                .filter(Q(currency=currency))
+                .filter(Q(currency=currency))[:int(limit)]
             )
 
             return JsonResponse(values, safe=False)
@@ -168,7 +169,7 @@ def register(request):
                 )
                 user.is_active = False
                 user.save()
-                send_email(user)
+                # send_email(user)
                 messages.success(request, f"Account was created for {user.username}")
                 return redirect("login")
 
