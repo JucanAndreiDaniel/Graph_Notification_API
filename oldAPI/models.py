@@ -9,7 +9,8 @@ from django.db.models.fields.related import ForeignKey
 
 class cryptoObject(models.Model):
 
-    coin_id = models.CharField(max_length=255, primary_key=True)
+    id = models.BigAutoField(primary_key=True)
+    coin_id = models.CharField(max_length=255)
     symbol = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=355)
