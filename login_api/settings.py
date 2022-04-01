@@ -131,6 +131,10 @@ DATABASES = {
 }
 AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
 
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 REST_SESSION_LOGIN=True
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "auth"
