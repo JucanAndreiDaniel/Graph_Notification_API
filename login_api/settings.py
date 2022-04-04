@@ -119,16 +119,16 @@ WEBPUSH_SETTINGS = {
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'NotifyMe',
-        'USER': 'andrew',
-        'HOST': DATABASE_HOST,
-        'PASSWORD': DATABASE_PASSWORD,
-        'PORT': '3306',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'NotifyMe',
+#         'USER': 'andrew',
+#         'HOST': DATABASE_HOST,
+#         'PASSWORD': DATABASE_PASSWORD,
+#         'PORT': '3306',
+#     }
+# }
 AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
 
 REST_SESSION_LOGIN=True
@@ -137,12 +137,12 @@ JWT_AUTH_COOKIE = "auth"
 
 SITE_ID = 1
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db2.sqlite3',
+    }
+}
 
 
 # Password validation

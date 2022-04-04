@@ -43,6 +43,7 @@ class JsonObjectView(APIView):
             # if request.GET.get("currency") is None:
                 # currency = user.fav_currency
             # else:
+            print(request.user.id)
             currency = request.GET.get("currency")
             limit = request.GET.get("limit")
 
@@ -1090,14 +1091,36 @@ class AllCoinInformation(APIView):
 
 
 class UserNotifications(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         if request.method == "GET":
-
             user = Profile.objects.get(user__id=request.user.id)
 
-            values = list(user.notification.all().values())
+            if request.GET.get("currency") is None:
+                currency = user.fav_currency
+            else:
+                currency = request.GET.get("currency")
+
+            # values = list(user.notification.all().values())
+            values = list(user.notification.annotate(
+                current=F("coin__value__current"),
+                currency=F("coin__value__currency"),
+                image=F("coin__image"),
+                name=F("coin__name"),
+            )
+            .values(
+                "coin_id",
+                "coin",
+                "value_type",
+                "initial_value",
+                "final_value",
+                "enabled",
+                "via_mail",
+                "current",
+                "image",
+                "name",
+            ).filter(Q(currency=currency)))
 
             return JsonResponse(values, safe=False)
 

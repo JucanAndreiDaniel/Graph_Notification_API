@@ -27,7 +27,7 @@ router = SimpleRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('old/', include('oldAPI.urls')),
+    path('', include('oldAPI.urls')),
     path(
         "favicon.ico",
         RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
