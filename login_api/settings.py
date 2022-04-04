@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 import os
+from datetime import timedelta
 
 load_dotenv(find_dotenv())
 SECRET_KEY = os.environ.get('TOKEN')
@@ -220,3 +221,30 @@ EMAIL_PAGE_TEMPLATE = 'confirm_template.html'
 EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
 
 FCM_DEVICES_API_KEY = os.environ.get("FCM_DEVICES_API_KEY")
+
+SIMPLE_JWT = {
+'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
+'REFRESH_TOKEN_LIFETIME': timedelta(days=20),
+'ROTATE_REFRESH_TOKENS': False,
+'BLACKLIST_AFTER_ROTATION': True,
+
+'ALGORITHM': 'HS256',
+'SIGNING_KEY': SECRET_KEY,
+'VERIFYING_KEY': None,
+'AUDIENCE': None,
+'ISSUER': None,
+
+'AUTH_HEADER_TYPES': ('Bearer',),
+'USER_ID_FIELD': 'id',
+'USER_ID_CLAIM': 'user_id',
+
+'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+'TOKEN_TYPE_CLAIM': 'token_type',
+
+'JTI_CLAIM': 'jti',
+'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+'SLIDING_TOKEN_LIFETIME': timedelta(days=10),
+'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=20),
+}
