@@ -939,7 +939,7 @@ class DeleteNotificationApi(APIView):
         if request.method == "POST":
             noti_delete = Profile.objects.get(
                 user__id=request.user.id
-            ).notification.get(coin_id=request.POST.get("crypto_id"))
+            ).notification.get(id=request.POST.get("id"))
             noti_tabela_mare = Notification.objects.get(id=noti_delete.id).delete()
             profile = Profile(user=request.user)
             profile.notification.remove(noti_delete)
@@ -1110,6 +1110,7 @@ class UserNotifications(APIView):
                 name=F("coin__name"),
             )
             .values(
+                "id",
                 "coin_id",
                 "coin",
                 "value_type",
