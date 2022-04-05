@@ -1,0 +1,655 @@
+---
+swagger: "2.0"
+info:
+  description: "Documentatie API pentru NotifyMe, o aplicatie dezvoltata pe durata modulului Programare Web\
+    \ in cadrul Universitatii de Vest Timisoara, Facultatea de Matematica si Informatica, An 3 \
+    \ Semestrul 2, anul 2022.<br />\
+    \ <b>Authors</b>:<br />\
+    \ - Andrei Jucan<br />\
+    \ - Gabriel Mares<br />\
+    \ - Lascu-Adelin Craciunesc<br />\
+    \ - Bogdan Dragos"
+  version: "1.0"
+  title: "NotifyMe API for Crypto, Stock, Users and News"
+tags:
+- name: "coins"
+  description: "API calls legate de monede crypto"
+- name: "stock"
+  description: "API calls legate de actiuni"
+- name: "news"
+  description: ""
+- name: "notification"
+  description: "API calls legate de operatiuni CRUD pentru notificarile create de utilizatori"
+- name: "favorite"
+  description: "API calls legate de operatiuni CRUD pentru favoritele create de utilizatori"
+- name: "user"
+  description: "API calls legate de operatiuni CRUD pentru utilizatori sau setari relevante pentru acestia"
+paths:
+  /coins:
+    get:
+        tags:
+        - "coins"
+        summary: "Cerere pentru a primi toate coins din baza de date cu informatii sumare"
+        responses:
+            default:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/CoinSummary"
+  /coins/{id}:
+    get:
+        tags:
+        - "coins"
+        summary: "Cerere pentru a primi mai multe detalii fata de API call-ul de mai sus pentru o moneda crypto"
+        parameters:
+          - in: "path"
+            name: "id"
+            description: "ID-ul monedei cautate"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/CoinDetailed"
+            404:
+                description: "Moneda cu ID-ul primit nu exista"
+  /stock:
+    get:
+        tags:
+        - "stock"
+        summary: "Cerere pentru a primi toate stocks din baza de date cu informatii sumare"
+        responses:
+            default:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/StockSummary"
+  /stock/{id}:
+    get:
+        tags:
+        - "stock"
+        summary: "Cerere pentru a primi mai multe detalii fata de API call-ul de mai sus pentru o actiune"
+        parameters:
+          - in: "path"
+            name: "id"
+            description: "ID-ul actiunii cautate"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/StockDetailed"
+            404:
+                description: "Actiunea cu ID-ul primit nu exista"
+  /news:
+    get:
+        tags:
+        - "news"
+        summary: "Cerere pentru a primi toate stirile aflate in baza de date"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    type: array
+                    items:
+                        $ref: "#/definitions/News"
+            404:
+                description: "no news in db"
+  /news/latest:
+    get:
+        tags:
+        - "news"
+        summary: "Cerere pentru a primi cea mai recenta stire din baza de date"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/News"
+            404:
+                description: "no news in db"
+  /news/{keyword}:
+    get:
+        tags:
+        - "news"
+        summary: "Cerere pentru a primi stirile ce au in titlu sau in descrierea lor un cuvant cheie"
+        parameters:
+          - in: "path"
+            name: "keyword"
+            description: "Cuvantul cheie cautat"
+            required: true
+            type: "string"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    type: array
+                    items:
+                        $ref: "#/definitions/News"
+            404:
+                description: "no relevant news in db"
+  /notification:
+    get:
+        tags:
+        - "notification"
+        summary: "Cerere pentru a primi toate notificarile utilizatorului curent"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+        responses:
+            default:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/Notification"
+    put:
+        tags:
+        - "notification"
+        summary: "Cerere pentru a crea o notificare"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "body"
+            name: "body"
+            description: "Elemente necesare pentru crearea unei notificari"
+            required: true
+            schema:
+                type: "array"
+                items: 
+                    $ref: "#/definitions/Notification"
+        responses:
+            200:
+                description: "successful operation"
+            400:
+                description: "invalid values"
+  /notification/{id}:
+    get:
+        tags:
+        - "notification"
+        summary: "Cerere pentru a primi o notificare specifica"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "path"
+            name: "id"
+            description: "ID-ul monezii sau actiunii pentru care se va primi notificarea daca aceasta exista"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/Notification"
+            404:
+                description: "invalid ID"
+    patch:
+        tags:
+        - "notification"
+        summary: "Cerere pentru a modifica o notificare"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "path"
+            name: "id"
+            description: "ID-ul monezii sau actiunii pentru care se va modifica notificarea"
+            required: true
+            type: "integer"
+            format: "int64"
+          - in: "body"
+            name: "body"
+            description: "Elementele modificate ale unei notificari"
+            required: true
+            schema:
+                type: "array"
+                items: 
+                    $ref: "#/definitions/Notification"
+        responses:
+            200:
+                description: "successful operation"
+            400:
+                description: "invalid values"
+    delete:
+        tags:
+        - "notification"
+        summary: "Cerere pentru a sterge o notificare"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "path"
+            name: "id"
+            description: "ID-ul monezii sau actiunii pentru care se va sterge notificarea"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+            200:
+                description: "successful operation"
+            400:
+                description: "invalid ID"
+  /user/favorite:
+    get:
+        tags:
+        - "favorite"
+        summary: "Afiseaza lucrurile marcate de catre utilizatorul curent ca si favorite"
+        operationId: "getFavorite"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+        responses:
+            default:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/UserFavourite"
+    put:
+        tags:
+        - "favorite"
+        summary: "Introduce o nou obiect favorit"
+        operationId: "putFavorite"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "body"
+            name: "body"
+            description: "Nume de utilizator si id-ul monedei sau actiunii adaugate ca favorit"
+            schema:
+                type: "array"
+                items:
+                    $ref: "#/definitions/UserFavourite"
+        responses:
+            default:
+                description: "successful operation"
+  /user/favorite/{id}:
+    get:
+        tags:
+        - "favorite"
+        summary: "Cerere pentru a primi un obiect favorit specific"
+        operationId: "getSpecificFavorite"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "path"
+            name: "id"
+            description: "ID-ul monezii sau actiunii pentru care se va primi obiectul de tip favorit daca acesta exista"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    $ref: "#/definitions/UserFavourite"
+            404:
+                description: "invalid ID"
+    patch:
+        tags:
+        - "favorite"
+        summary: "Modifica o notificare dupa ID-ul ei"
+        operationId: "patchFavorite"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "path"
+            name: "id"
+            description: "ID-ul obiectului Favorite care urmeaza sa fie modificat"
+            required: true
+            type: "integer"
+            format: "int64"
+          - in: "body"
+            name: "body"
+            description: "Nume de utilizator si id-ul monedei sau actiunii modificate din lista de favorite"
+            schema:
+                type: "array"
+                items:
+                    $ref: "#/definitions/UserFavourite"
+        responses:
+            default:
+                description: "successful operation"
+    delete:
+        tags:
+        - "favorite"
+        summary: "Sterge o notificare dupa ID-ul ei"
+        operationId: "deleteFavorite"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "path"
+            name: "id"
+            description: "ID-ul obiectului Favorite care urmeaza sa fie sters"
+            required: true
+            type: "integer"
+            format: "int64"
+          - in: "body"
+            name: "body"
+            description: "Nume de utilizator si id-ul monedei sau actiunii sterse din lista de favorite"
+            schema:
+                type: "array"
+                items:
+                    $ref: "#/definitions/UserFavourite"
+        responses:
+            default:
+                description: "successful operation"
+  /user/register:
+    put:
+        tags:
+        - "user"
+        summary: "Creeaza un utilizator cu informatii din put"
+        operationId: "register"
+        parameters:
+          - in: "body"
+            name: "body"
+            description: "Informatii relevante pentru crearea de utilizator"
+            required: true
+            schema:
+                type: "array"
+                items: 
+                    $ref: "#/definitions/UserRegister"
+        responses:
+            default:
+                description: "successful operation"
+  /user/login:
+    post:
+        tags:
+        - "user"
+        summary: "Permite accesul unui utilizator pe platforma NotifyMe"
+        operationId: "login"
+        parameters:
+          - in: "body"
+            name: "body"
+            description: "Nume de utilizator si parola utilizatorului pentru login"
+            required: true
+            schema:
+                type: "array"
+                items: 
+                    $ref: "#/definitions/UserLogin"
+        responses:
+            200:
+                description: "Redirectionare pe pagina principala"
+            404:
+                description: "Date Invalide sau utilizator inactive"
+  /user/logout:
+    post:
+        tags:
+        - "user"
+        summary: "Delogheaza utilizatorul de pe platforma NotifyMe"
+        operationId: "logout"
+        responses:
+            default:
+                description: "Utilizator a fost delogat cu succes"
+  /user/curreny:
+    get:
+        tags:
+        - "user"
+        summary: "Primeste valuta preferata de un utilizator"
+        operationId: "getCurrency"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "body"
+            name: "body"
+            description: "username utilizatorului pentru care se doreste aflarea valutei selectate"
+            required: true
+            schema:
+                type: object
+                properties:
+                    token:
+                        type: string
+                        format: int64
+                        example: 72742
+                    username:
+                        type: string
+                        example: helloThere123
+        responses:
+            200:
+                description: "successful operation"
+                schema:
+                    type: object
+                    properties:
+                        currency:
+                            type: string
+                            example: EUR
+            404:
+                description: "Date Invalide sau utilizator inactive"
+    put:
+        tags:
+        - "user"
+        summary: "Permite utilizatorului sa-si schimbe valuta preferata"
+        operationId: "putCurrency"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "body"
+            name: "body"
+            description: "ID-ul utilizatorului pentru care se doreste aflarea valutei selectate"
+            required: true
+            schema:
+                type: object
+                properties:
+                    currency:
+                        type: string
+                        example: EUR
+        responses:
+            200:
+                description: "successful operation"
+            404:
+                description: "Date Invalide sau utilizator inactive"
+definitions:
+  CoinSummary:
+    type: "object"
+    properties:
+            coin_id:
+                type: "integer"
+                format: "int64"
+            symbol:
+                type: "string"
+            name:
+                type: "string"
+            image:
+                type: "string"
+            last_updated:
+                type: "string"
+            current:
+                type: "number"
+                multipleOf: 0.001
+  CoinDetailed:
+    type: "object"
+    properties:
+            coin_id:
+                type: "integer"
+                format: "int64"
+            symbol:
+                type: "string"
+            name:
+                type: "string"
+            image:
+                type: "string"
+            last_updated:
+                type: "string"
+            current:
+                type: "number"
+                multipleOf: 0.001
+            last_price:
+                type: "number"
+                multipleOf: 0.001
+            percentage_1h:
+                type: "integer"
+                format: "uint8"
+            high_1d:
+                type: "number"
+                multipleOf: 0.001
+            low_1d:
+                type: "number"
+                multipleOf: 0.001
+            percentage_1d:
+                type: "integer"
+                format: "uint8"
+            ath:
+                type: "number"
+                multipleOf: 0.001
+            ath_time:
+                type: "string"
+            atl:
+                type: "number"
+                multipleOf: 0.001
+            atl_time:
+                type: "string"
+  StockSummary:
+    type: "object"
+    properties:
+            stock_id:
+                type: "integer"
+                format: "int64"
+            symbol:
+                type: "string"
+            name:
+                type: "string"
+            image:
+                type: "string"
+            last_updated:
+                type: "string"
+            current:
+                type: "number"
+                multipleOf: 0.001
+  StockDetailed:
+    type: "object"
+    properties:
+            stock_id:
+                type: "integer"
+                format: "int64"
+            symbol:
+                type: "string"
+            name:
+                type: "string"
+            image:
+                type: "string"
+            last_updated:
+                type: "string"
+            current:
+                type: "number"
+                multipleOf: 0.001
+            last_price:
+                type: "number"
+                multipleOf: 0.001
+            percentage_1h:
+                type: "integer"
+                format: "uint8"
+            high_1d:
+                type: "number"
+                multipleOf: 0.001
+            low_1d:
+                type: "number"
+                multipleOf: 0.001
+            percentage_1d:
+                type: "integer"
+                format: "uint8"
+            ath:
+                type: "number"
+                multipleOf: 0.001
+            ath_time:
+                type: "string"
+            atl:
+                type: "number"
+                multipleOf: 0.001
+            atl_time:
+                type: "string"
+  News:
+    type: "object"
+    properties:
+            id:
+                type: "integer"
+                format: "int64"
+            source_name:
+                type: "string"
+            author:
+                type: "string"
+            title:
+                type: "string"
+            description:
+                type: "string"
+            url:
+                type: "string"
+            published_at:
+                type: "string"
+  Notification:
+    type: "object"
+    properties:
+            id:
+                type: "integer"
+                format: "int64"
+            initial_value:
+                type: "number"
+                multipleOf: 0.001
+            final_value:
+                type: "number"
+                multipleOf: 0.001
+            enabled:
+                type: "boolean"
+            via_mail:
+                type: "boolean"
+  UserRegister:
+    type: "object"
+    properties:
+            username:
+                type: "string"
+            first_name:
+                type: "string"
+            last_name:
+                type: "string"
+            email:
+                type: "string"
+            passwd:
+                type: "string"
+  UserLogin:
+    type: "object"
+    properties:
+            username:
+                type: "string"
+            passwd:
+                type: "string"
+  UserFavourite:
+    type: "object"
+    properties:
+            user_id:
+                type: "integer"
+                format: "int64"
+            favObjects:
+                type: "array"
+                items:
+                    type: "integer"
+                    format: "int64"
