@@ -193,7 +193,7 @@ def averagePerDay(currency,coinId):
         cryptoPrices = market_chart.objects.all().filter(currency=currency)
     else:
         cryptoPrices = market_chart.objects.all().filter(currency=currency).filter(coin_id=coinId)
-    
+
     try:
         for i in range(0,len(cryptoPrices),7):
             list_avg=[]
@@ -448,11 +448,11 @@ def crypto_details(request, value):
         )
     ).filter(name=value)
 
-    
+
 
     lista = checkPrices(request)
     dic = lista[0]
-    
+
     notifications = (
         Profile.objects.get(user__id=request.user.id)
         .notification.annotate(
@@ -487,9 +487,9 @@ def crypto_details(request, value):
         )
         .filter(Q(currency=currency))
     ).filter(coin_id=details['coin_id'])
-    
+
     avg_day = averagePerDay(currency,details['coin_id'])
-    
+
     return render(request, "crypto_details.html", {"details":details,"avgDay":avg_day,"nrnot": lista[1],"notificare":notifications,"current":current})
 
 
@@ -1186,3 +1186,11 @@ def stockTickFinder(request):
         return render(request, "stock.html", {"stonks": namez})
     allz = cmpProfile("", "all")
     return render(request, "stock.html", {"stonks": allz})
+
+class UserFavCurr(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        if request.method == "GET":
+            user = Profile.objects.get(user__id=request.user.id)
+            return user.fav_currency
