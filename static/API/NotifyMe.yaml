@@ -9,7 +9,7 @@ info:
     \ - Gabriel Mares<br />\
     \ - Lascu-Adelin Craciunesc<br />\
     \ - Bogdan Dragos"
-  version: "1.0"
+  version: "1.1"
   title: "NotifyMe API for Crypto, Stock, Users and News"
 tags:
 - name: "coins"
