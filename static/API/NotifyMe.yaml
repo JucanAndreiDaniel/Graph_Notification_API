@@ -1,15 +1,19 @@
 ---
 swagger: "2.0"
 info:
-  description: "Documentatie API pentru NotifyMe, o aplicatie dezvoltata pe durata modulului Programare Web\
-    \ in cadrul Universitatii de Vest Timisoara, Facultatea de Matematica si Informatica, An 3 \
-    \ Semestrul 2, anul 2022.<br />\
+  description: "Documentatie API pentru NotifyMe, o aplicatie dezvoltata pe durata modulului Programare Web<br /><br />\
+    \ Universitatii de Vest Timisoara<br /><br />\
+    \ Facultatea de Matematica si Informatica<br /><br />\
+    \ Domeniu Informatica<br /><br />\
+    \ Sectia Informatica Aplicata<br /><br />\
+    \ An 3<br /><br />\
+    \ Semestrul 2, anul 2022.<br /><br />\
     \ <b>Authors</b>:<br />\
     \ - Andrei Jucan<br />\
     \ - Gabriel Mares<br />\
     \ - Lascu-Adelin Craciunesc<br />\
     \ - Bogdan Dragos"
-  version: "1.1"
+  version: "1.2"
   title: "NotifyMe API for Crypto, Stock, Users and News"
 tags:
 - name: "coins"
@@ -145,7 +149,7 @@ paths:
                 description: "successful operation"
                 schema:
                     $ref: "#/definitions/Notification"
-    put:
+    post:
         tags:
         - "notification"
         summary: "Cerere pentru a crea o notificare"
@@ -168,30 +172,6 @@ paths:
                 description: "successful operation"
             400:
                 description: "invalid values"
-  /notification/{id}:
-    get:
-        tags:
-        - "notification"
-        summary: "Cerere pentru a primi o notificare specifica"
-        parameters:
-          - in: "header"
-            name: "header"
-            description: "auth token"
-            required: true
-            type: string
-          - in: "path"
-            name: "id"
-            description: "ID-ul monezii sau actiunii pentru care se va primi notificarea daca aceasta exista"
-            required: true
-            type: "integer"
-            format: "int64"
-        responses:
-            200:
-                description: "successful operation"
-                schema:
-                    $ref: "#/definitions/Notification"
-            404:
-                description: "invalid ID"
     patch:
         tags:
         - "notification"
@@ -202,12 +182,6 @@ paths:
             description: "auth token"
             required: true
             type: string
-          - in: "path"
-            name: "id"
-            description: "ID-ul monezii sau actiunii pentru care se va modifica notificarea"
-            required: true
-            type: "integer"
-            format: "int64"
           - in: "body"
             name: "body"
             description: "Elementele modificate ale unei notificari"
@@ -231,16 +205,43 @@ paths:
             description: "auth token"
             required: true
             type: string
+          - in: "body"
+            name: "body"
+            description: "ID-ul notificarii ce urmeaza sa fie stearsa"
+            required: true
+            schema:
+                type: object
+                properties:
+                    id:
+                        type: string
+        responses:
+            200:
+                description: "successful operation"
+            400:
+                description: "invalid ID"
+  /notification/{id}:
+    get:
+        tags:
+        - "notification"
+        summary: "Cerere pentru a primi o notificare specifica"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
           - in: "path"
             name: "id"
-            description: "ID-ul monezii sau actiunii pentru care se va sterge notificarea"
+            description: "ID-ul notificarii dorite"
             required: true
             type: "integer"
             format: "int64"
         responses:
             200:
                 description: "successful operation"
-            400:
+                schema:
+                    $ref: "#/definitions/Notification"
+            404:
                 description: "invalid ID"
   /user/favorite:
     get:
@@ -259,10 +260,10 @@ paths:
                 description: "successful operation"
                 schema:
                     $ref: "#/definitions/UserFavourite"
-    put:
+    post:
         tags:
         - "favorite"
-        summary: "Introduce o nou obiect favorit"
+        summary: "Introduce un nou obiect favorit"
         operationId: "putFavorite"
         parameters:
           - in: "header"
@@ -272,11 +273,33 @@ paths:
             type: string
           - in: "body"
             name: "body"
-            description: "Nume de utilizator si id-ul monedei sau actiunii adaugate ca favorit"
+            description: "Elementele necesare pentru introducerea unui nou obiect favorit"
             schema:
                 type: "array"
                 items:
                     $ref: "#/definitions/UserFavourite"
+        responses:
+            default:
+                description: "successful operation"
+    delete:
+        tags:
+        - "favorite"
+        summary: "Sterge un obiect de tip favorit dupa ID-ul ei"
+        operationId: "deleteFavorite"
+        parameters:
+          - in: "header"
+            name: "header"
+            description: "auth token"
+            required: true
+            type: string
+          - in: "body"
+            name: "body"
+            description: "ID-ul obiectului de tip favorit care urmeaza sa fie sters"
+            schema:
+                type: object
+                properties:
+                    id:
+                        type: string
         responses:
             default:
                 description: "successful operation"
@@ -305,60 +328,6 @@ paths:
                     $ref: "#/definitions/UserFavourite"
             404:
                 description: "invalid ID"
-    patch:
-        tags:
-        - "favorite"
-        summary: "Modifica o notificare dupa ID-ul ei"
-        operationId: "patchFavorite"
-        parameters:
-          - in: "header"
-            name: "header"
-            description: "auth token"
-            required: true
-            type: string
-          - in: "path"
-            name: "id"
-            description: "ID-ul obiectului Favorite care urmeaza sa fie modificat"
-            required: true
-            type: "integer"
-            format: "int64"
-          - in: "body"
-            name: "body"
-            description: "Nume de utilizator si id-ul monedei sau actiunii modificate din lista de favorite"
-            schema:
-                type: "array"
-                items:
-                    $ref: "#/definitions/UserFavourite"
-        responses:
-            default:
-                description: "successful operation"
-    delete:
-        tags:
-        - "favorite"
-        summary: "Sterge o notificare dupa ID-ul ei"
-        operationId: "deleteFavorite"
-        parameters:
-          - in: "header"
-            name: "header"
-            description: "auth token"
-            required: true
-            type: string
-          - in: "path"
-            name: "id"
-            description: "ID-ul obiectului Favorite care urmeaza sa fie sters"
-            required: true
-            type: "integer"
-            format: "int64"
-          - in: "body"
-            name: "body"
-            description: "Nume de utilizator si id-ul monedei sau actiunii sterse din lista de favorite"
-            schema:
-                type: "array"
-                items:
-                    $ref: "#/definitions/UserFavourite"
-        responses:
-            default:
-                description: "successful operation"
   /user/register:
     put:
         tags:
@@ -610,6 +579,9 @@ definitions:
     type: "object"
     properties:
             id:
+                type: "integer"
+                format: "int64"
+            coin_id:
                 type: "integer"
                 format: "int64"
             initial_value:
