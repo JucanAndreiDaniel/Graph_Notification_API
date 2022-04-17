@@ -49,7 +49,10 @@ class JsonObjectView(APIView):
             # else:
             print(request.user.id)
             currency = request.GET.get("currency")
-            limit = request.GET.get("limit")
+            pageSize = request.GET.get("pageSize")
+            page = request.GET.get("pageIndex")
+            first = (int(page) - 1) * int(pageSize)
+            last = int(page) * int(pageSize)
 
             values = list(
                 cryptoObject.objects.annotate(
@@ -77,7 +80,7 @@ class JsonObjectView(APIView):
                     "atl",
                     "atl_time",
                 )
-                .filter(Q(currency=currency))[:int(limit)]
+                .filter(Q(currency=currency))[0 if first<=0 else first:last]
             )
 
             return JsonResponse(values, safe=False)
