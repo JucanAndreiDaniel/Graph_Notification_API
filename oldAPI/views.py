@@ -19,6 +19,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser
 
+from oldAPI.serializers import NewsSerializer
+
 from .models import (
     cryptoObject,
     Profile,
@@ -27,6 +29,7 @@ from .models import (
     Notification,
     CompanyProfile,
     StockPrices,
+    News,
 )
 
 from django.db.models import F, Q
@@ -78,6 +81,51 @@ class JsonObjectView(APIView):
             )
 
             return JsonResponse(values, safe=False)
+
+class CoinsID(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        user = Profile.objects.get(user__id=request.user.id)
+
+        if request.GET.get("currency") is None:
+            currency = user.fav_currency
+        else:
+            currency = request.GET.get("currency")
+        try:
+            values = list(
+            cryptoObject.objects.annotate(
+                current=F("value__current"),
+                high_1d=F("value__high_1d"),
+                low_1d=F("value__low_1d"),
+                currency=F("value__currency"),
+                ath=F("value__ath"),
+                ath_time=F("value__ath_time"),
+                atl=F("value__atl"),
+                atl_time=F("value__atl_time"),
+            )
+            .values(
+                "id",
+                "coin_id",
+                "symbol",
+                "name",
+                "image",
+                "last_updated",
+                "current",
+                "high_1d",
+                "low_1d",
+                "ath",
+                "ath_time",
+                "atl",
+                "atl_time",
+            )
+            .filter(Q(currency=currency))
+            .filter(coin_id=kwargs.get("id"))
+        )
+        except Exception as e:
+            return Response("There are no values")
+
+        return JsonResponse(values, safe=False)
 
 
 def login(request):
@@ -1022,51 +1070,6 @@ def checkPrices(request):
     return [js_data, len(dic)]
 
 
-class AllCoinInformation(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, **kwargs):
-        if request.method == "GET":
-
-            user = Profile.objects.get(user__id=request.user.id)
-
-            if request.GET.get("currency") is None:
-                currency = user.fav_currency
-            else:
-                currency = request.GET.get("currency")
-
-            values = list(
-                cryptoObject.objects.annotate(
-                    current=F("value__current"),
-                    high_1d=F("value__high_1d"),
-                    low_1d=F("value__low_1d"),
-                    currency=F("value__currency"),
-                    ath=F("value__ath"),
-                    ath_time=F("value__ath_time"),
-                    atl=F("value__atl"),
-                    atl_time=F("value__atl_time"),
-                )
-                .values(
-                    "coin_id",
-                    "symbol",
-                    "name",
-                    "image",
-                    "last_updated",
-                    "current",
-                    "high_1d",
-                    "low_1d",
-                    "ath",
-                    "ath_time",
-                    "atl",
-                    "atl_time",
-                )
-                .filter(Q(currency=currency))
-                .filter(coin_id=kwargs.get("id"))
-            )
-
-            return JsonResponse(values, safe=False)
-
-
 def cmpProfile(contain, cee):
     a = CompanyProfile.objects.annotate(
         closed=F("stockprices__closed"),
@@ -1146,3 +1149,11 @@ class UserFavCurr(APIView):
         user.fav_currency = favorite_currency
         user.save()
         return Response("Favorite currency updated")
+
+class NewsAPI(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        news_objs   = News.objects.all()
+        data = NewsSerializer(news_objs).data
+        return JsonResponse(data)

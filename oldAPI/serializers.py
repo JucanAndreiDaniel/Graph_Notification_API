@@ -31,3 +31,18 @@ class NotificationSerializer(serializers.Serializer):
             instance.via_mail = attrs.get('via_mail', instance.via_mail)
             return instance
         return Notification(**attrs)
+
+class NewsSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+    source_name = serializers.CharField(max_length=255)
+    author = serializers.CharField(max_length=255)
+    title = serializers.CharField(max_length=255)
+    description = serializers.CharField(max_length=255)
+    url = serializers.CharField(max_length=255)
+    image_url = serializers.CharField(max_length=255)
+    published_at = serializers.DateTimeField(7)
+    content = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = News
+        fields = ("id", "source_name", "author", "title", "description", "url", "image_url", "published_at", "content")

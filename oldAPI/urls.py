@@ -26,9 +26,10 @@ urlpatterns = [
     # path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
     path("user/currency/", views.UserFavCurr.as_view()),
     path("coins/", views.JsonObjectView.as_view()),
-    path("coins/<str:id>", views.AllCoinInformation.as_view()),
+    path("coins/<str:id>", views.CoinsID.as_view()),
     path("favorites/", views.UserFavorites.as_view()),
     path("notifications/",views.Notifications.as_view()),
+    path("news/",views.NewsAPI.as_view()),
     path(
         "swagger-ui/",
         TemplateView.as_view(
