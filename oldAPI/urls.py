@@ -24,7 +24,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     #     API
     # path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
-    path("changeCurrency/", views.ChangeCurrencyFav.as_view()),
+    path("user/currency/", views.UserFavCurr.as_view()),
     path("coins/", views.JsonObjectView.as_view()),
     path("coins/<str:id>", views.AllCoinInformation.as_view()),
     path("favorites/", views.UserFavorites.as_view()),

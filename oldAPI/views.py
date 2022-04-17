@@ -802,7 +802,7 @@ class Notifications(APIView):
         return JsonResponse(values, safe=False)
 
     def put(self, request):
-        print(request.data)  # merge pentru POST PUT si PATCH
+        # print(request.data)
 
         crypto_id = request.data.get("crypto_id")
         final_value = float(request.data.get("value"))
@@ -1021,18 +1021,6 @@ def checkPrices(request):
     return [js_data, len(dic)]
 
 
-class ChangeCurrencyFav(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        if request.method == "POST":
-            favorite_currency = request.data.get("favorite_currency")
-            user = Profile.objects.get(user__id=request.user.id)
-            user.fav_currency = favorite_currency
-            user.save()
-            return Response("Favorite currency updated")
-
-
 class AllCoinInformation(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -1146,4 +1134,14 @@ class UserFavCurr(APIView):
     def get(self, request):
         if request.method == "GET":
             user = Profile.objects.get(user__id=request.user.id)
-            return user.fav_currency
+            return JsonResponse(user.fav_currency, safe=False)
+
+    def put(self, request):
+        favorite_currency = request.data.get("favorite_currency")
+        curList = ["usd", "eur", "rub", "gbp"]
+        if favorite_currency not in curList:
+            return Response("Value not in cur")
+        user = Profile.objects.get(user__id=request.user.id)
+        user.fav_currency = favorite_currency
+        user.save()
+        return Response("Favorite currency updated")
