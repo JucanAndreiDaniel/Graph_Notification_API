@@ -851,7 +851,7 @@ class Notifications(APIView):
         return JsonResponse(values, safe=False)
 
     def put(self, request):
-        # print(request.data)
+        print(request.data)
 
         crypto_id = request.data.get("crypto_id")
         final_value = float(request.data.get("value"))
@@ -884,11 +884,17 @@ class Notifications(APIView):
         else:
             viamail = False
 
+        if request.data.get("state") == "true":
+            state = True
+        else:
+            state = False
+
         from .serializers import NotificationSerializer
 
         fNoti, created = Profile.objects.get(user__id=request.user.id).notification.update_or_create(
             coin_id=crypto_id, defaults={
                 "coin_id": crypto_id,
+                "enabled": state,
                 "value_type": option,
                 "initial_value": crypto_value,
                 "final_value": final_value,
