@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser
 
-from oldAPI.serializers import NewsSerializer
+from oldAPI.serializers import NewsSerializer, NewsListSerializer
 
 from .models import (
     cryptoObject,
@@ -1154,6 +1154,7 @@ class NewsAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        news_objs   = News.objects.all()
-        data = NewsSerializer(news_objs).data
-        return JsonResponse(data)
+        news_objs = list(News.objects.all().values())
+        # data = NewsSerializer(news_objs,many=True)
+        # print()
+        return JsonResponse(news_objs,safe=False)
