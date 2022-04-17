@@ -222,6 +222,22 @@ EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
 
 FCM_DEVICES_API_KEY = os.environ.get("FCM_DEVICES_API_KEY")
 
+SECURE_REFERRER_POLICY = "strict-origin"
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
+
+
 SIMPLE_JWT = {
 'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
 'REFRESH_TOKEN_LIFETIME': timedelta(days=20),
