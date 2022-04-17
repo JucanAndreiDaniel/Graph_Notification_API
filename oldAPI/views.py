@@ -60,6 +60,7 @@ class JsonObjectView(APIView):
                     atl_time=F("value__atl_time"),
                 )
                 .values(
+                    "id",
                     "coin_id",
                     "symbol",
                     "name",
