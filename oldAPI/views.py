@@ -17,9 +17,7 @@ from statistics import mean
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import JSONParser
 
-from oldAPI.serializers import NewsSerializer, NewsListSerializer
 
 from .models import (
     cryptoObject,
@@ -28,107 +26,10 @@ from .models import (
     value,
     Notification,
     CompanyProfile,
-    StockPrices,
     News,
 )
 
 from django.db.models import F, Q
-
-
-# Serializare Obiect Crypto in json
-class JsonObjectView(APIView):
-    # permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        if request.method == "GET":
-
-            # user = Profile.objects.get(user__id=request.user.id)
-
-            # if request.GET.get("currency") is None:
-            # currency = user.fav_currency
-            # else:
-            print(request.user.id)
-            currency = request.GET.get("currency")
-            pageSize = request.GET.get("pageSize")
-            page = request.GET.get("pageIndex")
-            first = (int(page) - 1) * int(pageSize)
-            last = int(page) * int(pageSize)
-
-            values = list(
-                cryptoObject.objects.annotate(
-                    current=F("value__current"),
-                    high_1d=F("value__high_1d"),
-                    low_1d=F("value__low_1d"),
-                    currency=F("value__currency"),
-                    ath=F("value__ath"),
-                    ath_time=F("value__ath_time"),
-                    atl=F("value__atl"),
-                    atl_time=F("value__atl_time"),
-                )
-                .values(
-                    "id",
-                    "coin_id",
-                    "symbol",
-                    "name",
-                    "image",
-                    "last_updated",
-                    "current",
-                    "high_1d",
-                    "low_1d",
-                    "ath",
-                    "ath_time",
-                    "atl",
-                    "atl_time",
-                )
-                .filter(Q(currency=currency))[0 if first<=0 else first:last]
-            )
-
-            return JsonResponse(values, safe=False)
-
-class CoinsID(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, **kwargs):
-        user = Profile.objects.get(user__id=request.user.id)
-
-        if request.GET.get("currency") is None:
-            currency = user.fav_currency
-        else:
-            currency = request.GET.get("currency")
-        try:
-            values = list(
-            cryptoObject.objects.annotate(
-                current=F("value__current"),
-                high_1d=F("value__high_1d"),
-                low_1d=F("value__low_1d"),
-                currency=F("value__currency"),
-                ath=F("value__ath"),
-                ath_time=F("value__ath_time"),
-                atl=F("value__atl"),
-                atl_time=F("value__atl_time"),
-            )
-            .values(
-                "id",
-                "coin_id",
-                "symbol",
-                "name",
-                "image",
-                "last_updated",
-                "current",
-                "high_1d",
-                "low_1d",
-                "ath",
-                "ath_time",
-                "atl",
-                "atl_time",
-            )
-            .filter(Q(currency=currency))
-            .filter(coin_id=kwargs.get("id"))
-        )
-        except Exception as e:
-            return Response("There are no values")
-
-        return JsonResponse(values, safe=False)
 
 
 def login(request):
@@ -177,8 +78,7 @@ def register(request):
                 user.is_active = False
                 user.save()
                 # send_email(user)
-                messages.success(
-                    request, f"Account was created for {user.username}")
+                messages.success(request, f"Account was created for {user.username}")
                 return redirect("login")
 
         else:
@@ -199,19 +99,20 @@ def averagePerDay(currency, coinId):
     if coinId == "":
         cryptoPrices = market_chart.objects.all().filter(currency=currency)
     else:
-        cryptoPrices = market_chart.objects.all().filter(
-            currency=currency).filter(coin_id=coinId)
+        cryptoPrices = (
+            market_chart.objects.all().filter(currency=currency).filter(coin_id=coinId)
+        )
 
     try:
         for i in range(0, len(cryptoPrices), 7):
             list_avg = []
             list_avg.append(cryptoPrices[i].media)
-            list_avg.append(cryptoPrices[i+1].media)
-            list_avg.append(cryptoPrices[i+2].media)
-            list_avg.append(cryptoPrices[i+3].media)
-            list_avg.append(cryptoPrices[i+4].media)
-            list_avg.append(cryptoPrices[i+5].media)
-            list_avg.append(cryptoPrices[i+6].media)
+            list_avg.append(cryptoPrices[i + 1].media)
+            list_avg.append(cryptoPrices[i + 2].media)
+            list_avg.append(cryptoPrices[i + 3].media)
+            list_avg.append(cryptoPrices[i + 4].media)
+            list_avg.append(cryptoPrices[i + 5].media)
+            list_avg.append(cryptoPrices[i + 6].media)
             dic[cryptoPrices[i].coin_id] = list_avg
     except:
         traceback.print_exc()
@@ -291,61 +192,68 @@ def home(request):
     cList.remove(user.fav_currency)
 
     dic1 = {}
-    pret_zi = market_chart.objects.annotate(
-        last_price=F("coin__value__last_price")
-    ).values("coin_id",
-             "price1",
-             "price2",
-             "price3",
-             "price4",
-             "price5",
-             "price6",
-             "price7",
-             "price8",
-             "price9",
-             "price10",
-             "price11",
-             "price12",
-             "price13",
-             "price14",
-             "price15",
-             "price16",
-             "price17",
-             "price18",
-             "price19",
-             "price20",
-             "price21",
-             "price22",
-             "price23",
-             "price24",
-             "last_price").filter(day=market_chart.Days.ONE).filter(currency=currency)
+    pret_zi = (
+        market_chart.objects.annotate(last_price=F("coin__value__last_price"))
+        .values(
+            "coin_id",
+            "price1",
+            "price2",
+            "price3",
+            "price4",
+            "price5",
+            "price6",
+            "price7",
+            "price8",
+            "price9",
+            "price10",
+            "price11",
+            "price12",
+            "price13",
+            "price14",
+            "price15",
+            "price16",
+            "price17",
+            "price18",
+            "price19",
+            "price20",
+            "price21",
+            "price22",
+            "price23",
+            "price24",
+            "last_price",
+        )
+        .filter(day=market_chart.Days.ONE)
+        .filter(currency=currency)
+    )
     for j in pret_zi:
         dic1[f"{j['coin_id']}"] = [
             [j["last_price"]],
-            [j["price1"],
-             j["price2"],
-             j["price3"],
-             j["price4"],
-             j["price5"],
-             j["price6"],
-             j["price7"],
-             j["price8"],
-             j["price9"],
-             j["price10"],
-             j["price11"],
-             j["price12"],
-             j["price13"],
-             j["price14"],
-             j["price15"],
-             j["price16"],
-             j["price17"],
-             j["price18"],
-             j["price19"],
-             j["price20"],
-             j["price21"],
-             j["price22"],
-             j["price23"],
-             j["price24"]]
+            [
+                j["price1"],
+                j["price2"],
+                j["price3"],
+                j["price4"],
+                j["price5"],
+                j["price6"],
+                j["price7"],
+                j["price8"],
+                j["price9"],
+                j["price10"],
+                j["price11"],
+                j["price12"],
+                j["price13"],
+                j["price14"],
+                j["price15"],
+                j["price16"],
+                j["price17"],
+                j["price18"],
+                j["price19"],
+                j["price20"],
+                j["price21"],
+                j["price22"],
+                j["price23"],
+                j["price24"],
+            ],
         ]
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
@@ -424,7 +332,7 @@ def crypto_details(request, value):
             atl=F("value__atl"),
             atl_time=F("value__atl_time"),
             perc1h=F("value__percentage_1h"),
-            perc1d=F("value__percentage_1d")
+            perc1d=F("value__percentage_1d"),
         )
         .values(
             "coin_id",
@@ -447,10 +355,7 @@ def crypto_details(request, value):
     ).get(name=value)
 
     current = (
-        cryptoObject.objects.annotate(
-            current=F("value__current"),
-        )
-        .values(
+        cryptoObject.objects.annotate(current=F("value__current"),).values(
             "current",
         )
     ).filter(name=value)
@@ -491,11 +396,21 @@ def crypto_details(request, value):
             "name",
         )
         .filter(Q(currency=currency))
-    ).filter(coin_id=details['coin_id'])
+    ).filter(coin_id=details["coin_id"])
 
-    avg_day = averagePerDay(currency, details['coin_id'])
+    avg_day = averagePerDay(currency, details["coin_id"])
 
-    return render(request, "crypto_details.html", {"details": details, "avgDay": avg_day, "nrnot": lista[1], "notificare": notifications, "current": current})
+    return render(
+        request,
+        "crypto_details.html",
+        {
+            "details": details,
+            "avgDay": avg_day,
+            "nrnot": lista[1],
+            "notificare": notifications,
+            "current": current,
+        },
+    )
 
 
 def filter(request):
@@ -523,61 +438,68 @@ def filter(request):
         coin__in=cryptoObject.objects.filter(profile__user__id=request.user.id)
     )
     dic1 = {}
-    pret_zi = market_chart.objects.annotate(
-        last_price=F("coin__value__last_price")
-    ).values("coin_id",
-             "price1",
-             "price2",
-             "price3",
-             "price4",
-             "price5",
-             "price6",
-             "price7",
-             "price8",
-             "price9",
-             "price10",
-             "price11",
-             "price12",
-             "price13",
-             "price14",
-             "price15",
-             "price16",
-             "price17",
-             "price18",
-             "price19",
-             "price20",
-             "price21",
-             "price22",
-             "price23",
-             "price24",
-             "last_price").filter(day=market_chart.Days.ONE).filter(currency=currency)
+    pret_zi = (
+        market_chart.objects.annotate(last_price=F("coin__value__last_price"))
+        .values(
+            "coin_id",
+            "price1",
+            "price2",
+            "price3",
+            "price4",
+            "price5",
+            "price6",
+            "price7",
+            "price8",
+            "price9",
+            "price10",
+            "price11",
+            "price12",
+            "price13",
+            "price14",
+            "price15",
+            "price16",
+            "price17",
+            "price18",
+            "price19",
+            "price20",
+            "price21",
+            "price22",
+            "price23",
+            "price24",
+            "last_price",
+        )
+        .filter(day=market_chart.Days.ONE)
+        .filter(currency=currency)
+    )
     for j in pret_zi:
         dic1[f"{j['coin_id']}"] = [
             [j["last_price"]],
-            [j["price1"],
-             j["price2"],
-             j["price3"],
-             j["price4"],
-             j["price5"],
-             j["price6"],
-             j["price7"],
-             j["price8"],
-             j["price9"],
-             j["price10"],
-             j["price11"],
-             j["price12"],
-             j["price13"],
-             j["price14"],
-             j["price15"],
-             j["price16"],
-             j["price17"],
-             j["price18"],
-             j["price19"],
-             j["price20"],
-             j["price21"],
-             j["price22"],
-             j["price23"],
-             j["price24"]]
+            [
+                j["price1"],
+                j["price2"],
+                j["price3"],
+                j["price4"],
+                j["price5"],
+                j["price6"],
+                j["price7"],
+                j["price8"],
+                j["price9"],
+                j["price10"],
+                j["price11"],
+                j["price12"],
+                j["price13"],
+                j["price14"],
+                j["price15"],
+                j["price16"],
+                j["price17"],
+                j["price18"],
+                j["price19"],
+                j["price20"],
+                j["price21"],
+                j["price22"],
+                j["price23"],
+                j["price24"],
+            ],
         ]
     paginator = Paginator(prices, 30)
     charts = json.dumps(dic1)
@@ -610,8 +532,7 @@ def base(request):
     user = request.user
     dic = checkPrices(request)
     return render(
-        request, "base.html", {user: user,
-                               "vapid_key": vapid_key, "notificare": dic}
+        request, "base.html", {user: user, "vapid_key": vapid_key, "notificare": dic}
     )
 
 
@@ -659,62 +580,6 @@ def delFavView(request):
     user = User.objects.filter(username=request.user.username).get()
     deleteFav(user, delete_favorite)
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-
-
-class UserFavorites(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        user = Profile.objects.get(user__id=request.user.id)
-
-        if request.GET.get("currency") is None:
-            currency = user.fav_currency
-        else:
-            currency = request.GET.get("currency")
-
-        favorites = list(
-            user.favorite.annotate(
-                current=F("value__current"),
-                high_1d=F("value__high_1d"),
-                low_1d=F("value__low_1d"),
-                currency=F("value__currency"),
-                ath=F("value__ath"),
-                ath_time=F("value__ath_time"),
-                atl=F("value__atl"),
-                atl_time=F("value__atl_time"),
-            )
-            .values(
-                "id",
-                "coin_id",
-                "symbol",
-                "name",
-                "image",
-                "last_updated",
-                "current",
-                "high_1d",
-                "low_1d",
-                "ath",
-                "ath_time",
-                "atl",
-                "atl_time",
-            )
-            .filter(Q(currency=currency))
-        )
-
-        return JsonResponse(favorites, safe=False)
-
-    def post(self, request):
-        add_favorite = request.data.get("crypto_id")
-        user = User.objects.filter(username=request.user.username).get()
-        addToFav(user, add_favorite)
-        return Response("Added")
-
-    def delete(self, request):
-        delete_favorite = request.data.get("crypto_id")
-        print(delete_favorite)
-        user = User.objects.filter(username=request.user.username).get()
-        deleteFav(user, delete_favorite)
-        return Response("Deleted")
 
 
 def changeFavCurrency(request):
@@ -819,113 +684,11 @@ def modifyNotification(request):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
-class Notifications(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        user = Profile.objects.get(user__id=request.user.id)
-
-        if request.GET.get("currency") is None:
-            currency = user.fav_currency
-        else:
-            currency = request.GET.get("currency")
-
-        # values = list(user.notification.all().values())
-        values = list(user.notification.annotate(
-            current=F("coin__value__current"),
-            currency=F("coin__value__currency"),
-            image=F("coin__image"),
-            name=F("coin__name"),
-        )
-            .values(
-            "id",
-            "coin_id",
-            "coin",
-            "value_type",
-            "initial_value",
-            "final_value",
-            "enabled",
-            "via_mail",
-            "current",
-            "image",
-            "name",
-        ).filter(Q(currency=currency)))
-
-        return JsonResponse(values, safe=False)
-
-    def put(self, request):
-        print(request.data)
-
-        crypto_id = request.data.get("crypto_id")
-        final_value = float(request.data.get("value"))
-        option = request.data.get("option")
-
-        crypto_value = (cryptoObject.objects.annotate(
-            current=F("value__current"),
-            currency=F("value__currency"),
-        ).filter(id=crypto_id, currency=request.data.get("currency")).get())
-
-        crypto_value = crypto_value.current
-
-        if final_value < 0:
-            return Response(data="Incorrect Values", status=400)
-        if option == "g_perc" or option.startswith("Growth"):
-            option = "g_perc"
-            final_value = crypto_value + (crypto_value * final_value) / 100
-        elif option == "d_perc" or option.startswith("Decrease"):
-            option = "d_perc"
-            if final_value >= 100:
-                return Response(data="Incorrect Values", status=400)
-            final_value = crypto_value - (crypto_value * final_value) / 100
-        else:
-            option_list = option.split()
-            if option_list[0] == "Value":
-                option = option_list[1].lower()
-
-        if request.data.get("viamail") == "true":
-            viamail = True
-        else:
-            viamail = False
-
-        if request.data.get("state") == "true":
-            state = True
-        else:
-            state = False
-
-        from .serializers import NotificationSerializer
-
-        fNoti, created = Profile.objects.get(user__id=request.user.id).notification.update_or_create(
-            coin_id=crypto_id, defaults={
-                "coin_id": crypto_id,
-                "enabled": state,
-                "value_type": option,
-                "initial_value": crypto_value,
-                "final_value": final_value,
-                "via_mail": viamail})
-
-        data = NotificationSerializer(fNoti).data
-
-        return JsonResponse(data)
-
-    def delete(self, request):
-        noti_delete = Profile.objects.get(user__id=request.user.id).notification.get(
-            coin_id=request.data.get("crypto_id"))
-        noti_tabela_mare = Notification.objects.get(
-            id=noti_delete.id).delete()
-        profile = Profile(user=request.user)
-        profile.notification.remove(noti_delete)
-        profile.save()
-        print(noti_delete)
-        return Response("Notication Deleted")
-
-
 def createNotification(request):
     if request.method == "POST":
-        optionCrypto = (request.POST.get('optionCrypto').split("+"))[0]
+        optionCrypto = (request.POST.get("optionCrypto").split("+"))[0]
         user = Profile.objects.get(user__id=request.user.id)
-        coin_result = cryptoObject.objects.get(
-            coin_id=optionCrypto
-        )
+        coin_result = cryptoObject.objects.get(coin_id=optionCrypto)
         option = request.POST.get("option")
         crypto_value = (
             cryptoObject.objects.annotate(
@@ -959,9 +722,7 @@ def createNotification(request):
         else:
             viamail = False
         try:
-            notificare = user.notification.get(
-                coin_id=optionCrypto
-            )
+            notificare = user.notification.get(coin_id=optionCrypto)
             notificare.value_type = option
             notificare.final_value = final_value
             notificare.via_mail = viamail
@@ -1159,11 +920,312 @@ class UserFavCurr(APIView):
         user.save()
         return Response("Favorite currency updated")
 
+
 class NewsAPI(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         news_objs = list(News.objects.all().values())
-        # data = NewsSerializer(news_objs,many=True)
-        # print()
-        return JsonResponse(news_objs,safe=False)
+        return JsonResponse(news_objs, safe=False)
+
+
+class JsonObjectView(APIView):
+    # permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        if request.method == "GET":
+
+            # user = Profile.objects.get(user__id=request.user.id)
+
+            # if request.GET.get("currency") is None:
+            # currency = user.fav_currency
+            # else:
+            print(request.user.id)
+            currency = request.GET.get("currency")
+            page_size = request.GET.get("pageSize")
+            page = request.GET.get("pageIndex")
+            coin_name = request.GET.get("query")
+            first = (int(page) - 1) * int(page_size)
+            last = int(page) * int(page_size)
+
+            if len(coin_name):
+                values = list(
+                    cryptoObject.objects.annotate(
+                        current=F("value__current"),
+                        high_1d=F("value__high_1d"),
+                        low_1d=F("value__low_1d"),
+                        currency=F("value__currency"),
+                        ath=F("value__ath"),
+                        ath_time=F("value__ath_time"),
+                        atl=F("value__atl"),
+                        atl_time=F("value__atl_time"),
+                    )
+                    .values(
+                        "id",
+                        "coin_id",
+                        "symbol",
+                        "name",
+                        "image",
+                        "last_updated",
+                        "current",
+                        "high_1d",
+                        "low_1d",
+                        "ath",
+                        "ath_time",
+                        "atl",
+                        "atl_time",
+                    )
+                    .filter(Q(currency=currency), Q(coin_id__contains=coin_name))
+                )
+            else:
+                values = list(
+                    cryptoObject.objects.annotate(
+                        current=F("value__current"),
+                        high_1d=F("value__high_1d"),
+                        low_1d=F("value__low_1d"),
+                        currency=F("value__currency"),
+                        ath=F("value__ath"),
+                        ath_time=F("value__ath_time"),
+                        atl=F("value__atl"),
+                        atl_time=F("value__atl_time"),
+                    )
+                    .values(
+                        "id",
+                        "coin_id",
+                        "symbol",
+                        "name",
+                        "image",
+                        "last_updated",
+                        "current",
+                        "high_1d",
+                        "low_1d",
+                        "ath",
+                        "ath_time",
+                        "atl",
+                        "atl_time",
+                    )
+                    .filter(Q(currency=currency))
+                )
+            return JsonResponse(
+                {
+                    "coins": values[0 if first <= 0 else first : last],
+                    "total": len(values),
+                    "totalPages": int(len(values) / int(page_size)),
+                },
+                safe=False,
+            )
+
+
+class CoinsID(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        user = Profile.objects.get(user__id=request.user.id)
+
+        if request.GET.get("currency") is None:
+            currency = user.fav_currency
+        else:
+            currency = request.GET.get("currency")
+        try:
+            values = list(
+                cryptoObject.objects.annotate(
+                    current=F("value__current"),
+                    high_1d=F("value__high_1d"),
+                    low_1d=F("value__low_1d"),
+                    currency=F("value__currency"),
+                    ath=F("value__ath"),
+                    ath_time=F("value__ath_time"),
+                    atl=F("value__atl"),
+                    atl_time=F("value__atl_time"),
+                )
+                .values(
+                    "id",
+                    "coin_id",
+                    "symbol",
+                    "name",
+                    "image",
+                    "last_updated",
+                    "current",
+                    "high_1d",
+                    "low_1d",
+                    "ath",
+                    "ath_time",
+                    "atl",
+                    "atl_time",
+                )
+                .filter(Q(currency=currency))
+                .filter(coin_id=kwargs.get("id"))
+            )
+        except Exception as e:
+            return Response("There are no values")
+
+        return JsonResponse(values, safe=False)
+
+
+class Notifications(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = Profile.objects.get(user__id=request.user.id)
+
+        if request.GET.get("currency") is None:
+            currency = user.fav_currency
+        else:
+            currency = request.GET.get("currency")
+
+        # values = list(user.notification.all().values())
+        values = list(
+            user.notification.annotate(
+                current=F("coin__value__current"),
+                currency=F("coin__value__currency"),
+                image=F("coin__image"),
+                name=F("coin__name"),
+            )
+            .values(
+                "id",
+                "coin_id",
+                "coin",
+                "value_type",
+                "initial_value",
+                "final_value",
+                "enabled",
+                "via_mail",
+                "current",
+                "image",
+                "name",
+            )
+            .filter(Q(currency=currency))
+        )
+
+        return JsonResponse(values, safe=False)
+
+    def put(self, request):
+        print(request.data)
+
+        crypto_id = request.data.get("crypto_id")
+        final_value = float(request.data.get("value"))
+        option = request.data.get("option")
+
+        crypto_value = (
+            cryptoObject.objects.annotate(
+                current=F("value__current"),
+                currency=F("value__currency"),
+            )
+            .filter(id=crypto_id, currency=request.data.get("currency"))
+            .get()
+        )
+
+        crypto_value = crypto_value.current
+
+        if final_value < 0:
+            return Response(data="Incorrect Values", status=400)
+        if option == "g_perc" or option.startswith("Growth"):
+            option = "g_perc"
+            final_value = crypto_value + (crypto_value * final_value) / 100
+        elif option == "d_perc" or option.startswith("Decrease"):
+            option = "d_perc"
+            if final_value >= 100:
+                return Response(data="Incorrect Values", status=400)
+            final_value = crypto_value - (crypto_value * final_value) / 100
+        else:
+            option_list = option.split()
+            if option_list[0] == "Value":
+                option = option_list[1].lower()
+
+        if request.data.get("viamail") == "true":
+            viamail = True
+        else:
+            viamail = False
+
+        if request.data.get("state") == "true":
+            state = True
+        else:
+            state = False
+
+        from .serializers import NotificationSerializer
+
+        fNoti, created = Profile.objects.get(
+            user__id=request.user.id
+        ).notification.update_or_create(
+            coin_id=crypto_id,
+            defaults={
+                "coin_id": crypto_id,
+                "enabled": state,
+                "value_type": option,
+                "initial_value": crypto_value,
+                "final_value": final_value,
+                "via_mail": viamail,
+            },
+        )
+
+        data = NotificationSerializer(fNoti).data
+
+        return JsonResponse(data)
+
+    def delete(self, request):
+        noti_delete = Profile.objects.get(user__id=request.user.id).notification.get(
+            coin_id=request.data.get("crypto_id")
+        )
+        noti_tabela_mare = Notification.objects.get(id=noti_delete.id).delete()
+        profile = Profile(user=request.user)
+        profile.notification.remove(noti_delete)
+        profile.save()
+        print(noti_delete)
+        return Response("Notication Deleted")
+
+
+class UserFavorites(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = Profile.objects.get(user__id=request.user.id)
+        createProfileFromUserID(request.user.id)
+
+        if request.GET.get("currency") is None:
+            currency = user.fav_currency
+        else:
+            currency = request.GET.get("currency")
+
+        favorites = list(
+            user.favorite.annotate(
+                current=F("value__current"),
+                high_1d=F("value__high_1d"),
+                low_1d=F("value__low_1d"),
+                currency=F("value__currency"),
+                ath=F("value__ath"),
+                ath_time=F("value__ath_time"),
+                atl=F("value__atl"),
+                atl_time=F("value__atl_time"),
+            )
+            .values(
+                "id",
+                "coin_id",
+                "symbol",
+                "name",
+                "image",
+                "last_updated",
+                "current",
+                "high_1d",
+                "low_1d",
+                "ath",
+                "ath_time",
+                "atl",
+                "atl_time",
+            )
+            .filter(Q(currency=currency))
+        )
+
+        return JsonResponse(favorites, safe=False)
+
+    def post(self, request):
+        add_favorite = request.data.get("crypto_id")
+        user = User.objects.filter(username=request.user.username).get()
+        addToFav(user, add_favorite)
+        return Response("Added")
+
+    def delete(self, request):
+        delete_favorite = request.data.get("crypto_id")
+        print(delete_favorite)
+        user = User.objects.filter(username=request.user.username).get()
+        deleteFav(user, delete_favorite)
+        return Response("Deleted")
