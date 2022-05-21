@@ -1229,3 +1229,43 @@ class UserFavorites(APIView):
         user = User.objects.filter(username=request.user.username).get()
         deleteFav(user, delete_favorite)
         return Response("Deleted")
+
+
+class AllCoins(APIView):
+
+    def get(self, request):
+        if request.method == "GET":
+            if request.GET.get("currency") is None:
+                currency = "USD"
+            else:
+                currency = request.GET.get("currency")
+            values = list(
+                    cryptoObject.objects.annotate(
+                        current=F("value__current"),
+                        high_1d=F("value__high_1d"),
+                        low_1d=F("value__low_1d"),
+                        currency=F("value__currency"),
+                        ath=F("value__ath"),
+                        ath_time=F("value__ath_time"),
+                        atl=F("value__atl"),
+                        atl_time=F("value__atl_time"),
+                    )
+                    .values(
+                        "id",
+                        "coin_id",
+                        "symbol",
+                        "name",
+                        "image",
+                        "last_updated",
+                        "current",
+                        "high_1d",
+                        "low_1d",
+                        "ath",
+                        "ath_time",
+                        "atl",
+                        "atl_time",
+                    )
+                    .filter(Q(currency=currency))
+                )
+            return JsonResponse(values,safe=False)
+
