@@ -935,12 +935,7 @@ class JsonObjectView(APIView):
     def get(self, request):
         if request.method == "GET":
 
-            # user = Profile.objects.get(user__id=request.user.id)
-
-            # if request.GET.get("currency") is None:
-            # currency = user.fav_currency
-            # else:
-            print(request.user.id)
+            createProfileFromUserID(request.user.id)
             currency = request.GET.get("currency")
             page_size = request.GET.get("pageSize")
             page = request.GET.get("pageIndex")
@@ -1232,7 +1227,6 @@ class UserFavorites(APIView):
 
 
 class AllCoins(APIView):
-
     def get(self, request):
         if request.method == "GET":
             if request.GET.get("currency") is None:
@@ -1240,32 +1234,147 @@ class AllCoins(APIView):
             else:
                 currency = request.GET.get("currency")
             values = list(
-                    cryptoObject.objects.annotate(
-                        current=F("value__current"),
-                        high_1d=F("value__high_1d"),
-                        low_1d=F("value__low_1d"),
-                        currency=F("value__currency"),
-                        ath=F("value__ath"),
-                        ath_time=F("value__ath_time"),
-                        atl=F("value__atl"),
-                        atl_time=F("value__atl_time"),
-                    )
-                    .values(
-                        "id",
-                        "coin_id",
-                        "symbol",
-                        "name",
-                        "image",
-                        "last_updated",
-                        "current",
-                        "high_1d",
-                        "low_1d",
-                        "ath",
-                        "ath_time",
-                        "atl",
-                        "atl_time",
-                    )
-                    .filter(Q(currency=currency))
+                cryptoObject.objects.annotate(
+                    current=F("value__current"),
+                    high_1d=F("value__high_1d"),
+                    low_1d=F("value__low_1d"),
+                    currency=F("value__currency"),
+                    ath=F("value__ath"),
+                    ath_time=F("value__ath_time"),
+                    atl=F("value__atl"),
+                    atl_time=F("value__atl_time"),
                 )
-            return JsonResponse(values,safe=False)
+                .values(
+                    "id",
+                    "coin_id",
+                    "symbol",
+                    "name",
+                    "image",
+                    "last_updated",
+                    "current",
+                    "high_1d",
+                    "low_1d",
+                    "ath",
+                    "ath_time",
+                    "atl",
+                    "atl_time",
+                )
+                .filter(Q(currency=currency))
+            )
+            return JsonResponse(values, safe=False)
 
+
+class Sparkline(APIView):
+    def get(self, request):
+        if request.method == "GET":
+            if request.GET.get("currency") is None:
+                currency = "USD"
+            else:
+                currency = request.GET.get("currency")
+        page_size = request.GET.get("pageSize")
+        page = request.GET.get("pageIndex")
+        coin_name = request.GET.get("query")
+        first = (int(page) - 1) * int(page_size)
+        last = int(page) * int(page_size)
+
+        if len(coin_name):
+            pret_zi = (
+                market_chart.objects.annotate(last_price=F("coin__value__last_price"))
+                .values(
+                    "coin_id",
+                    "price1",
+                    "price2",
+                    "price3",
+                    "price4",
+                    "price5",
+                    "price6",
+                    "price7",
+                    "price8",
+                    "price9",
+                    "price10",
+                    "price11",
+                    "price12",
+                    "price13",
+                    "price14",
+                    "price15",
+                    "price16",
+                    "price17",
+                    "price18",
+                    "price19",
+                    "price20",
+                    "price21",
+                    "price22",
+                    "price23",
+                    "price24",
+                )
+                .filter(day=market_chart.Days.ONE)
+                .filter(currency=currency)
+                .filter(coin__name__icontains=coin_name)
+            )
+        else:
+            pret_zi = (
+                market_chart.objects.annotate(last_price=F("coin__value__last_price"))
+                .values(
+                    "coin_id",
+                    "price1",
+                    "price2",
+                    "price3",
+                    "price4",
+                    "price5",
+                    "price6",
+                    "price7",
+                    "price8",
+                    "price9",
+                    "price10",
+                    "price11",
+                    "price12",
+                    "price13",
+                    "price14",
+                    "price15",
+                    "price16",
+                    "price17",
+                    "price18",
+                    "price19",
+                    "price20",
+                    "price21",
+                    "price22",
+                    "price23",
+                    "price24",
+                )
+                .filter(day=market_chart.Days.ONE)
+                .filter(currency=currency)
+            )
+        dic1 = {}
+        for j in pret_zi:
+            dic1[j["coin_id"]] = [
+                j["price1"],
+                j["price2"],
+                j["price3"],
+                j["price4"],
+                j["price5"],
+                j["price6"],
+                j["price7"],
+                j["price8"],
+                j["price9"],
+                j["price10"],
+                j["price11"],
+                j["price12"],
+                j["price13"],
+                j["price14"],
+                j["price15"],
+                j["price16"],
+                j["price17"],
+                j["price18"],
+                j["price19"],
+                j["price20"],
+                j["price21"],
+                j["price22"],
+                j["price23"],
+                j["price24"],
+            ]
+        return JsonResponse(
+            {
+                "sparkline": dic1
+            },
+            safe=False,
+        )
