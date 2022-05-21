@@ -42,14 +42,18 @@ try:
             )
             price_list += price
         for j in range(250):
-            cryptoObject = mod.cryptoObject(
-                coin_id=price_list[j]["id"],
-                symbol=price_list[j]["symbol"],
-                name=price_list[j]["name"],
-                image=price_list[j]["image"],
-                last_updated=correcttime(price_list[j]["last_updated"]),
-            )
-            cryptoObject.save()
+            # if cryptoObject with coin_id doesnt exist then create new object
+            try:
+                cryptoObject = mod.cryptoObject.objects.get(coin_id=price_list[j]["id"])
+            except:
+                cryptoObject = mod.cryptoObject(
+                    coin_id=price_list[j]["id"],
+                    symbol=price_list[j]["symbol"],
+                    name=price_list[j]["name"],
+                    image=price_list[j]["image"],
+                    last_updated=correcttime(price_list[j]["last_updated"]),
+                )
+                cryptoObject.save()
             for k in range(4):
                 coinFromList = price_list[j + (250 * k)]
                 try:
